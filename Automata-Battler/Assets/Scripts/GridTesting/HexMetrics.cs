@@ -17,6 +17,7 @@ public static class HexMetrics {
         new Vector3(-0.5f*outerRadius, 0f, -innerRadius),
         new Vector3(-outerRadius, 0f, 0f),
         new Vector3(-0.5f*outerRadius, 0f, innerRadius),
+        new Vector3(0.5f*outerRadius, 0f, innerRadius), //DUPLICATE, meant to prevent out of bounds
 
         //this is for a pointy side up
 		// new Vector3(0f, 0f, outerRadius), //top corner
