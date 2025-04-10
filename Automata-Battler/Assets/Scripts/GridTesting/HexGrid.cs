@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem; //fucking sucks
 
 public class HexGrid : MonoBehaviour {
 
@@ -16,13 +17,16 @@ public class HexGrid : MonoBehaviour {
 
 	HexMesh hexMesh;
 
+	public Color defaultColor = Color.white;
+	public Color touchedColor = Color.magenta;
+
 	void Awake () {
 
 		gridCanvas = GetComponentInChildren<Canvas>();
 
 		gridCanvas = GetComponentInChildren<Canvas>();
 		hexMesh = GetComponentInChildren<HexMesh>();
-
+		//create grid of cells
 		cells = new HexCell[height * width];
 
 		for (int z = 0, i = 0; z < height; z++) {
@@ -32,29 +36,65 @@ public class HexGrid : MonoBehaviour {
 		}
 	}
 
-	//Happens AFTER Awake
+	//Happens AFTER Awake, get the vertices to draw
 	void Start () {
 		hexMesh.Triangulate(cells);
 	}
 	
-	void CreateCell (int x, int z, int i) {
+	void CreateCell (int x, int z, int i) 
+	{
 		Vector3 position;
 		position.x = x * (HexMetrics.outerRadius * 1.5f);
-		//position.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
 		position.y = 0f;
-		position.z = (z + x * 0.5f - x / 2) * (HexMetrics.innerRadius * 2.0f);
+		position.z = (z + x * 0.5f - x / 2) * (HexMetrics.innerRadius * 2.0f); //make sure it 'alternates'
 
 		HexCell cell = cells[i] = Instantiate<HexCell>(cellPrefab);
 
 		cell.transform.SetParent(transform, false);
 		cell.transform.localPosition = position;
 		cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z); //set grid coordinates
+		cell.color = defaultColor; //set the default color
 
-		//set the text
+		//set the text, which is just the coordinate again
 		Text label = Instantiate<Text>(cellLabelPrefab);
 		label.rectTransform.SetParent(gridCanvas.transform, false);
 		label.rectTransform.anchoredPosition =
 			new Vector2(position.x, position.z);
 		label.text = cell.coordinates.ToStringOnSeparateLines();
+	}
+
+	void Update () 
+	{
+		if (Mouse.current.leftButton.isPressed) {
+			HandleInput();
+		}
+	}
+
+	void HandleInput () 
+	{
+		Vector2 mousePosition = Mouse.current.position.ReadValue();
+		Ray inputRay = Camera.main.ScreenPointToRay(mousePosition);
+		//Debug.Log("Dafuq? at " + inputRay);
+		RaycastHit hit;
+		if (Physics.Raycast(inputRay, out hit)) {
+			TouchCell(hit.point);
+		}
+	}
+	
+	void TouchCell (Vector3 position) 
+	{
+		position = transform.InverseTransformPoint(position);
+		HexCoordinates coordinates = HexCoordinates.FromPosition(position);
+		Debug.Log("touched at " + coordinates.ToString());
+
+		//secret function to get array index from hex coordinate
+		//TODO this fucking sucks imma just make a mapping for this later ~Lars
+		int row = coordinates.Y +(coordinates.X - (coordinates.X & 1)) / 2;  //TODO: make this a func
+		int col = coordinates.X;
+		int index = row * width + col;
+		//int index = coordinates.X + coordinates.Y * width + coordinates.Y / 2; //Yeah yeah ofc it's fucking easy for the tutorial's coord system
+		HexCell cell = cells[index];
+		cell.color = touchedColor;
+		hexMesh.Triangulate(cells);
 	}
 }

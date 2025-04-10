@@ -1,9 +1,31 @@
 using UnityEngine;
 
 [System.Serializable]
-public struct HexCoordinates {
+public struct HexCoordinates 
+{
 
-    [SerializeField] private int x, z; //makes coordinate show in editor
+	/*
+	In case you were expecting some sort of documentation here it is I guess
+	If Lars did his job right you shouldn't have to worry about this as all, 
+	and only should have to understand wtf this means.
+	
+	The coordinate system is cube coordinates. Sadly, every single person online does this with hexagons with a pointy top
+	instead of a 'flat' top (like we do).
+
+	the system works with 3 'axis', x, y and z. the three coordinates always sum up to 0.
+	note that these axis do NOT line up with the hexes, this is on purpose
+	-> it means moving from cell A to neighbor B always modifies TWO coordinates
+
+	- positive x is on the east
+	- positive y is to the nort-west
+	- positive z is on the south-west
+
+	i.e. say you are at (0,0,0), moving to the cell to the top-right moves you to (1,0,-1) because you went in +x direction, but also in -z.
+
+	~Lars, after following a tutorial meant for a different coordinate system 
+	*/
+
+    [SerializeField] private int x, y; //makes coordinate show in editor
 
 	public int X {
 		get {
@@ -11,25 +33,41 @@ public struct HexCoordinates {
 		}
 	}
 
-	public int Z {
+	public int Y {
 		get {
-			return z;
+			return y;
 		}
 	}
 
-    public int Y {
+    public int Z { //is derived from x and z, is mostly for convenience!
 		get {
-			return -X - Z;
+			return -X - Y;
 		}
 	}
 
-	public HexCoordinates (int x, int z) {
+	public HexCoordinates (int x, int y) {
 		this.x = x;
-		this.z = z;
+		this.y = y;
 	}
 
     public static HexCoordinates FromOffsetCoordinates (int x, int z) {
-		return new HexCoordinates(x, z - x / 2); //axial coordinates
+		int y = z - (x - (x & 1)) / 2;
+    	return new HexCoordinates(x, y); //modified from CatLikeCoding as we have flat tops, which SUCK to code for no one makes a tutorial for these
+	}
+
+	//My god this transformation Sucked -Lars ft. ChatGPT
+	public static HexCoordinates FromPosition (Vector3 position) 
+	{	
+		//just the inverse of the grid building function lol
+		float x = position.x / (HexMetrics.outerRadius * 1.5f);
+		float z = position.z / (HexMetrics.innerRadius * 2.0f) - Mathf.RoundToInt(x)*0.5f + Mathf.RoundToInt(x)/2;
+    
+		//Round to the nearest axial integer coordinates
+		int iQ = Mathf.RoundToInt(x);
+		int iY = Mathf.RoundToInt(z);
+    
+    
+    	return FromOffsetCoordinates(iQ, iY); //yeah yeah not good practice but this took 2 hours no joke
 	}
 
     //convenience section
