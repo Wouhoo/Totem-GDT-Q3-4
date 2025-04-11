@@ -14,8 +14,8 @@ public class HexMesh : MonoBehaviour {
 
 	void Awake () {
 		GetComponent<MeshFilter>().mesh = hexMesh = new Mesh();
-		//meshCollider = gameObject.AddComponent<MeshCollider>(); //dunno why the tutorial adds it manually
-		meshCollider = GetComponent<MeshCollider>();
+		meshCollider = gameObject.AddComponent<MeshCollider>(); //dunno why the tutorial adds it manually
+		//meshCollider = GetComponent<MeshCollider>();
 		hexMesh.name = "Hex Mesh";
 		vertices = new List<Vector3>();
 		colors = new List<Color>();
