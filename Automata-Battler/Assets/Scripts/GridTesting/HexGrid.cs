@@ -55,6 +55,37 @@ public class HexGrid : MonoBehaviour {
 		cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z); //set grid coordinates
 		cell.color = defaultColor; //set the default color
 
+		//set the cell's neighbors PLEASE LET'S NOT DO THIS JUST USE A FUNC FOR RELATIVE COORDS
+		// N/S
+		if (z > 0) 
+		{
+			cell.SetNeighbor(HexDirection.S, cells[i - width]);
+		}
+		// NE/SW
+		if(x > 0 && (x % 2 == 1  || z > 0))
+		{
+			if (x % 2 == 1)
+			{
+				cell.SetNeighbor(HexDirection.SW, cells[i - 1]);
+			}
+			else //then we need the previous row's entry
+			{
+				cell.SetNeighbor(HexDirection.SW, cells[i - 1 - width]);
+			}
+		}
+		// NW/SE
+		if ((x > 0 && (x % 2 == 0)) || (x < width && z > 0 && (x % 2 == 0)))
+		{
+			if (x > 0) //we are on a 'non-shifted' col, grab last entry
+			{
+				cell.SetNeighbor(HexDirection.NW, cells[i - 1]);
+			}
+			if(z>0) //z > 0, we are on the 'next' row, grab the offset one from last row
+			{
+				cell.SetNeighbor(HexDirection.SE, cells[i - width + 1]);
+			}
+		}
+
 		//set the text, which is just the coordinate again
 		Text label = Instantiate<Text>(cellLabelPrefab);
 		label.rectTransform.SetParent(gridCanvas.transform, false);
@@ -90,7 +121,7 @@ public class HexGrid : MonoBehaviour {
 		//secret function to get array index from hex coordinate
 		//TODO this fucking sucks imma just make a mapping for this later ~Lars
 		int row = coordinates.Y +(coordinates.X - (coordinates.X & 1)) / 2;  //TODO: make this a func
-		int col = coordinates.X;
+		int col = coordinates.X; //ofc must be lower than 'width'
 		int index = row * width + col;
 		//int index = coordinates.X + coordinates.Y * width + coordinates.Y / 2; //Yeah yeah ofc it's fucking easy for the tutorial's coord system
 		HexCell cell = cells[index];
