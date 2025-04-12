@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem; //fucking sucks
+using System;
 
 public class HexGrid : MonoBehaviour {
 
@@ -9,6 +10,7 @@ public class HexGrid : MonoBehaviour {
 
 	public HexCell cellPrefab;
 
+	//Array holding all cells in the grid
     HexCell[] cells;
 
 	public Text cellLabelPrefab;
@@ -19,6 +21,24 @@ public class HexGrid : MonoBehaviour {
 
 	public Color defaultColor = Color.white;
 	public Color touchedColor = Color.magenta;
+
+
+	//utility functions
+
+	//gets the cell from the array from hex coordinate 
+	public HexCell GetHexCellAtHexCoordinate(HexCoordinates coordinates) 
+	{
+		int row = coordinates.Y +(coordinates.X - (coordinates.X & 1)) / 2; //yeah it isnt that simple
+		int col = coordinates.X; 
+
+		//bounds check
+		if (row < 0 || row >= height || col < 0 || col >= width)
+		{
+			Debug.LogWarning("Requested coordinates out of HexGrid bounds: " + coordinates + ", Null returned");
+			return null;
+		}
+		return cells[row * width + col]; //just to get the editor to shut up for now
+	}
 
 	void Awake () {
 
@@ -57,34 +77,34 @@ public class HexGrid : MonoBehaviour {
 
 		//set the cell's neighbors PLEASE LET'S NOT DO THIS JUST USE A FUNC FOR RELATIVE COORDS
 		// N/S
-		if (z > 0) 
-		{
-			cell.SetNeighbor(HexDirection.S, cells[i - width]);
-		}
-		// NE/SW
-		if(x > 0 && (x % 2 == 1  || z > 0))
-		{
-			if (x % 2 == 1)
-			{
-				cell.SetNeighbor(HexDirection.SW, cells[i - 1]);
-			}
-			else //then we need the previous row's entry
-			{
-				cell.SetNeighbor(HexDirection.SW, cells[i - 1 - width]);
-			}
-		}
-		// NW/SE
-		if ((x > 0 && (x % 2 == 0)) || (x < width && z > 0 && (x % 2 == 0)))
-		{
-			if (x > 0) //we are on a 'non-shifted' col, grab last entry
-			{
-				cell.SetNeighbor(HexDirection.NW, cells[i - 1]);
-			}
-			if(z>0) //z > 0, we are on the 'next' row, grab the offset one from last row
-			{
-				cell.SetNeighbor(HexDirection.SE, cells[i - width + 1]);
-			}
-		}
+		// if (z > 0) 
+		// {
+		// 	cell.SetNeighbor(HexDirection.S, cells[i - width]);
+		// }
+		// // NE/SW
+		// if(x > 0 && (x % 2 == 1  || z > 0))
+		// {
+		// 	if (x % 2 == 1)
+		// 	{
+		// 		cell.SetNeighbor(HexDirection.SW, cells[i - 1]);
+		// 	}
+		// 	else //then we need the previous row's entry
+		// 	{
+		// 		cell.SetNeighbor(HexDirection.SW, cells[i - 1 - width]);
+		// 	}
+		// }
+		// // NW/SE
+		// if ((x > 0 && (x % 2 == 0)) || (x < width && z > 0 && (x % 2 == 0)))
+		// {
+		// 	if (x > 0) //we are on a 'non-shifted' col, grab last entry
+		// 	{
+		// 		cell.SetNeighbor(HexDirection.NW, cells[i - 1]);
+		// 	}
+		// 	if(z>0) //z > 0, we are on the 'next' row, grab the offset one from last row
+		// 	{
+		// 		cell.SetNeighbor(HexDirection.SE, cells[i - width + 1]);
+		// 	}
+		// }
 
 		//set the text, which is just the coordinate again
 		Text label = Instantiate<Text>(cellLabelPrefab);
@@ -93,6 +113,10 @@ public class HexGrid : MonoBehaviour {
 			new Vector2(position.x, position.z);
 		label.text = cell.coordinates.ToStringOnSeparateLines();
 	}
+
+
+
+	//stuff that's only partially usable
 
 	void Update () 
 	{
@@ -117,15 +141,15 @@ public class HexGrid : MonoBehaviour {
 		position = transform.InverseTransformPoint(position);
 		HexCoordinates coordinates = HexCoordinates.FromPosition(position);
 		Debug.Log("touched at " + coordinates.ToString());
-
-		//secret function to get array index from hex coordinate
-		//TODO this fucking sucks imma just make a mapping for this later ~Lars
-		int row = coordinates.Y +(coordinates.X - (coordinates.X & 1)) / 2;  //TODO: make this a func
-		int col = coordinates.X; //ofc must be lower than 'width'
-		int index = row * width + col;
-		//int index = coordinates.X + coordinates.Y * width + coordinates.Y / 2; //Yeah yeah ofc it's fucking easy for the tutorial's coord system
-		HexCell cell = cells[index];
+		HexCell cell = GetHexCellAtHexCoordinate(coordinates);
 		cell.color = touchedColor;
+
+		//for testing purposes
+		foreach(HexDirection dir in Enum.GetValues(typeof(HexDirection)))
+		{
+			cell.SetNeighbor(dir, GetHexCellAtHexCoordinate(coordinates + dir.GetRelativeCoordinates()));
+		}
+
 		hexMesh.Triangulate(cells);
 	}
 }

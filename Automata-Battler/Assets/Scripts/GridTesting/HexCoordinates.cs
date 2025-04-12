@@ -39,7 +39,7 @@ public struct HexCoordinates
 		}
 	}
 
-    public int Z { //is derived from x and z, is mostly for convenience!
+    public int Z { //is derived from x and y
 		get {
 			return -X - Y;
 		}
@@ -50,11 +50,13 @@ public struct HexCoordinates
 		this.y = y;
 	}
 
-    public static HexCoordinates FromOffsetCoordinates (int x, int z) {
-		int y = z - (x - (x & 1)) / 2;
-    	return new HexCoordinates(x, y); //modified from CatLikeCoding as we have flat tops, which SUCK to code for no one makes a tutorial for these
+	//this is from SQUARE GRID coordinates, look at the arguments!
+    public static HexCoordinates FromOffsetCoordinates (int col, int row) {
+		int y = row - (col - (col & 1)) / 2;
+    	return new HexCoordinates(col, y); //modified from CatLikeCoding as we have flat tops, which SUCK to code for no one makes a tutorial for these ~Lars
 	}
 
+	//Gets the Hex Coordinate a given world position would point to (does not take y value into account)
 	//My god this transformation Sucked -Lars ft. ChatGPT
 	public static HexCoordinates FromPosition (Vector3 position) 
 	{	
@@ -66,17 +68,26 @@ public struct HexCoordinates
 		int iQ = Mathf.RoundToInt(x);
 		int iY = Mathf.RoundToInt(z);
     
-    
     	return FromOffsetCoordinates(iQ, iY); //yeah yeah not good practice but this took 2 hours no joke
 	}
 
+
     //convenience section
-    public override string ToString () {
+
+	//define addition between HexCoordinates
+	public static HexCoordinates operator +(HexCoordinates a, HexCoordinates b) 
+	{
+        return new HexCoordinates(a.X + b.X, a.Y + b.Y);
+    }
+	
+    public override string ToString () 
+	{
 		return "(" +
 			X.ToString() + ", " + Y.ToString() + ", " + Z.ToString() + ")";
 	}
 
-	public string ToStringOnSeparateLines () {
+	public string ToStringOnSeparateLines () 
+	{
 		return X.ToString() + "\n" + Y.ToString() + "\n" + Z.ToString();
 	}
 }
