@@ -5,16 +5,19 @@ using System;
 [System.Serializable]
 public class CardFunctionCall
 {
+
     public enum InstructionType
     {
-        Move_Slide,
-        Move_Jump,
-        Attack_Slide,
-        Attack_Jump
+        Move,
+        Jump,
+        Slide,
+        Attack,
+        Arrow,
+        Shoot,
+        Die
     }
 
     public InstructionType functionType;
-    public Vector3Int position;
-    public bool globalPositioning;
+    public HexDirection direction;
     public int damageAmount;
 }

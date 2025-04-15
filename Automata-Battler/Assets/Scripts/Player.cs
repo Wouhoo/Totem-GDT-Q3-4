@@ -3,9 +3,6 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-
-    private Referee referee;
-
     private Camera mainCamera;
     private Card selectedCard = null;
     private LayerMask cardLayerMask;

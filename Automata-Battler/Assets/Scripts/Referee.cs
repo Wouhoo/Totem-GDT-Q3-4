@@ -6,24 +6,7 @@ using System;
 
 public class Referee : MonoBehaviour
 {
-    private Dictionary<Vector3Int, Card> tileToCardMap;
     private List<Card> cardList = new List<Card>(); // in order of play (newest last)
-    [SerializeField] private Board board;
-
-    void Start()
-    {
-        // Create The tileToCardMap
-        foreach (Vector3Int tilePos in board._tiles)
-        {
-            tileToCardMap.Add(tilePos, null);
-        }
-    }
-
-
-
-    //
-    // Execute Cards
-    //
 
     public void ExecuteCards()
     {
