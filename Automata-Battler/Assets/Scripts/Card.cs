@@ -20,19 +20,14 @@ public class Card : MonoBehaviour
 
     void Start()
     {
+        hexGrid = FindFirstObjectByType<HexGrid>();
         board = FindFirstObjectByType<Board>();
+        // how did wouter do this? wasnt there a better way?
     }
 
     // 
-    // GET & SET
+    // SET (the only external thing that can really happen other then executing instructions)
     //
-
-    public void Set_Position(Vector3Int pos)
-    {
-        _position = pos;
-        UpdateVisuals_Temp();
-
-    }
 
     public void RecieveDamage(int amount)
     {
@@ -92,13 +87,16 @@ public class Card : MonoBehaviour
 
     private void Die()
     {
-        // remove position on board
+        // Remove from board
+        board.Set_TileOccupant(_position, null);
+        // animate
         // destroy this game object
+        Destroy(this);
     }
 
     private void Move_asJump(HexDirection direction, int byAmount)
     {
-        Vector3Int target = _position + byAmount *;//hexGrid.Direction_to_hexPos(direction)
+        Vector3Int target = _position + byAmount * ;//hexGrid.Direction_to_hexPos(direction)
 
         if (board.TileExistance(target) && board.TileOccupant(target) == null) // ask if move is possible
         {
@@ -119,7 +117,7 @@ public class Card : MonoBehaviour
         Vector3Int targetDirection = ;//hexGrid.Direction_to_hexPos(direction)
 
         int amountMoved = 0;
-        for (...)
+        for (int i = 0; i < byAmount; i++)
         {
             if (!board.TileExistance(_position + (amountMoved + 1) * targetDirection))
                 break;
@@ -131,7 +129,7 @@ public class Card : MonoBehaviour
         if (amountMoved != 0)
         {
             board.Set_TileOccupant(_position, null);
-            _position += (amountMoved + 1) * targetDirection;
+            _position += amountMoved * targetDirection;
             board.Set_TileOccupant(_position, this);
             // animate
             return;
@@ -142,45 +140,58 @@ public class Card : MonoBehaviour
         return;
     }
 
-    private void Attack_asDirect(HexDirection direction, int damageAmount)
-    {
-        // Ask if that cell is free / exists
-
-        // if yes
-        // animate
-
-        // if no
-        // ask who occupies it
-        // attack
-        // animate
-    }
     private void Attack_asJump(HexDirection direction, int byAmount, int damageAmount)
     {
         Vector3Int target = _position + byAmount *;//hexGrid.Direction_to_hexPos(direction)
 
-        if (board.TileExistance(target) && board.TileOccupant(target) == null) // ask if move is possible
+        if (board.TileExistance(target) && board.TileOccupant(target) != null) // ask if attack is possible
         {
-            board.Set_TileOccupant(_position, null);
-            _position = target;
-            board.Set_TileOccupant(_position, this);
             // animate
+            board.TileOccupant(target).RecieveDamage(damageAmount);
             return;
         }
 
-        // Failed to move
+        // Failed to attack
         // animate
         return;
     }
-    private void Attack_asSlide(HexDirection direction, int damageAmount)
-    {
 
+    private void Attack_asSlide(HexDirection direction, int byAmount, int damageAmount)
+    {
+        Vector3Int targetDirection = ;//hexGrid.Direction_to_hexPos(direction)
+
+        bool attackSuccess = false;
+        int amountMoved = 0;
+        for (int i = 1; i <= byAmount; i++)
+        {
+            amountMoved++;
+            if (!board.TileExistance(_position + amountMoved * targetDirection))
+                break;
+            if (board.TileOccupant(_position + amountMoved * targetDirection) != null)
+            {
+                attackSuccess = true;
+                break;
+            }
+        }
+
+        if (attackSuccess)
+        {
+            Vector3Int target = _position + amountMoved * targetDirection;
+            // animate
+            board.TileOccupant(target).RecieveDamage(damageAmount);
+            return;
+        }
+
+        // Failed to attack
+        // animate
+        return;
     }
 
     //
     // Visuals
     // 
 
-    void Visuals_Movement()
+    void Visuals_Movement(Vector3 toPos)
     {
 
     }
@@ -197,7 +208,7 @@ public class Card : MonoBehaviour
 
     void UpdateVisuals_Temp()
     {
-        transform.position = board.HexToGridCoordinates(_position);
+        // transform.position = board.HexToGridCoordinates(_position);
         // TODO : make with proper animations
     }
 

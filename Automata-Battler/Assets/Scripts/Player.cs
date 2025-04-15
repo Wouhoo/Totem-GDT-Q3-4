@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+// THIS ENTIRE CLASS NEEDS TO BE RE-WORKED!
+
 public class Player : MonoBehaviour
 {
+    private Referee referee;
     private Camera mainCamera;
     private Card selectedCard = null;
     private LayerMask cardLayerMask;
@@ -78,7 +81,8 @@ public class Player : MonoBehaviour
     {
         // Place the card
         Vector3Int pos = tile.Get_Position();
-        referee.Placement_Request(selectedCard, pos);
+
+        // TODO
 
         // Reset selection
         selectedCard = null;
