@@ -82,7 +82,7 @@ public class Card : MonoBehaviour
     }
 
     // 
-    // INSTRUCTION FUNCTIONS
+    // INSTRUCTION FUNCTIONS (THE FIRST LINE OF EACH IS INCOMPLETE)
     //
 
     private void Die()
@@ -96,7 +96,7 @@ public class Card : MonoBehaviour
 
     private void Move_asJump(HexDirection direction, int byAmount)
     {
-        Vector3Int target = _position + byAmount * ;//hexGrid.Direction_to_hexPos(direction)
+        Vector3Int target = _position;  // + byAmount * hexGrid.Direction_to_hexPos(direction)
 
         if (board.TileExistance(target) && board.TileOccupant(target) == null) // ask if move is possible
         {
@@ -114,7 +114,7 @@ public class Card : MonoBehaviour
 
     private void Move_asSlide(HexDirection direction, int byAmount)
     {
-        Vector3Int targetDirection = ;//hexGrid.Direction_to_hexPos(direction)
+        Vector3Int targetDirection = new Vector3Int(0, 0, 0);//hexGrid.Direction_to_hexPos(direction)
 
         int amountMoved = 0;
         for (int i = 0; i < byAmount; i++)
@@ -142,7 +142,7 @@ public class Card : MonoBehaviour
 
     private void Attack_asJump(HexDirection direction, int byAmount, int damageAmount)
     {
-        Vector3Int target = _position + byAmount *;//hexGrid.Direction_to_hexPos(direction)
+        Vector3Int target = _position;  // + byAmount * hexGrid.Direction_to_hexPos(direction)
 
         if (board.TileExistance(target) && board.TileOccupant(target) != null) // ask if attack is possible
         {
@@ -158,7 +158,7 @@ public class Card : MonoBehaviour
 
     private void Attack_asSlide(HexDirection direction, int byAmount, int damageAmount)
     {
-        Vector3Int targetDirection = ;//hexGrid.Direction_to_hexPos(direction)
+        Vector3Int targetDirection = new Vector3Int(0, 0, 0);//hexGrid.Direction_to_hexPos(direction)
 
         bool attackSuccess = false;
         int amountMoved = 0;

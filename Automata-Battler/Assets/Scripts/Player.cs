@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
     private PlayerInput playerInput;
     private InputAction clickAction;
 
-
+    /*
     private void Awake()
     {
         mainCamera = Camera.main;
@@ -77,6 +77,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    
     private void UseCardOnTile(Tile tile)
     {
         // Place the card
@@ -87,4 +88,5 @@ public class Player : MonoBehaviour
         // Reset selection
         selectedCard = null;
     }
+    */
 }
