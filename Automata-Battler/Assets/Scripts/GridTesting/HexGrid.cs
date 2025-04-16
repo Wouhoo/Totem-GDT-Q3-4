@@ -83,7 +83,7 @@ public class HexGrid : MonoBehaviour
 	//Happens AFTER Awake, get the vertices to draw
 	void Start()
 	{
-		hexMesh.Triangulate(cells);
+		//hexMesh.Triangulate(cells);
 	}
 
 	void CreateCell(int x, int z, int i)
@@ -180,7 +180,9 @@ public class HexGrid : MonoBehaviour
 		{
 			cell.SetNeighbor(dir, GetHexCellAtHexCoordinate(coordinates + dir.GetRelativeCoordinates()));
 		}
-
-		hexMesh.Triangulate(cells);
+		cell.color = Color.magenta;
+		cell.mesh.currentColor = Color.magenta; //cool workaround shhhh
+		cell.mesh.GenerateMesh();
+		//hexMesh.Triangulate(cells);
 	}
 }
