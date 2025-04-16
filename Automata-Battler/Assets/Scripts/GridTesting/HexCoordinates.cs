@@ -25,7 +25,8 @@ public struct HexCoordinates
 	~Lars, after following a tutorial meant for a different coordinate system 
 	*/
 
-    [SerializeField] private int x, y; //makes coordinate show in editor
+    // [SerializeField] private int x, y; //makes coordinate show in editor
+	[SerializeField] private int x, z; //makes coordinate show in editor
 
 	public int X {
 		get {
@@ -35,49 +36,85 @@ public struct HexCoordinates
 
 	public int Y {
 		get {
-			return y;
+			return -X-Z;
+			// return y;
 		}
 	}
 
     public int Z { //is derived from x and y
 		get {
+			return -z;
 			return -X - Y;
 		}
 	}
 
-	public HexCoordinates (int x, int y) {
+	public HexCoordinates (int x, int z) {
 		this.x = x;
-		this.y = y;
+		// this.y = y;
+		this.z = z;
 	}
 
-	//this is from SQUARE GRID coordinates, look at the arguments!
-    public static HexCoordinates FromOffsetCoordinates (int col, int row) {
-		int y = row - (col - (col & 1)) / 2;
-    	return new HexCoordinates(col, y); //modified from CatLikeCoding as we have flat tops, which SUCK to code for no one makes a tutorial for these ~Lars
-	}
+	// //this is from SQUARE GRID coordinates, look at the arguments!
+    // public static HexCoordinates FromOffsetCoordinates (int col, int row) {
+	// 	int y = (-col-row) - (col - (col & 1)) / 2;
+    // 	return new HexCoordinates(col, y); //modified from CatLikeCoding as we have flat tops, which SUCK to code for no one makes a tutorial for these ~Lars
+	// }
+
+
+	//PUBLIC CONVENIENCE FUNCTIONS
 
 	//Gets the Hex Coordinate a given world position would point to (does not take y value into account)
 	//My god this transformation Sucked -Lars ft. ChatGPT
-	public static HexCoordinates FromPosition (Vector3 position) 
+	public static HexCoordinates FromWorldPosition (Vector3 position) 
 	{	
-		//just the inverse of the grid building function lol
-		float x = position.x / (HexMetrics.outerRadius * 1.5f);
-		float z = position.z / (HexMetrics.innerRadius * 2.0f) - Mathf.RoundToInt(x)*0.5f + Mathf.RoundToInt(x)/2;
+		// Invert the z since our ToWorldPosition() returns new Vector3(worldX, 0, -worldZ)
+		float worldX = position.x;
+		float worldZ = -position.z;
+
+		// Convert world coordinates into axial fractions.
+		float q = worldX / (HexMetrics.outerRadius * 1.5f);
+		float r = worldZ / (HexMetrics.innerRadius * 2f) - q / 2f;
+
+		// Round to the nearest integers.
+		int iX = Mathf.RoundToInt(q);
+		int iZ = Mathf.RoundToInt(r);
+
+		// Create HexCoordinates. (Assume your HexCoordinates constructor takes (int q, int r)
+		// and calculates cube y as -q - r.)
+		return new HexCoordinates(iX, -iZ);
+
+		// //just the inverse of the grid building function lol
+		// float x = position.x / (HexMetrics.outerRadius * 1.5f);
+		// float z = position.z / (HexMetrics.innerRadius * 2.0f) - Mathf.RoundToInt(x)*0.5f + Mathf.RoundToInt(x)/2;
     
-		//Round to the nearest axial integer coordinates
-		int iQ = Mathf.RoundToInt(x);
-		int iY = Mathf.RoundToInt(z);
+		// //Round to the nearest axial integer coordinates
+		// int iQ = Mathf.RoundToInt(x);
+		// int iY = Mathf.RoundToInt(z);
     
-    	return FromOffsetCoordinates(iQ, iY); //yeah yeah not good practice but this took 2 hours no joke
+    	// return FromOffsetCoordinates(iQ, iY); //yeah yeah not good practice but this took 2 hours no joke
 	}
 
+	//Epic conversion PURE and WITHOUT grid conversion
+	//Brexit means Brexit
+	public static Vector3 ToWorldPosition (HexCoordinates hex) 
+	{	
+		float worldX = HexMetrics.outerRadius * 1.5f * hex.X;
+    	float worldZ = HexMetrics.innerRadius * 2f * (hex.Z + hex.X / 2f);
+		
+		return new Vector3(worldX, 0f, -worldZ);
 
-    //convenience section
+	}
+
 
 	//define addition between HexCoordinates
 	public static HexCoordinates operator +(HexCoordinates a, HexCoordinates b) 
 	{
         return new HexCoordinates(a.X + b.X, a.Y + b.Y);
+    }
+	//multiplication, should only be used for relative coords!
+	public static HexCoordinates operator *(HexCoordinates a, HexCoordinates b) 
+	{
+        return new HexCoordinates(a.X * b.X, a.Y * b.Y);
     }
 	
     public override string ToString () 

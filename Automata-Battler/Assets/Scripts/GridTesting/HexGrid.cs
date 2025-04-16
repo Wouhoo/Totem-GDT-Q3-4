@@ -97,7 +97,8 @@ public class HexGrid : MonoBehaviour
 
 		cell.transform.SetParent(transform, false);
 		cell.transform.localPosition = position;
-		cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z); //set grid coordinates
+		cell.coordinates = HexCoordinates.FromWorldPosition(position);
+		//cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z); //set grid coordinates
 		cell.color = defaultColor; //set the default color
 
 		//set the cell's neighbors PLEASE LET'S NOT DO THIS JUST USE A FUNC FOR RELATIVE COORDS
@@ -167,10 +168,12 @@ public class HexGrid : MonoBehaviour
 	void TouchCell(Vector3 position)
 	{
 		position = transform.InverseTransformPoint(position);
-		HexCoordinates coordinates = HexCoordinates.FromPosition(position);
+		HexCoordinates coordinates = HexCoordinates.FromWorldPosition(position);
 		Debug.Log("touched at " + coordinates.ToString());
 		HexCell cell = GetHexCellAtHexCoordinate(coordinates);
 		cell.color = touchedColor;
+
+		Debug.Log("Cell world position should be: " + HexCoordinates.ToWorldPosition(coordinates));
 
 		//for testing purposes
 		foreach (HexDirection dir in Enum.GetValues(typeof(HexDirection)))
