@@ -142,7 +142,7 @@ public class HexGrid : MonoBehaviour
 
 	//stuff that's only partially usable
 
-	// Should this Update() be in this class? Or can we handel player inputs more centrally maybe?
+	/*
 	void Update()
 	{
 		if (Mouse.current.leftButton.isPressed)
@@ -150,6 +150,7 @@ public class HexGrid : MonoBehaviour
 			HandleInput();
 		}
 	}
+	*/
 
 	void HandleInput()
 	{

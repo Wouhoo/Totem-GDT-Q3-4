@@ -6,24 +6,44 @@ using Unity.Mathematics.Geometry;
 using Unity.Mathematics;
 using UnityEngine.UIElements;
 using UnityEditor.Scripting;
+using TMPro;
+using Mono.Cecil.Cil;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 
+[DisallowMultipleComponent]
 public class Card : MonoBehaviour, Interactable
 {
-    private HexGrid hexGrid; // there is only 1
+    // Card references
     private Board board; // there is only 1
     private Player _ownerPlayer; // one of two!
+    private CardAnimator cardAnimator;
     private HexCoordinates _position;
+    [SerializeField] private TextMeshProUGUI textName;
+    [SerializeField] private TextMeshProUGUI textHealth;
+    [SerializeField] private TextMeshProUGUI textInstructions;
+
 
     // Prefab Stuff
-    [SerializeField] static string _name;
+    [Header("Card Properties")]
     [SerializeField] private int _health = 1;
+    private int _damage = 1;
 
+    // Rendering Stuff
+
+    // Animation stuff
+
+
+    void Awake()
+    {
+        textHealth.text = _health.ToString();
+        Render_Instructions();
+    }
 
     void Start()
     {
-        hexGrid = FindFirstObjectByType<HexGrid>();
         board = FindFirstObjectByType<Board>();
-        // how did wouter do this? wasnt there a better way?
+        cardAnimator = GetComponent<CardAnimator>();
     }
 
     //
@@ -46,15 +66,6 @@ public class Card : MonoBehaviour, Interactable
     // 
     // SET (the only external thing that can really happen other then executing instructions)
     //
-
-    public void RecieveDamage(int amount)
-    {
-        _health = math.max(0, _health - amount);
-        // animate
-
-        if (_health == 0)
-            Die();
-    }
 
     public void Set_Owner(Player player)
     {
@@ -90,6 +101,8 @@ public class Card : MonoBehaviour, Interactable
     {
         // should already be checked that placement is valid
         _position = pos;
+        //temp:
+        cardAnimator.Move_asJump(pos);
         _inPlay = true;
 
     }
@@ -103,33 +116,33 @@ public class Card : MonoBehaviour, Interactable
     // INSTRUCTIONS
     // 
 
-    [SerializeField] private List<CardFunctionCall> instructions = new List<CardFunctionCall>();
+    [SerializeField] private List<CardInstruction> _instructions = new List<CardInstruction>();
 
     public void ExecuteInstructions()
     {
-        foreach (var call in instructions)
+        foreach (var call in _instructions)
         {
-            switch (call.functionType)
+            switch (call.instructionType)
             {
-                case CardFunctionCall.InstructionType.Move:
+                case CardInstructionType.Move:
                     Move_asJump(call.direction, 1);
                     break;
-                case CardFunctionCall.InstructionType.Jump:
+                case CardInstructionType.Jump:
                     Move_asJump(call.direction, 2);
                     break;
-                case CardFunctionCall.InstructionType.Slide:
+                case CardInstructionType.Slide:
                     Move_asSlide(call.direction, 99);
                     break;
-                case CardFunctionCall.InstructionType.Attack:
-                    Attack_asJump(call.direction, 1, call.damageAmount);
+                case CardInstructionType.Attack:
+                    Attack_asJump(call.direction, 1, _damage);
                     break;
-                case CardFunctionCall.InstructionType.Arrow:
-                    Attack_asJump(call.direction, 2, call.damageAmount);
+                case CardInstructionType.Arrow:
+                    Attack_asJump(call.direction, 2, _damage);
                     break;
-                case CardFunctionCall.InstructionType.Shoot:
-                    Attack_asSlide(call.direction, 99, call.damageAmount);
+                case CardInstructionType.Shoot:
+                    Attack_asSlide(call.direction, 99, _damage);
                     break;
-                case CardFunctionCall.InstructionType.Die:
+                case CardInstructionType.Die:
                     Die();
                     break;
             }
@@ -137,14 +150,13 @@ public class Card : MonoBehaviour, Interactable
     }
 
     // 
-    // INSTRUCTION FUNCTIONS (THE FIRST LINE OF EACH IS INCOMPLETE)
+    // INSTRUCTION FUNCTIONS
     //
 
     private void Die()
     {
         // Remove from board
         board.Set_TileOccupant(_position, null);
-        // animate
         // destroy this game object
         Destroy(this);
     }
@@ -158,7 +170,7 @@ public class Card : MonoBehaviour, Interactable
             board.Set_TileOccupant(_position, null);
             _position = target;
             board.Set_TileOccupant(_position, this);
-            // animate
+            cardAnimator.Move_asJump(_position);
             return;
         }
 
@@ -184,12 +196,11 @@ public class Card : MonoBehaviour, Interactable
             board.Set_TileOccupant(_position, null);
             _position += amountMoved * targetDirection;
             board.Set_TileOccupant(_position, this);
-            // animate
+            cardAnimator.Move_asSlide(_position);
             return;
         }
 
         // Failed to move
-        // animate
         return;
     }
 
@@ -199,13 +210,11 @@ public class Card : MonoBehaviour, Interactable
 
         if (board.CanAttack(target)) // ask if attack is possible
         {
-            // animate
-            board.TileOccupant(target).RecieveDamage(damageAmount);
+            board.TileOccupant(target).TakeDamage(damageAmount);
             return;
         }
 
         // Failed to attack
-        // animate
         return;
     }
 
@@ -226,55 +235,32 @@ public class Card : MonoBehaviour, Interactable
         // successfull attack
         if (board.CanAttack(target))
         {
-            // animate
-            board.TileOccupant(target).RecieveDamage(damageAmount);
+            board.TileOccupant(target).TakeDamage(damageAmount);
             return;
         }
 
         // Failed to attack
-        // animate
         return;
     }
 
+    public void TakeDamage(int amount) // Note this instruction is public!
+    {
+        _health = math.max(0, _health - amount);
 
+        if (_health == 0)
+            Die();
+    }
 
     //
     // CARD RENDERING
     //
 
-    // card in deck
-    // card in hand
-    // card in play
-
-    //
-    // CARD ANIMATIONS
-    // 
-
-    void Animate_Move_asJump(Vector3 toPos)
+    private void Render_Instructions()
     {
-        // transform.position
+        textInstructions.text = string.Join(" ", _instructions.Select(instruction =>
+        {
+            return instruction.Visualization();
+        }));
     }
-
-    void Visuals_Attack()
-    {
-
-    }
-
-    void Visuals_Die()
-    {
-
-    }
-
-    void UpdateVisuals_Temp()
-    {
-        // transform.position = board.HexToGridCoordinates(_position);
-        // TODO : make with proper animations
-    }
-
-    void Visual_Placement()
-    {
-
-    }
-
 
 }

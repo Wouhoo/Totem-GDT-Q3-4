@@ -12,7 +12,7 @@ public class Board : MonoBehaviour
 
     void Start()
     {
-        // get hex grid
+        hexGrid = FindFirstObjectByType<HexGrid>();
         // set board maps keys
         // foreach (Vector3Int tilePos in XXXXXX)
         //    _tileMap.Add(tilePos, null);

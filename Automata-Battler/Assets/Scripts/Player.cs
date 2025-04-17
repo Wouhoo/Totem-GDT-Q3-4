@@ -9,29 +9,12 @@ public class Player : MonoBehaviour
     private Referee referee;
     private Camera mainCamera;
 
-    private LayerMask cardLayerMask;
-    private LayerMask tileLayerMask;
-
-
-    // Reference to your input actions
-    private PlayerInput playerInput;
-    private InputAction clickAction;
-
-    // Player attributes
+    public LayerMask cardLayerMask;
+    public LayerMask tileLayerMask;
+    public LayerMask playButtonLayerMask;
+    private LayerMask interactablesLayerMask;
 
     private int _mana = 5;
-
-    public bool Try_UseMana(int amount)
-    {
-        // tries to use the mana amount, succsess is reported
-        if (amount > _mana)
-            return false;
-        else
-        {
-            _mana -= amount;
-            return true;
-        }
-    }
 
     //
     // INTERACTION SYSTEM
@@ -40,13 +23,41 @@ public class Player : MonoBehaviour
     private Interactable _hovered;
     private Interactable _selected;
 
-    void Update()
+
+    void Awake()
     {
-        // get raycast on layer of interactables (cards + cells)
-        // run HoverInteractable on result (even if null!)
+        interactablesLayerMask = cardLayerMask | tileLayerMask | playButtonLayerMask;
     }
 
-    // also add an on click which does a raycast and runs SelectInteractable
+    void Update()
+    {
+        HoverInteractable(GetInteractable());
+        if (Input.GetMouseButtonDown(0))
+        {
+            SelectInteractable(GetInteractable());
+            Debug.Log(GetInteractable());
+        }
+    }
+
+    //
+    // Interaction Raycast
+    //
+
+    private Interactable GetInteractable()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, interactablesLayerMask))
+        {
+            return hit.collider.GetComponent<Interactable>();
+        }
+        else
+            return null;
+    }
+
+    //
+    // Interaction Logic
+    //
 
     private void HoverInteractable(Interactable interacted)
     {
@@ -60,8 +71,6 @@ public class Player : MonoBehaviour
         if (_hovered != null)
             _hovered.OnHover();
     }
-
-
 
     private void SelectInteractable(Interactable interacted)
     {
@@ -115,6 +124,11 @@ public class Player : MonoBehaviour
             if (_selected == interacted) SwapSelectionTo(null);
 
             else SwapSelectionTo(interacted);
+        }
+
+        else if (_selected is PlayButton)
+        {
+            referee.ExecuteCards();
         }
     }
 
