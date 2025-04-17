@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class HexCell : MonoBehaviour 
+public class HexCell : MonoBehaviour
 {
     [Header("Hex Coordinates")]
     public HexCoordinates coordinates; //grid coordinates of this cell
@@ -34,3 +34,15 @@ public class HexCell : MonoBehaviour
             }
         }
 }
+
+    // FOR TIM:
+    // private Card _card = null;
+    // public Card Get_Card()
+    // {
+    //     return _card;
+    // }
+    // public void Set_Card(Card card)
+    // {
+    //     _card = card;
+    // }
+// }

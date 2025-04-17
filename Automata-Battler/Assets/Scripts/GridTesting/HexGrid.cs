@@ -140,8 +140,6 @@ public class HexGrid : MonoBehaviour
 		label.text = cell.coordinates.ToStringOnSeparateLines();
 	}
 
-
-
 	//stuff that's only partially usable
 
 	// Should this Update() be in this class? Or can we handel player inputs more centrally maybe?

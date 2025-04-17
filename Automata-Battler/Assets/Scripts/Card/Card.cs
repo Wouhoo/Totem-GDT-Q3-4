@@ -5,16 +5,17 @@ using UnityEngine.Rendering;
 using Unity.Mathematics.Geometry;
 using Unity.Mathematics;
 using UnityEngine.UIElements;
+using UnityEditor.Scripting;
 
-public class Card : MonoBehaviour
+public class Card : MonoBehaviour, Interactable
 {
     private HexGrid hexGrid; // there is only 1
     private Board board; // there is only 1
-    private Vector3Int _position;
-
+    private Player _ownerPlayer; // one of two!
+    private HexCoordinates _position;
 
     // Prefab Stuff
-    [SerializeField] public string _name;
+    [SerializeField] static string _name;
     [SerializeField] private int _health = 1;
 
 
@@ -25,6 +26,23 @@ public class Card : MonoBehaviour
         // how did wouter do this? wasnt there a better way?
     }
 
+    //
+    // GET
+    //
+
+    private bool _inPlay = false; // true = on the board, false = in hand.
+    [SerializeField] private int _cost = 1;
+
+    public bool Get_InPlay()
+    {
+        return _inPlay;
+    }
+
+    public int Get_Cost()
+    {
+        return _cost;
+    }
+
     // 
     // SET (the only external thing that can really happen other then executing instructions)
     //
@@ -32,13 +50,50 @@ public class Card : MonoBehaviour
     public void RecieveDamage(int amount)
     {
         _health = math.max(0, _health - amount);
+        // animate
+
         if (_health == 0)
             Die();
     }
 
+    public void Set_Owner(Player player)
+    {
+        _ownerPlayer = player;
+    }
+
     // 
-    // PRE PLAY (IN HAND)
+    // PLAYER INTERACTIONS
     //
+
+
+    public void OnHover()
+    {
+
+    }
+
+    public void OnDehover()
+    {
+
+    }
+
+    public void OnSelect()
+    {
+
+    }
+
+    public void OnDeselect()
+    {
+
+    }
+
+    public void PlaceCard(HexCoordinates pos)
+    {
+        // should already be checked that placement is valid
+        _position = pos;
+        _inPlay = true;
+
+    }
+
 
 
 
@@ -96,9 +151,9 @@ public class Card : MonoBehaviour
 
     private void Move_asJump(HexDirection direction, int byAmount)
     {
-        Vector3Int target = _position;  // + byAmount * hexGrid.Direction_to_hexPos(direction)
+        HexCoordinates target = _position + byAmount * direction.GetRelativeCoordinates();
 
-        if (board.TileExistance(target) && board.TileOccupant(target) == null) // ask if move is possible
+        if (board.CanPlace(target)) // ask if move is possible
         {
             board.Set_TileOccupant(_position, null);
             _position = target;
@@ -114,14 +169,12 @@ public class Card : MonoBehaviour
 
     private void Move_asSlide(HexDirection direction, int byAmount)
     {
-        Vector3Int targetDirection = new Vector3Int(0, 0, 0);//hexGrid.Direction_to_hexPos(direction)
+        HexCoordinates targetDirection = direction.GetRelativeCoordinates();
 
         int amountMoved = 0;
         for (int i = 0; i < byAmount; i++)
         {
-            if (!board.TileExistance(_position + (amountMoved + 1) * targetDirection))
-                break;
-            if (board.TileOccupant(_position + (amountMoved + 1) * targetDirection) != null)
+            if (!board.CanPlace(_position + (amountMoved + 1) * targetDirection))
                 break;
             amountMoved++;
         }
@@ -142,9 +195,9 @@ public class Card : MonoBehaviour
 
     private void Attack_asJump(HexDirection direction, int byAmount, int damageAmount)
     {
-        Vector3Int target = _position;  // + byAmount * hexGrid.Direction_to_hexPos(direction)
+        HexCoordinates target = _position + byAmount * direction.GetRelativeCoordinates();
 
-        if (board.TileExistance(target) && board.TileOccupant(target) != null) // ask if attack is possible
+        if (board.CanAttack(target)) // ask if attack is possible
         {
             // animate
             board.TileOccupant(target).RecieveDamage(damageAmount);
@@ -158,25 +211,21 @@ public class Card : MonoBehaviour
 
     private void Attack_asSlide(HexDirection direction, int byAmount, int damageAmount)
     {
-        Vector3Int targetDirection = new Vector3Int(0, 0, 0);//hexGrid.Direction_to_hexPos(direction)
+        HexCoordinates targetDirection = direction.GetRelativeCoordinates();
 
-        bool attackSuccess = false;
-        int amountMoved = 0;
+        int amountMoved = 1;
         for (int i = 1; i <= byAmount; i++)
         {
+            if (!board.CanPlace(_position + amountMoved * targetDirection))
+                break;
             amountMoved++;
-            if (!board.TileExistance(_position + amountMoved * targetDirection))
-                break;
-            if (board.TileOccupant(_position + amountMoved * targetDirection) != null)
-            {
-                attackSuccess = true;
-                break;
-            }
         }
 
-        if (attackSuccess)
+        HexCoordinates target = _position + amountMoved * targetDirection;
+
+        // successfull attack
+        if (board.CanAttack(target))
         {
-            Vector3Int target = _position + amountMoved * targetDirection;
             // animate
             board.TileOccupant(target).RecieveDamage(damageAmount);
             return;
@@ -187,13 +236,23 @@ public class Card : MonoBehaviour
         return;
     }
 
+
+
     //
-    // Visuals
+    // CARD RENDERING
+    //
+
+    // card in deck
+    // card in hand
+    // card in play
+
+    //
+    // CARD ANIMATIONS
     // 
 
-    void Visuals_Movement(Vector3 toPos)
+    void Animate_Move_asJump(Vector3 toPos)
     {
-
+        // transform.position
     }
 
     void Visuals_Attack()
@@ -216,4 +275,6 @@ public class Card : MonoBehaviour
     {
 
     }
+
+
 }

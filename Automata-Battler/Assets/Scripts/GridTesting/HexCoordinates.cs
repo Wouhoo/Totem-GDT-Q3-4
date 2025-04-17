@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [System.Serializable]
-public struct HexCoordinates 
+public struct HexCoordinates
 {
 
 	/*
@@ -25,18 +25,22 @@ public struct HexCoordinates
 	~Lars, after following a tutorial meant for a different coordinate system 
 	*/
 
-    // [SerializeField] private int x, y; //makes coordinate show in editor
+	// [SerializeField] private int x, y; //makes coordinate show in editor
 	[SerializeField] private int x, z; //makes coordinate show in editor
 
-	public int X {
-		get {
+	public int X
+	{
+		get
+		{
 			return x;
 		}
 	}
 
-	public int Y {
-		get {
-			return -X-Z;
+	public int Y
+	{
+		get
+		{
+			return -X - Z;
 			// return y;
 		}
 	}
@@ -48,16 +52,17 @@ public struct HexCoordinates
 		}
 	}
 
-	public HexCoordinates (int x, int z) {
+	public HexCoordinates(int x, int z)
+	{
 		this.x = x;
 		// this.y = y;
 		this.z = z;
 	}
 
 	// //this is from SQUARE GRID coordinates, look at the arguments!
-    // public static HexCoordinates FromOffsetCoordinates (int col, int row) {
+	// public static HexCoordinates FromOffsetCoordinates (int col, int row) {
 	// 	int y = (-col-row) - (col - (col & 1)) / 2;
-    // 	return new HexCoordinates(col, y); //modified from CatLikeCoding as we have flat tops, which SUCK to code for no one makes a tutorial for these ~Lars
+	// 	return new HexCoordinates(col, y); //modified from CatLikeCoding as we have flat tops, which SUCK to code for no one makes a tutorial for these ~Lars
 	// }
 
 
@@ -65,8 +70,8 @@ public struct HexCoordinates
 
 	//Gets the Hex Coordinate a given world position would point to (does not take y value into account)
 	//My god this transformation Sucked -Lars ft. ChatGPT
-	public static HexCoordinates FromWorldPosition (Vector3 position) 
-	{	
+	public static HexCoordinates FromWorldPosition(Vector3 position)
+	{
 		// Invert the z since our ToWorldPosition() returns new Vector3(worldX, 0, -worldZ)
 		float worldX = position.x;
 		float worldZ = -position.z;
@@ -86,18 +91,18 @@ public struct HexCoordinates
 		// //just the inverse of the grid building function lol
 		// float x = position.x / (HexMetrics.outerRadius * 1.5f);
 		// float z = position.z / (HexMetrics.innerRadius * 2.0f) - Mathf.RoundToInt(x)*0.5f + Mathf.RoundToInt(x)/2;
-    
+
 		// //Round to the nearest axial integer coordinates
 		// int iQ = Mathf.RoundToInt(x);
 		// int iY = Mathf.RoundToInt(z);
-    
-    	// return FromOffsetCoordinates(iQ, iY); //yeah yeah not good practice but this took 2 hours no joke
+
+		// return FromOffsetCoordinates(iQ, iY); //yeah yeah not good practice but this took 2 hours no joke
 	}
 
 	//Epic conversion PURE and WITHOUT grid conversion
 	//Brexit means Brexit
-	public static Vector3 ToWorldPosition (HexCoordinates hex) 
-	{	
+	public static Vector3 ToWorldPosition(HexCoordinates hex)
+	{
 		float worldX = HexMetrics.outerRadius * 1.5f * hex.X;
     	float worldZ = HexMetrics.innerRadius * 2f * (hex.Z + hex.X / 2f);
 		
@@ -107,23 +112,23 @@ public struct HexCoordinates
 
 
 	//define addition between HexCoordinates
-	public static HexCoordinates operator +(HexCoordinates a, HexCoordinates b) 
+	public static HexCoordinates operator +(HexCoordinates a, HexCoordinates b)
 	{
-        return new HexCoordinates(a.X + b.X, a.Y + b.Y);
-    }
+		return new HexCoordinates(a.X + b.X, a.Y + b.Y);
+	}
 	//multiplication, should only be used for relative coords!
-	public static HexCoordinates operator *(HexCoordinates a, HexCoordinates b) 
+	public static HexCoordinates operator *(int a, HexCoordinates b)
 	{
-        return new HexCoordinates(a.X * b.X, a.Y * b.Y);
-    }
-	
-    public override string ToString () 
+		return new HexCoordinates(a * b.X, a * b.Y);
+	}
+
+	public override string ToString()
 	{
 		return "(" +
 			X.ToString() + ", " + Y.ToString() + ", " + Z.ToString() + ")";
 	}
 
-	public string ToStringOnSeparateLines () 
+	public string ToStringOnSeparateLines()
 	{
 		return X.ToString() + "\n" + Y.ToString() + "\n" + Z.ToString();
 	}

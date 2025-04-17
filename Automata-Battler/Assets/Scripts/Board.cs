@@ -8,7 +8,7 @@ using NUnit.Framework.Constraints;
 public class Board : MonoBehaviour
 {
     private HexGrid hexGrid;
-    private Dictionary<Vector3Int, Card> _tileMap;
+    private Dictionary<HexCoordinates, HexCell> _tileMap;
 
     void Start()
     {
@@ -19,7 +19,7 @@ public class Board : MonoBehaviour
 
     }
 
-    public bool TileExistance(Vector3Int pos)
+    public bool TileExistance(HexCoordinates pos)
     {
         // Checks if the tile is part of the board
         if (!_tileMap.ContainsKey(pos))
@@ -27,7 +27,7 @@ public class Board : MonoBehaviour
         return true;
     }
 
-    public Card TileOccupant(Vector3Int pos)
+    public Card TileOccupant(HexCoordinates pos)
     {
         // Returns tile occupant (null if not occupied (or non existant))
         if (!TileExistance(pos))
@@ -35,12 +35,12 @@ public class Board : MonoBehaviour
             Debug.Log("Error: tried obtaining occupant from a non existant tile");
             return null;
         }
-        return _tileMap[pos];
+        return _tileMap[pos].Get_Card();
     }
 
     // NOTE: in general cards should only add and remove themselves, if you want a card to move you tell the card, not the board!
 
-    public void Set_TileOccupant(Vector3Int pos, Card card = null)
+    public void Set_TileOccupant(HexCoordinates pos, Card card = null)
     {
         if (!TileExistance(pos))
         {
@@ -60,6 +60,20 @@ public class Board : MonoBehaviour
             return;
         }
 
-        _tileMap[pos] = card;
+        _tileMap[pos].Set_Card(card);
+    }
+
+    public bool CanPlace(HexCoordinates pos)
+    {
+        if (TileExistance(pos) && TileOccupant(pos) == null)
+            return true;
+        return false;
+    }
+
+    public bool CanAttack(HexCoordinates pos)
+    {
+        if (TileExistance(pos) && TileOccupant(pos) != null)
+            return true;
+        return false;
     }
 }
