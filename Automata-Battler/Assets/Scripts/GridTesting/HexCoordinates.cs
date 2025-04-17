@@ -43,7 +43,7 @@ public struct HexCoordinates
 
     public int Z { //is derived from x and y
 		get {
-			return -z;
+			return z;
 			return -X - Y;
 		}
 	}
@@ -81,7 +81,7 @@ public struct HexCoordinates
 
 		// Create HexCoordinates. (Assume your HexCoordinates constructor takes (int q, int r)
 		// and calculates cube y as -q - r.)
-		return new HexCoordinates(iX, -iZ);
+		return new HexCoordinates(iX, iZ);
 
 		// //just the inverse of the grid building function lol
 		// float x = position.x / (HexMetrics.outerRadius * 1.5f);
@@ -101,7 +101,7 @@ public struct HexCoordinates
 		float worldX = HexMetrics.outerRadius * 1.5f * hex.X;
     	float worldZ = HexMetrics.innerRadius * 2f * (hex.Z + hex.X / 2f);
 		
-		return new Vector3(worldX, 0f, -worldZ);
+		return new Vector3(worldX, 0f, worldZ);
 
 	}
 
