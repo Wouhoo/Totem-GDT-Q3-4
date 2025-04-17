@@ -1,4 +1,7 @@
 using UnityEngine;
+// #if UNITY_EDITOR
+// using UnityEditor;
+// #endif
 
 public class HexCell : MonoBehaviour
 {
@@ -15,24 +18,44 @@ public class HexCell : MonoBehaviour
     [SerializeField] HexCell[] neighbors;
 
     //turn off the sprite in play mode
-        void Start()
-        {
-            placeholderSprite = GetComponentInChildren<SpriteRenderer>();
-            placeholderSprite.enabled = false;
-        }
-        public HexCell GetNeighbor (HexDirection direction) 
-        {
-            return neighbors[(int)direction];
-        }
+    void Start()
+    {
+        placeholderSprite = GetComponentInChildren<SpriteRenderer>();
+        placeholderSprite.enabled = false;
+    }
 
-        public void SetNeighbor (HexDirection direction, HexCell cell) 
+    void OnValidate()
+    {
+        // Only run this in the Editor (not in builds or play mode)
+        // #if UNITY_EDITOR
+        // // Record the position change for Unity’s Undo system
+        // Undo.RecordObject(transform, "Snap Cell to Hex Coordinate");
+
+        // // Compute the world position from the hex coordinate
+        // Vector3 worldPos = HexCoordinates.ToWorldPosition(coordinates);
+
+        // If you’re using localPosition (i.e. parented under a grid), use localPosition.
+        // Otherwise, use position.
+        transform.localPosition = HexCoordinates.ToWorldPosition(coordinates);;
+
+        // Mark the scene as dirty so Unity knows to save the change
+        // EditorUtility.SetDirty(transform);
+        // #endif
+    }
+
+    public HexCell GetNeighbor (HexDirection direction) 
+    {
+        return neighbors[(int)direction];
+    }
+
+    public void SetNeighbor (HexDirection direction, HexCell cell) 
+    {
+        neighbors[(int)direction] = cell;
+        if (cell != null)
         {
-            neighbors[(int)direction] = cell;
-            if (cell != null)
-            {
-                cell.neighbors[(int)direction.Opposite()] = this;
-            }
+            cell.neighbors[(int)direction.Opposite()] = this;
         }
+    }
 
     // FOR TIM:
     //BOO THIS CAUSED THE FIRST MERGE CONFLICT
