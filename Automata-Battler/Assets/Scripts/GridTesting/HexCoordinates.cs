@@ -46,8 +46,10 @@ public struct HexCoordinates
 		}
 	}
 
-    public int Z { //is derived from x and y
-		get {
+	public int Z
+	{ //is derived from x and y
+		get
+		{
 			return z;
 			return -X - Y;
 		}

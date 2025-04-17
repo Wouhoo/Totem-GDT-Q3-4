@@ -13,7 +13,7 @@ public class HexGrid : MonoBehaviour
 	public HexCell cellPrefab;
 
 	//Array holding all cellsArray in the grid
-	HexCell[] cellsArray;
+	public HexCell[] cellsArray;
 
 	//to be replaced by this
 	[SerializeField] public Dictionary<HexCoordinates, HexCell> cells { get; private set; }
@@ -64,8 +64,8 @@ public class HexGrid : MonoBehaviour
 		//NEW STUFF
 		cells = new Dictionary<HexCoordinates, HexCell>();
 
-        // Find every HexCell in our children (including grandchildren, etc.)
-        HexCell[] allCells = GetComponentsInChildren<HexCell>();
+		// Find every HexCell in our children (including grandchildren, etc.)
+		HexCell[] allCells = GetComponentsInChildren<HexCell>();
 
         // Loop through and register each one
         foreach (var cell in allCells)

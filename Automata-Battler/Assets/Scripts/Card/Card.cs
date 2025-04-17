@@ -165,14 +165,22 @@ public class Card : MonoBehaviour, Interactable
     {
         HexCoordinates target = _position + byAmount * direction.GetRelativeCoordinates();
 
+        Debug.Log(_position);
+        Debug.Log(direction);
+        Debug.Log(direction.GetRelativeCoordinates());
+        Debug.Log(target);
+
         if (board.CanPlace(target)) // ask if move is possible
         {
+            Debug.Log("hello?");
             board.Set_TileOccupant(_position, null);
             _position = target;
             board.Set_TileOccupant(_position, this);
             cardAnimator.Move_asJump(_position);
             return;
         }
+
+        Debug.Log("Nope?");
 
         // Failed to move
         // animate

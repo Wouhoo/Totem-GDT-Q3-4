@@ -8,14 +8,15 @@ using NUnit.Framework.Constraints;
 public class Board : MonoBehaviour
 {
     private HexGrid hexGrid;
-    private Dictionary<HexCoordinates, HexCell> _tileMap;
+    private Dictionary<HexCoordinates, HexCell> _tileMap = new Dictionary<HexCoordinates, HexCell>();
 
     void Start()
     {
         hexGrid = FindFirstObjectByType<HexGrid>();
-        // set board maps keys
-        // foreach (Vector3Int tilePos in XXXXXX)
-        //    _tileMap.Add(tilePos, null);
+        foreach (HexCell cell in hexGrid.cellsArray)
+        {
+            _tileMap.Add(cell.coordinates, cell);
+        }
 
     }
 
