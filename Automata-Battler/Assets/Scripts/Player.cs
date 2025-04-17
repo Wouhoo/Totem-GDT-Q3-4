@@ -6,15 +6,15 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    private Referee referee;
-    private Camera mainCamera;
+    public Referee referee;
+    public Camera mainCamera;
 
     public LayerMask cardLayerMask;
     public LayerMask tileLayerMask;
     public LayerMask playButtonLayerMask;
     private LayerMask interactablesLayerMask;
 
-    private int _mana = 5;
+    public int _mana = 5;
 
     //
     // INTERACTION SYSTEM
@@ -29,13 +29,17 @@ public class Player : MonoBehaviour
         interactablesLayerMask = cardLayerMask | tileLayerMask | playButtonLayerMask;
     }
 
+    void Start()
+    {
+
+    }
+
     void Update()
     {
         HoverInteractable(GetInteractable());
         if (Input.GetMouseButtonDown(0))
         {
             SelectInteractable(GetInteractable());
-            Debug.Log(GetInteractable());
         }
     }
 
@@ -88,6 +92,10 @@ public class Player : MonoBehaviour
         // tile : else -> select else
         // (tiles should not really be selected ever tho...)
 
+        if (interacted is PlayButton)
+            referee.ExecuteCards();
+
+
         if (_selected == null)
             SwapSelectionTo(interacted);
 
@@ -108,6 +116,7 @@ public class Player : MonoBehaviour
                     selectedCard.PlaceCard(hexCell.coordinates);
                     _mana -= selectedCard.Get_Cost();
                     SwapSelectionTo(null);
+                    referee.AddCard(selectedCard);
                 }
 
                 else if (interacted is Card interactedCard && !interactedCard.Get_InPlay() && _selected != interacted)
@@ -126,10 +135,6 @@ public class Player : MonoBehaviour
             else SwapSelectionTo(interacted);
         }
 
-        else if (_selected is PlayButton)
-        {
-            referee.ExecuteCards();
-        }
     }
 
     private void SwapSelectionTo(Interactable newSelected)

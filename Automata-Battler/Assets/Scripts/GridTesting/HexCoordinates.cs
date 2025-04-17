@@ -46,8 +46,10 @@ public struct HexCoordinates
 		}
 	}
 
-    public int Z { //is derived from x and y
-		get {
+	public int Z
+	{ //is derived from x and y
+		get
+		{
 			return z;
 			return -X - Y;
 		}
@@ -105,8 +107,8 @@ public struct HexCoordinates
 	public static Vector3 ToWorldPosition(HexCoordinates hex)
 	{
 		float worldX = HexMetrics.outerRadius * 1.5f * hex.X;
-    	float worldZ = HexMetrics.innerRadius * 2f * (hex.Z + hex.X / 2f);
-		
+		float worldZ = -HexMetrics.innerRadius * 2f * (hex.Z + hex.X / 2f);
+
 		return new Vector3(worldX, 0f, worldZ);
 
 	}
@@ -115,12 +117,12 @@ public struct HexCoordinates
 	//define addition between HexCoordinates
 	public static HexCoordinates operator +(HexCoordinates a, HexCoordinates b)
 	{
-		return new HexCoordinates(a.X + b.X, a.Y + b.Y);
+		return new HexCoordinates(a.X + b.X, a.Z + b.Z);
 	}
 	//multiplication, should only be used for relative coords!
 	public static HexCoordinates operator *(int a, HexCoordinates b)
 	{
-		return new HexCoordinates(a * b.X, a * b.Y);
+		return new HexCoordinates(a * b.X, a * b.Z);
 	}
 
 	public override string ToString()

@@ -12,7 +12,7 @@ public class HexGrid : MonoBehaviour
 	public HexCell cellPrefab;
 
 	//Array holding all cells in the grid
-	HexCell[] cells;
+	public HexCell[] cells;
 
 	public Text cellLabelPrefab;
 

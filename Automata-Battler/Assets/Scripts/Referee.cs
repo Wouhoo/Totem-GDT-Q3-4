@@ -16,4 +16,9 @@ public class Referee : MonoBehaviour
             cardList[i].ExecuteInstructions();
         }
     }
+
+    public void AddCard(Card card)
+    {
+        cardList.Add(card);
+    }
 }
