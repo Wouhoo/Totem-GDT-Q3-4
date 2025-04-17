@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using UnityEditor.UI;
 using NUnit.Framework.Constraints;
 
+//@Tim this is my job. I'll fix it tomorrow or whatever PLEASE stay out of someone else's work
 public class Board : MonoBehaviour
 {
     private HexGrid hexGrid;
