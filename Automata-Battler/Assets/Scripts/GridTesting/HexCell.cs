@@ -3,7 +3,7 @@ using UnityEngine;
 // using UnityEditor;
 // #endif
 
-public class HexCell : MonoBehaviour
+public class HexCell : MonoBehaviour, Interactable
 {
     [Header("Hex Coordinates")]
     public HexCoordinates coordinates; //grid coordinates of this cell
@@ -68,4 +68,10 @@ public class HexCell : MonoBehaviour
     {
         _card = card;
     }
+
+    public void OnSelect() { }
+    public void OnDeselect() { }
+    public void OnHover() { }
+    public void OnDehover() { }
+
 }
