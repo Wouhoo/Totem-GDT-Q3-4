@@ -33,16 +33,16 @@ public class HexCell : MonoBehaviour
                 cell.neighbors[(int)direction.Opposite()] = this;
             }
         }
-}
 
     // FOR TIM:
-    // private Card _card = null;
-    // public Card Get_Card()
-    // {
-    //     return _card;
-    // }
-    // public void Set_Card(Card card)
-    // {
-    //     _card = card;
-    // }
-// }
+    //BOO THIS CAUSED THE FIRST MERGE CONFLICT
+    private Card _card = null;
+    public Card Get_Card()
+    {
+        return _card;
+    }
+    public void Set_Card(Card card)
+    {
+        _card = card;
+    }
+}
