@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem; //fucking sucks
 using System;
+using System.Collections.Generic;
 
 public class HexGrid : MonoBehaviour
 {
@@ -11,8 +12,11 @@ public class HexGrid : MonoBehaviour
 
 	public HexCell cellPrefab;
 
-	//Array holding all cells in the grid
-	public HexCell[] cells;
+	//Array holding all cellsArray in the grid
+	public HexCell[] cellsArray;
+
+	//to be replaced by this
+	[SerializeField] public Dictionary<HexCoordinates, HexCell> cells { get; private set; }
 
 	public Text cellLabelPrefab;
 
@@ -25,6 +29,7 @@ public class HexGrid : MonoBehaviour
 
 
 	//utility functions
+	//TO BE REPLACED
 
 	//gets the cell from the array from hex coordinate 
 	public HexCell GetHexCellAtHexCoordinate(HexCoordinates coordinates)
@@ -38,7 +43,7 @@ public class HexGrid : MonoBehaviour
 			Debug.LogWarning("Requested coordinates out of HexGrid bounds: " + coordinates + ", Null returned");
 			return null;
 		}
-		return cells[row * width + col]; //just to get the editor to shut up for now
+		return cellsArray[row * width + col]; //just to get the editor to shut up for now
 	}
 
 	/*
@@ -52,8 +57,33 @@ public class HexGrid : MonoBehaviour
 
 		gridCanvas = GetComponentInChildren<Canvas>();
 		hexMesh = GetComponentInChildren<HexMesh>();
-		//create grid of cells
-		cells = new HexCell[height * width];
+
+
+		//NEW STUFF
+		cells = new Dictionary<HexCoordinates, HexCell>();
+
+		// Find every HexCell in our children (including grandchildren, etc.)
+		HexCell[] allCells = GetComponentsInChildren<HexCell>();
+
+		// Loop through and register each one
+		foreach (var cell in allCells)
+		{
+			// Use the cell’s own coordinates as the key
+			// (you may want to check for duplicates if that’s possible)
+			if (cells.ContainsKey(cell.coordinates))
+			{
+				Debug.LogError("Duplicate Hexcell at hex coordinate: " + cell.coordinates + ", Cell ignored ");
+				continue;
+			}
+			cells[cell.coordinates] = cell;
+			cell.color = Color.magenta;
+			cell.mesh.currentColor = Color.magenta; //cool workaround shhhh
+			cell.mesh.GenerateMesh();
+		}
+
+		//OLD STUFF
+		//create grid of cellsArray
+		cellsArray = new HexCell[height * width];
 
 		for (int z = 0, i = 0; z < height; z++)
 		{
@@ -62,23 +92,8 @@ public class HexGrid : MonoBehaviour
 				CreateCell(x, z, i++);
 			}
 		}
-
-		/*
-		for (Vector3Int cellPosition in cellPositions)
-			CreateCell(...)
-		*/
 	}
 
-	/*
-	public Vector3 HexPos_to_WorldPos (Vector3Int hexPos)
-	{
-		Vector3 worldPos = new Vector3(0f, 0f, 0f);
-        gridPos.x = 4 * HexMetrics.outerRadius * (hexPos.x + 0.5f * hexPos.z);
-        gridPos.y = 0;
-        gridPos.z = 2 * HexMetrics.innerRadius * (hexPos.y + 0.5f * hexPos.z);
-        return gridPos;
-	}
-	*/
 
 	//Happens AFTER Awake, get the vertices to draw
 	void Start()
@@ -93,7 +108,7 @@ public class HexGrid : MonoBehaviour
 		position.y = 0f;
 		position.z = (z + x * 0.5f - x / 2) * (HexMetrics.innerRadius * 2.0f); //make sure it 'alternates'
 
-		HexCell cell = cells[i] = Instantiate<HexCell>(cellPrefab);
+		HexCell cell = cellsArray[i] = Instantiate<HexCell>(cellPrefab);
 
 		cell.transform.SetParent(transform, false);
 		cell.transform.localPosition = position;
@@ -105,18 +120,18 @@ public class HexGrid : MonoBehaviour
 		// N/S
 		// if (z > 0) 
 		// {
-		// 	cell.SetNeighbor(HexDirection.S, cells[i - width]);
+		// 	cell.SetNeighbor(HexDirection.S, cellsArray[i - width]);
 		// }
 		// // NE/SW
 		// if(x > 0 && (x % 2 == 1  || z > 0))
 		// {
 		// 	if (x % 2 == 1)
 		// 	{
-		// 		cell.SetNeighbor(HexDirection.SW, cells[i - 1]);
+		// 		cell.SetNeighbor(HexDirection.SW, cellsArray[i - 1]);
 		// 	}
 		// 	else //then we need the previous row's entry
 		// 	{
-		// 		cell.SetNeighbor(HexDirection.SW, cells[i - 1 - width]);
+		// 		cell.SetNeighbor(HexDirection.SW, cellsArray[i - 1 - width]);
 		// 	}
 		// }
 		// // NW/SE
@@ -124,11 +139,11 @@ public class HexGrid : MonoBehaviour
 		// {
 		// 	if (x > 0) //we are on a 'non-shifted' col, grab last entry
 		// 	{
-		// 		cell.SetNeighbor(HexDirection.NW, cells[i - 1]);
+		// 		cell.SetNeighbor(HexDirection.NW, cellsArray[i - 1]);
 		// 	}
 		// 	if(z>0) //z > 0, we are on the 'next' row, grab the offset one from last row
 		// 	{
-		// 		cell.SetNeighbor(HexDirection.SE, cells[i - width + 1]);
+		// 		cell.SetNeighbor(HexDirection.SE, cellsArray[i - width + 1]);
 		// 	}
 		// }
 
