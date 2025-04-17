@@ -34,6 +34,8 @@ public class HexGrid : MonoBehaviour
 	//gets the cell from the array from hex coordinate 
 	public HexCell GetHexCellAtHexCoordinate(HexCoordinates coordinates)
 	{
+		if (cells.ContainsKey(coordinates)) return cells[coordinates];
+		//Code to be removed below
 		int row = coordinates.Y + (coordinates.X - (coordinates.X & 1)) / 2; //yeah it isnt that simple
 		int col = coordinates.X;
 
@@ -69,29 +71,35 @@ public class HexGrid : MonoBehaviour
         foreach (var cell in allCells)
         {
             // Use the cell’s own coordinates as the key
-            // (you may want to check for duplicates if that’s possible)
-			if (cells.ContainsKey(cell.coordinates)) 
+			if (cells.ContainsKey(cell.coordinates))  //duplicate check
 			{ 
 				Debug.LogError("Duplicate Hexcell at hex coordinate: "+ cell.coordinates + ", Cell ignored ");
 				continue;
 			}
             cells[cell.coordinates] = cell;
-			cell.color = Color.magenta;
-			cell.mesh.currentColor = Color.magenta; //cool workaround shhhh
+
+			// cell.color = Color.magenta;
+			// cell.mesh.currentColor = Color.magenta; //cool workaround shhhh
+
 			cell.mesh.GenerateMesh();
+
+			Text label = Instantiate<Text>(cellLabelPrefab);
+			label.rectTransform.SetParent(gridCanvas.transform, false);
+			label.rectTransform.anchoredPosition = new Vector2(cell.transform.position.x, cell.transform.position.z);
+			label.text = cell.coordinates.ToStringOnSeparateLines();
         }
 
 		//OLD STUFF
 		//create grid of cellsArray
 		cellsArray = new HexCell[height * width];
 
-		for (int z = 0, i = 0; z < height; z++)
-		{
-			for (int x = 0; x < width; x++)
-			{
-				CreateCell(x, z, i++);
-			}
-		}
+		// for (int z = 0, i = 0; z < height; z++)
+		// {
+		// 	for (int x = 0; x < width; x++)
+		// 	{
+		// 		CreateCell(x, z, i++);
+		// 	}
+		// }
 	}
 
 
@@ -157,7 +165,8 @@ public class HexGrid : MonoBehaviour
 
 	//stuff that's only partially usable
 
-	/*
+
+	//@Tim NO TOUCH MY CODE
 	void Update()
 	{
 		if (Mouse.current.leftButton.isPressed)
@@ -165,7 +174,6 @@ public class HexGrid : MonoBehaviour
 			HandleInput();
 		}
 	}
-	*/
 
 	void HandleInput()
 	{

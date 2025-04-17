@@ -45,7 +45,7 @@ public class Player : MonoBehaviour
 
     private Interactable GetInteractable()
     {
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //idiot you forgot to set main camera
 
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, interactablesLayerMask))
         {
