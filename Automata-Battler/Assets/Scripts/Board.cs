@@ -13,7 +13,7 @@ public class Board : MonoBehaviour
     void Start()
     {
         hexGrid = FindFirstObjectByType<HexGrid>();
-        foreach (HexCell cell in hexGrid.cells)
+        foreach (HexCell cell in hexGrid.cellsArray)
         {
             _tileMap.Add(cell.coordinates, cell);
         }
