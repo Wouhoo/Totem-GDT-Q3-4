@@ -15,8 +15,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 public class Card : MonoBehaviour, Interactable
 {
     // Card references
-    //private Board board; // there is only 1
-    private HexGrid board;
+    private Board board; // there is only 1
     private Player _ownerPlayer; // one of two!
     private CardAnimator cardAnimator;
     private HexCoordinates _position;
@@ -43,8 +42,7 @@ public class Card : MonoBehaviour, Interactable
 
     void Start()
     {
-        // board = FindFirstObjectByType<Board>();
-        board = FindFirstObjectByType<HexGrid>();
+        board = FindFirstObjectByType<Board>();
         cardAnimator = GetComponent<CardAnimator>();
     }
 

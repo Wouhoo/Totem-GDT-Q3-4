@@ -4,7 +4,7 @@ using UnityEngine.InputSystem; //fucking sucks
 using System;
 using System.Collections.Generic;
 
-public class HexGrid : MonoBehaviour
+public class Board : MonoBehaviour
 {
 	[SerializeField] public Dictionary<HexCoordinates, HexCell> cells { get; private set; }
 
