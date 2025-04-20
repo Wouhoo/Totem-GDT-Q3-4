@@ -14,10 +14,10 @@ public class Board : MonoBehaviour
     void Start()
     {
         hexGrid = FindFirstObjectByType<HexGrid>();
-        foreach (HexCell cell in hexGrid.cellsArray)
-        {
-            _tileMap.Add(cell.coordinates, cell);
-        }
+        // foreach (HexCell cell in hexGrid.cellsArray)
+        // {
+        //     _tileMap.Add(cell.coordinates, cell);
+        // }
 
     }
 
