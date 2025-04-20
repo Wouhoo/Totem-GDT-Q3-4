@@ -17,7 +17,6 @@ public class Board : MonoBehaviour
 
 
 	//utility functions
-	//TO BE REPLACED
 
 	//gets the cell from the array from hex coordinate 
 	public HexCell GetHexCellAtHexCoordinate(HexCoordinates coordinates)
@@ -53,9 +52,7 @@ public class Board : MonoBehaviour
 			}
             cells[cell.coordinates] = cell;
 
-			// cell.color = Color.magenta;
-			// cell.mesh.currentColor = Color.magenta; //cool workaround shhhh
-
+			//IMPORTANT this means: Cell is not shown if it isn't in the grid
 			cell.mesh.GenerateMesh();
 
 			Text label = Instantiate<Text>(cellLabelPrefab);
@@ -67,7 +64,7 @@ public class Board : MonoBehaviour
 
 
 
-	//@Tim NO TOUCH MY CODE
+	//just the 'touching' check. If turned on prevents card placement so that's why it's commented out
 	// void Update()
 	// {
 	// 	if (Mouse.current.leftButton.isPressed)
@@ -76,6 +73,7 @@ public class Board : MonoBehaviour
 	// 	}
 	// }
 
+	//unused, see above
 	void HandleInput()
 	{
 		Vector2 mousePosition = Mouse.current.position.ReadValue();
@@ -87,6 +85,7 @@ public class Board : MonoBehaviour
 		}
 	}
 
+	//unused, see above x2
 	void TouchCell(Vector3 position)
 	{
 		position = transform.InverseTransformPoint(position);
@@ -97,18 +96,13 @@ public class Board : MonoBehaviour
 
 		Debug.Log("Cell world position should be: " + HexCoordinates.ToWorldPosition(coordinates));
 
-		//for testing purposes
-		foreach (HexDirection dir in Enum.GetValues(typeof(HexDirection)))
-		{
-			cell.SetNeighbor(dir, GetHexCellAtHexCoordinate(coordinates + dir.GetRelativeCoordinates()));
-		}
 		cell.color = Color.magenta;
 		cell.mesh.currentColor = Color.magenta; //cool workaround shhhh
 		cell.mesh.GenerateMesh();
 	}
 
 
-	/////////////////////////////////////////////////////////////TIM COMPATIBILITY STUFF TO BE CLEANED UP ETC ETC
+	/////////////////////////////////////////////////////////////TIM COMPATIBILITY STUFF
 	public bool TileExistance(HexCoordinates pos)
     {
         // Checks if the tile is part of the board
@@ -152,7 +146,6 @@ public class Board : MonoBehaviour
         cells[pos].Set_Card(card);
     }
 
-	//shouldn't be necessary, I think can be handled elsewhere -Lars
 	public bool CanPlace(HexCoordinates pos)
     {
         return (TileExistance(pos) && TileOccupant(pos) == null);

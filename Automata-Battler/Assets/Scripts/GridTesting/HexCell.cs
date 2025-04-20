@@ -1,64 +1,34 @@
 using UnityEngine;
-// #if UNITY_EDITOR
-// using UnityEditor;
-// #endif
 
 public class HexCell : MonoBehaviour, Interactable
 {
     [Header("Hex Coordinates")]
     public HexCoordinates coordinates; //grid coordinates of this cell
 
-    public Color color = Color.white; //current color of the cell
+    public Color color = Color.white; //current color of the cell, testing purposes
 
     [Header("Cell properties")]
     private SpriteRenderer placeholderSprite;
     [SerializeField] public BoardCellMesh mesh; 
-    //IMPORTANT FROM HERE yeah so this is a design decision... Do we use the 'hexcoordToCell' function or do we go via cell neighbors?
-    //We are going for the functions so this is here only temporarily
-    [SerializeField] HexCell[] neighbors;
 
-    //turn off the sprite in play mode
+    //turn off the sprite in play mode, as the mesh will be generated
     void Start()
     {
         placeholderSprite = GetComponentInChildren<SpriteRenderer>();
         placeholderSprite.enabled = false;
     }
 
+    //'Snap' the coordinate of a cell to it's hex coordinate
+    // Only run this in the Editor (not in builds or play mode)
     void OnValidate()
     {
-        // Only run this in the Editor (not in builds or play mode)
-        // #if UNITY_EDITOR
-        // // Record the position change for Unity’s Undo system
-        // Undo.RecordObject(transform, "Snap Cell to Hex Coordinate");
-
-        // // Compute the world position from the hex coordinate
-        // Vector3 worldPos = HexCoordinates.ToWorldPosition(coordinates);
-
-        // If you’re using localPosition (i.e. parented under a grid), use localPosition.
+        // using localPosition because parented under Board
         // Otherwise, use position.
         transform.localPosition = HexCoordinates.ToWorldPosition(coordinates);;
-
-        // Mark the scene as dirty so Unity knows to save the change
-        // EditorUtility.SetDirty(transform);
-        // #endif
     }
 
-    public HexCell GetNeighbor (HexDirection direction) 
-    {
-        return neighbors[(int)direction];
-    }
 
-    public void SetNeighbor (HexDirection direction, HexCell cell) 
-    {
-        neighbors[(int)direction] = cell;
-        if (cell != null)
-        {
-            cell.neighbors[(int)direction.Opposite()] = this;
-        }
-    }
-
-    // FOR TIM:
-    //BOO THIS CAUSED THE FIRST MERGE CONFLICT
+    //Occupant stuff
     private Card _card = null;
     public Card Get_Card()
     {
