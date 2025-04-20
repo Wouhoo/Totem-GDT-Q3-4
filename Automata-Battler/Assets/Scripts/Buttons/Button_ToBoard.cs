@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayButton : MonoBehaviour, Interactable
+public class Button_ToBoard : MonoBehaviour, Interactable
 {
     public void OnSelect() { }
     public void OnDeselect() { }

@@ -6,7 +6,7 @@ using Unity.Mathematics.Geometry;
 using Unity.Mathematics;
 using UnityEngine.UIElements;
 using UnityEditor.Scripting;
-using TMPro;
+
 using Mono.Cecil.Cil;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -16,51 +16,42 @@ public class Card : MonoBehaviour, Interactable
 {
     // Card references
     private Board board; // there is only 1
-    private Player _ownerPlayer; // one of two!
-    private CardAnimator cardAnimator;
-    private HexCoordinates _position;
-    [SerializeField] private TextMeshProUGUI textName;
-    [SerializeField] private TextMeshProUGUI textHealth;
-    [SerializeField] private TextMeshProUGUI textInstructions;
 
+    private CardAnimator cardAnimator;
+    private CardRenderer cardRenderer;
 
     // Prefab Stuff
     [Header("Card Properties")]
-    [SerializeField] private int _health = 1;
-    private int _damage = 1;
+    private HexCoordinates position;
+    private Player ownerPlayer;
+    [SerializeField] private int cost = 1;
+    [SerializeField] private int health = 1;
+    [SerializeField] private int damage = 1;
+    [SerializeField] private int initiative;
+    [SerializeField] private bool inPlay = false; // true = on the board, false = in hand.
+    [SerializeField] private List<CardInstruction> instructions = new List<CardInstruction>();
 
-    // Rendering Stuff
-
-    // Animation stuff
-
+    // Getting functions
+    public HexCoordinates _position => position;
+    public Player _ownerPlayer => ownerPlayer;
+    public int _cost => cost;
+    public int _health => health;
+    public int _damage => damage;
+    public int _initiative => initiative;
+    public bool _inPlay => inPlay;
+    public List<CardInstruction> _instructions => instructions;
 
     void Awake()
     {
-        textHealth.text = _health.ToString();
-        Render_Instructions();
+        board = FindFirstObjectByType<Board>();
+        cardAnimator = GetComponent<CardAnimator>();
+        cardRenderer = GetComponent<CardRenderer>();
+
     }
 
     void Start()
     {
-        board = FindFirstObjectByType<Board>();
-        cardAnimator = GetComponent<CardAnimator>();
-    }
-
-    //
-    // GET
-    //
-
-    private bool _inPlay = false; // true = on the board, false = in hand.
-    [SerializeField] private int _cost = 1;
-
-    public bool Get_InPlay()
-    {
-        return _inPlay;
-    }
-
-    public int Get_Cost()
-    {
-        return _cost;
+        cardRenderer.Render_All();
     }
 
     // 
@@ -69,7 +60,7 @@ public class Card : MonoBehaviour, Interactable
 
     public void Set_Owner(Player player)
     {
-        _ownerPlayer = player;
+        ownerPlayer = player;
     }
 
     // 
@@ -79,17 +70,25 @@ public class Card : MonoBehaviour, Interactable
 
     public void OnHover()
     {
-
+        // glow
     }
 
     public void OnDehover()
     {
-
+        // stop glowing
     }
 
     public void OnSelect()
     {
+        if (inPlay)
+        {
 
+        }
+        else // inHand
+        {
+            // heavy glow?
+            // move to play?
+        }
     }
 
     public void OnDeselect()
@@ -100,23 +99,16 @@ public class Card : MonoBehaviour, Interactable
     public void PlaceCard(HexCoordinates pos)
     {
         // should already be checked that placement is valid
-        _position = pos;
+        position = pos;
         //temp:
         cardAnimator.Move_asJump(pos);
-        _inPlay = true;
+        inPlay = true;
 
     }
-
-
-
-
-
 
     //
     // INSTRUCTIONS
     // 
-
-    [SerializeField] private List<CardInstruction> _instructions = new List<CardInstruction>();
 
     public void ExecuteInstructions()
     {
@@ -156,31 +148,28 @@ public class Card : MonoBehaviour, Interactable
     private void Die()
     {
         // Remove from board
-        board.Set_TileOccupant(_position, null);
+        board.Set_TileOccupant(position, null);
         // destroy this game object
-        Destroy(this);
+        Destroy(gameObject);
     }
 
     private void Move_asJump(HexDirection direction, int byAmount)
     {
-        HexCoordinates target = _position + byAmount * direction.GetRelativeCoordinates();
+        HexCoordinates target = position + byAmount * direction.GetRelativeCoordinates();
 
-        Debug.Log(_position);
+        Debug.Log(position);
         Debug.Log(direction);
         Debug.Log(direction.GetRelativeCoordinates());
         Debug.Log(target);
 
         if (board.CanPlace(target)) // ask if move is possible
         {
-            Debug.Log("hello?");
-            board.Set_TileOccupant(_position, null);
-            _position = target;
-            board.Set_TileOccupant(_position, this);
-            cardAnimator.Move_asJump(_position);
+            board.Set_TileOccupant(position, null);
+            position = target;
+            board.Set_TileOccupant(position, this);
+            cardAnimator.Move_asJump(position);
             return;
         }
-
-        Debug.Log("Nope?");
 
         // Failed to move
         // animate
@@ -194,17 +183,17 @@ public class Card : MonoBehaviour, Interactable
         int amountMoved = 0;
         for (int i = 0; i < byAmount; i++)
         {
-            if (!board.CanPlace(_position + (amountMoved + 1) * targetDirection))
+            if (!board.CanPlace(position + (amountMoved + 1) * targetDirection))
                 break;
             amountMoved++;
         }
 
         if (amountMoved != 0)
         {
-            board.Set_TileOccupant(_position, null);
-            _position += amountMoved * targetDirection;
-            board.Set_TileOccupant(_position, this);
-            cardAnimator.Move_asSlide(_position);
+            board.Set_TileOccupant(position, null);
+            position += amountMoved * targetDirection;
+            board.Set_TileOccupant(position, this);
+            cardAnimator.Move_asSlide(position);
             return;
         }
 
@@ -214,7 +203,7 @@ public class Card : MonoBehaviour, Interactable
 
     private void Attack_asJump(HexDirection direction, int byAmount, int damageAmount)
     {
-        HexCoordinates target = _position + byAmount * direction.GetRelativeCoordinates();
+        HexCoordinates target = position + byAmount * direction.GetRelativeCoordinates();
 
         if (board.CanAttack(target)) // ask if attack is possible
         {
@@ -233,12 +222,12 @@ public class Card : MonoBehaviour, Interactable
         int amountMoved = 1;
         for (int i = 1; i <= byAmount; i++)
         {
-            if (!board.CanPlace(_position + amountMoved * targetDirection))
+            if (!board.CanPlace(position + amountMoved * targetDirection))
                 break;
             amountMoved++;
         }
 
-        HexCoordinates target = _position + amountMoved * targetDirection;
+        HexCoordinates target = position + amountMoved * targetDirection;
 
         // successfull attack
         if (board.CanAttack(target))
@@ -253,22 +242,13 @@ public class Card : MonoBehaviour, Interactable
 
     public void TakeDamage(int amount) // Note this instruction is public!
     {
-        _health = math.max(0, _health - amount);
+        health = math.max(0, health - amount);
 
-        if (_health == 0)
+        cardAnimator.TakeDamage();
+        cardRenderer.Render_Health();
+
+        if (health == 0)
             Die();
-    }
-
-    //
-    // CARD RENDERING
-    //
-
-    private void Render_Instructions()
-    {
-        textInstructions.text = string.Join(" ", _instructions.Select(instruction =>
-        {
-            return instruction.Visualization();
-        }));
     }
 
 }

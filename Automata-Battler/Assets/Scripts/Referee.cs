@@ -6,7 +6,43 @@ using System;
 
 public class Referee : MonoBehaviour
 {
-    private List<Card> cardList = new List<Card>(); // in order of play (newest last)
+    [SerializeField] private Player player1;
+    [SerializeField] private Player player2;
+    private Player activePlayer;
+    private int round = 0;
+    public List<Card> cardList { get; private set; } = new List<Card>(); // in order of play (newest last)
+
+    void Awake()
+    {
+        activePlayer = player1;
+    }
+
+    public void EndTurn()
+    {
+        Debug.Log(round);
+        player1.ToState(Player.State.WatchGame);
+        ExecuteCards();
+        player1.DrawCards();
+        player1.ToState(Player.State.ViewHand);
+
+
+        /*
+        if (round % 2 == 0 && activePlayer == player1)
+            activePlayer = player2;
+        else if (round % 2 == 0 && activePlayer == player2)
+        {
+            ExecuteCards();
+            round++;
+        }
+        else if (round % 2 == 1 && activePlayer == player1)
+        {
+            ExecuteCards();
+            round++;
+        }
+        else if (round % 2 == 1 && activePlayer == player2)
+            activePlayer = player1;
+        */
+    }
 
     public void ExecuteCards()
     {
@@ -20,5 +56,20 @@ public class Referee : MonoBehaviour
     public void AddCard(Card card)
     {
         cardList.Add(card);
+    }
+
+    // Special actions
+
+    public void Action_ChangeCardOwner(Card card)
+    {
+
+    }
+    public void Action_RotateCardInstructions(int byAmount)
+    {
+
+    }
+    public void Action_FreezeCard()
+    {
+
     }
 }
