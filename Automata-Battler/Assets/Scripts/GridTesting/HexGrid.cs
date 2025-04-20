@@ -167,13 +167,13 @@ public class HexGrid : MonoBehaviour
 
 
 	//@Tim NO TOUCH MY CODE
-	void Update()
-	{
-		if (Mouse.current.leftButton.isPressed)
-		{
-			HandleInput();
-		}
-	}
+	// void Update()
+	// {
+	// 	if (Mouse.current.leftButton.isPressed)
+	// 	{
+	// 		HandleInput();
+	// 	}
+	// }
 
 	void HandleInput()
 	{
@@ -207,4 +207,60 @@ public class HexGrid : MonoBehaviour
 		cell.mesh.GenerateMesh();
 		//hexMesh.Triangulate(cells);
 	}
+
+
+	/////////////////////////////////////////////////////////////TIM COMPATIBILITY STUFF TO BE CLEANED UP ETC ETC
+	public bool TileExistance(HexCoordinates pos)
+    {
+        // Checks if the tile is part of the board
+        return cells.ContainsKey(pos);
+    }
+
+	public Card TileOccupant(HexCoordinates pos)
+    {
+        // Returns tile occupant (null if not occupied (or non existant))
+        if (!TileExistance(pos))
+        {
+            Debug.Log("Error: tried obtaining occupant from a non existant tile");
+            return null;
+        }
+        return cells[pos].Get_Card();
+    }
+
+	// NOTE: in general cards should only add and remove themselves, if you want a card to move you tell the card, not the board!
+
+	//maybe have these conditions be checked before calling, instead of being part of the function -Lars
+    public void Set_TileOccupant(HexCoordinates pos, Card card = null)
+    {
+        if (!TileExistance(pos))
+        {
+            Debug.Log("Error: tried setting occupant of a non existant tile");
+            return;
+        }
+
+        if (card == null && TileOccupant(pos) == null) // Removes card from a tile
+        {
+            Debug.Log("Error: tried removing occupant from an empty tile");
+            return;
+        }
+
+        if (card != null && TileOccupant(pos) != null) // Adds a card to a tile 
+        {
+            Debug.Log("Error: tried adding occupant to an occupied tile");
+            return;
+        }
+
+        cells[pos].Set_Card(card);
+    }
+
+	//shouldn't be necessary, I think can be handled elsewhere -Lars
+	public bool CanPlace(HexCoordinates pos)
+    {
+        return (TileExistance(pos) && TileOccupant(pos) == null);
+    }
+
+    public bool CanAttack(HexCoordinates pos)
+    {
+        return (TileExistance(pos) && TileOccupant(pos) != null);
+    }
 }
