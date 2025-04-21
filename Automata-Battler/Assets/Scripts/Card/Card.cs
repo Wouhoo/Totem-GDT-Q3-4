@@ -12,7 +12,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 
 [DisallowMultipleComponent]
-public class Card : MonoBehaviour, Interactable
+public class Card : MonoBehaviour, ISelectable
 {
     // Card references
     private Board board; // there is only 1
@@ -68,12 +68,12 @@ public class Card : MonoBehaviour, Interactable
     //
 
 
-    public void OnHover()
+    public void OnHoverEnter()
     {
         // glow
     }
 
-    public void OnDehover()
+    public void OnHoverExit()
     {
         // stop glowing
     }
@@ -89,11 +89,6 @@ public class Card : MonoBehaviour, Interactable
             // heavy glow?
             // move to play?
         }
-    }
-
-    public void OnDeselect()
-    {
-
     }
 
     public void PlaceCard(HexCoordinates pos)

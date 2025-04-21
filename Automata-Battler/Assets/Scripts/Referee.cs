@@ -12,8 +12,15 @@ public class Referee : MonoBehaviour
     private int round = 0;
     public List<Card> cardList { get; private set; } = new List<Card>(); // in order of play (newest last)
 
-    void Awake()
+    public static Referee Instance { get; private set; }
+
+    private void Awake()
     {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+
         activePlayer = player1;
     }
 

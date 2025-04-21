@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class HexCell : MonoBehaviour, Interactable
+public class HexCell : MonoBehaviour, ISelectable
 {
     [Header("Hex Coordinates")]
     public HexCoordinates coordinates; //grid coordinates of this cell
@@ -9,7 +9,7 @@ public class HexCell : MonoBehaviour, Interactable
 
     [Header("Cell properties")]
     private SpriteRenderer placeholderSprite;
-    [SerializeField] public BoardCellMesh mesh; 
+    [SerializeField] public BoardCellMesh mesh;
 
     //turn off the sprite in play mode, as the mesh will be generated
     void Start()
@@ -24,7 +24,7 @@ public class HexCell : MonoBehaviour, Interactable
     {
         // using localPosition because parented under Board
         // Otherwise, use position.
-        transform.localPosition = HexCoordinates.ToWorldPosition(coordinates);;
+        transform.localPosition = HexCoordinates.ToWorldPosition(coordinates); ;
     }
 
 
@@ -40,8 +40,7 @@ public class HexCell : MonoBehaviour, Interactable
     }
 
     public void OnSelect() { }
-    public void OnDeselect() { }
-    public void OnHover() { }
-    public void OnDehover() { }
+    public void OnHoverEnter() { }
+    public void OnHoverExit() { }
 
 }
