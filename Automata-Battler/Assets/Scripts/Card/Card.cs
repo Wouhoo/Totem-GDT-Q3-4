@@ -63,6 +63,12 @@ public class Card : MonoBehaviour, ISelectable
         ownerPlayer = player;
     }
 
+    public void Set_Initiative(int amount)
+    {
+        initiative = amount;
+        cardRenderer.Render_Initiative();
+    }
+
     // 
     // PLAYER INTERACTIONS
     //

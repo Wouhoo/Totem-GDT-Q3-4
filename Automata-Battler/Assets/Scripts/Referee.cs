@@ -64,6 +64,15 @@ public class Referee : MonoBehaviour
     public void AddCard(Card card)
     {
         cardList.Add(card);
+        RefreshInitiative();
+    }
+
+    public void RefreshInitiative()
+    {
+        for (int i = cardList.Count - 1; i >= 0; i--)
+        {
+            cardList[i].Set_Initiative(i);
+        }
     }
 
     // Special actions
