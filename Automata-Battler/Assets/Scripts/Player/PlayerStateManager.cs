@@ -9,7 +9,10 @@ public class PlayerStateManager : MonoBehaviour
     private CameraController cameraController;
     private SelectionManager selectionManager;
 
+
     public PlayerState _currentState { get; private set; }
+
+    public bool _isPlayerTurn;
 
     void Awake()
     {
@@ -27,10 +30,11 @@ public class PlayerStateManager : MonoBehaviour
     {
         // Should only be called by the camera controller after a sucsessful transition has been made
         _currentState = state;
+        Debug.Log(_currentState);
     }
 
     public bool IsInteractionAllowed()
     {
-        return _currentState == PlayerState.ViewingBoard || _currentState == PlayerState.ViewingHand;
+        return (_currentState == PlayerState.ViewingBoard || _currentState == PlayerState.ViewingHand || _currentState == PlayerState.PlacingCard) && _isPlayerTurn;
     }
 }

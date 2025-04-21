@@ -97,13 +97,23 @@ public class SelectionManager : MonoBehaviour
                         playerStateManager.ToState(PlayerState.PlacingCard);
                     }
                 }
-                else if (selectable is Button)
-                    selectable.OnSelect();
+                else if (selectable is Button button1)
+                {
+                    if (button1 == toBoard_Button)
+                        playerStateManager.ToState(PlayerState.ViewingBoard);
+                    else if (button1 == play_Button)
+                        referee.EndTurn();
+                }
                 break;
 
             case PlayerState.ViewingBoard:
-                if (selectable is Button)
-                    selectable.OnSelect();
+                if (selectable is Button button2)
+                {
+                    if (button2 == toHand_Button)
+                        playerStateManager.ToState(PlayerState.ViewingHand);
+                    else if (button2 == play_Button)
+                        referee.EndTurn();
+                }
                 break;
 
             case PlayerState.WatchingGame:

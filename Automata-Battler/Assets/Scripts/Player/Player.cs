@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         DrawCards();
+        playerStateManager._isPlayerTurn = true;
         playerStateManager.ToState(PlayerState.ViewingHand);
     }
 
@@ -78,5 +79,25 @@ public class Player : MonoBehaviour
         _mana -= card._cost;
         referee.AddCard(card);
         return true;
+    }
+
+    //
+    // Forced to watch by referee
+    //
+
+    public void WatchGame()
+    {
+        playerStateManager.ToState(PlayerState.WatchingGame);
+    }
+
+    public void BeginTurn()
+    {
+        playerStateManager._isPlayerTurn = true;
+        playerStateManager.ToState(PlayerState.ViewingHand);
+    }
+
+    public void EndTurn()
+    {
+        playerStateManager._isPlayerTurn = false;
     }
 }

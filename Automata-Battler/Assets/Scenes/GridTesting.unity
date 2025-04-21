@@ -266,6 +266,9 @@ GameObject:
   m_Component:
   - component: {fileID: 60397014}
   - component: {fileID: 60397013}
+  - component: {fileID: 60397017}
+  - component: {fileID: 60397016}
+  - component: {fileID: 60397015}
   m_Layer: 0
   m_Name: Player1
   m_TagString: Untagged
@@ -286,21 +289,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deck: {fileID: 399449846}
-  cardLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  tileLayerMask:
-    serializedVersion: 2
-    m_Bits: 256
-  buttonsLayerMask:
-    serializedVersion: 2
-    m_Bits: 512
-  obj_toBoard_Button: {fileID: 493241827}
-  obj_toHand_Button: {fileID: 587700325}
-  obj_play_Button: {fileID: 2034063836}
-  handCameraPosition: {fileID: 1776146023}
-  boardCameraPosition: {fileID: 2120358676}
-  lerpSpeed: 10
 --- !u!4 &60397014
 Transform:
   m_ObjectHideFlags: 0
@@ -318,6 +306,58 @@ Transform:
   - {fileID: 5441394}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &60397015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60397012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6869b95d9bde5c34dbf415e3bbf525c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isPlayerTurn: 0
+--- !u!114 &60397016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60397012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84c9a421480ce0749826079da88bf34e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  tileLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+  buttonsLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
+  toBoard_Button: {fileID: 493241833}
+  toHand_Button: {fileID: 587700331}
+  play_Button: {fileID: 2034063841}
+--- !u!114 &60397017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60397012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3956770214691a94485fd4959582d12b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boardViewTarget: {fileID: 2120358676}
+  handViewTarget: {fileID: 1776146023}
+  transitionDuration: 0.5
 --- !u!1001 &169047179
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -975,6 +1015,10 @@ MonoBehaviour:
   - {fileID: 723037082471106720, guid: 60dc9ca9b289d3d46b6e778f398fe8ef, type: 3}
   - {fileID: 723037082471106720, guid: 60dc9ca9b289d3d46b6e778f398fe8ef, type: 3}
   - {fileID: 723037082471106720, guid: 60dc9ca9b289d3d46b6e778f398fe8ef, type: 3}
+  - {fileID: 723037082471106720, guid: 5c10450a5bc2f184bb814e336606f518, type: 3}
+  - {fileID: 723037082471106720, guid: 5c10450a5bc2f184bb814e336606f518, type: 3}
+  - {fileID: 723037082471106720, guid: 5c10450a5bc2f184bb814e336606f518, type: 3}
+  - {fileID: 723037082471106720, guid: 5c10450a5bc2f184bb814e336606f518, type: 3}
   deck: []
 --- !u!1001 &426890125
 PrefabInstance:
@@ -1164,7 +1208,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 493241827}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 697e017dd7b56b9449f5dbe5e03f78cf, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ff3e60248388d248aafd0a48d034ff8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &508242627
@@ -1350,7 +1394,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 587700325}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f050315df6a10c47ac52e2c3113847c, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ff3e60248388d248aafd0a48d034ff8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &630520252 stripped
@@ -2223,6 +2267,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1708708294}
   - component: {fileID: 1708708293}
+  - component: {fileID: 1708708297}
+  - component: {fileID: 1708708296}
+  - component: {fileID: 1708708295}
   m_Layer: 0
   m_Name: Player2
   m_TagString: Untagged
@@ -2243,21 +2290,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deck: {fileID: 0}
-  cardLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  tileLayerMask:
-    serializedVersion: 2
-    m_Bits: 256
-  buttonsLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  obj_toBoard_Button: {fileID: 0}
-  obj_toHand_Button: {fileID: 0}
-  obj_play_Button: {fileID: 0}
-  handCameraPosition: {fileID: 1776146023}
-  boardCameraPosition: {fileID: 2120358676}
-  lerpSpeed: 1
 --- !u!4 &1708708294
 Transform:
   m_ObjectHideFlags: 0
@@ -2273,6 +2305,58 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1708708295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1708708292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6869b95d9bde5c34dbf415e3bbf525c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isPlayerTurn: 0
+--- !u!114 &1708708296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1708708292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84c9a421480ce0749826079da88bf34e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  tileLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  buttonsLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  toBoard_Button: {fileID: 0}
+  toHand_Button: {fileID: 0}
+  play_Button: {fileID: 0}
+--- !u!114 &1708708297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1708708292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3956770214691a94485fd4959582d12b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boardViewTarget: {fileID: 0}
+  handViewTarget: {fileID: 0}
+  transitionDuration: 1
 --- !u!114 &1736466153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2717,7 +2801,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2034063836}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a36855684454f8438cd1a75e38781e6, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ff3e60248388d248aafd0a48d034ff8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2120358675

@@ -152,11 +152,6 @@ public class Card : MonoBehaviour, ISelectable
     {
         HexCoordinates target = position + byAmount * direction.GetRelativeCoordinates();
 
-        Debug.Log(position);
-        Debug.Log(direction);
-        Debug.Log(direction.GetRelativeCoordinates());
-        Debug.Log(target);
-
         if (board.CanPlace(target)) // ask if move is possible
         {
             board.Set_TileOccupant(position, null);

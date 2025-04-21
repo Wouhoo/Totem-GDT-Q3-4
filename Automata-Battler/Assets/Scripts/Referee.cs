@@ -27,10 +27,11 @@ public class Referee : MonoBehaviour
     public void EndTurn()
     {
         Debug.Log(round);
-        player1.ToState(Player.State.WatchGame);
+        player1.EndTurn();
+        player1.WatchGame();
         ExecuteCards();
         player1.DrawCards();
-        player1.ToState(Player.State.ViewHand);
+        player1.BeginTurn();
 
 
         /*
