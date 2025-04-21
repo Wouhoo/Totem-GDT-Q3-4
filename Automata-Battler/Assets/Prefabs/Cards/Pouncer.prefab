@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8180277049089740017}
   - component: {fileID: 7600848862062600045}
   m_Layer: 7
-  m_Name: Poke
+  m_Name: Pouncer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,18 +50,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9a1638c72e9d7541bbb9afa32db2284, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cost: 2
-  health: 3
+  cost: 1
+  health: 1
   damage: 1
   initiative: 0
   inPlay: 0
   instructions:
-  - instructionType: 0
+  - instructionType: 1
+    direction: 0
+  - instructionType: 3
     direction: 1
   - instructionType: 3
-    direction: 0
-  - instructionType: 4
-    direction: 0
+    direction: 5
 --- !u!114 &6314694864999609049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1018,7 +1018,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Poke
+  m_text: Pouncer
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e190d5ab3fbf2bd4a8186c0dd5a94913, type: 2}
   m_sharedMaterial: {fileID: 8479616224764583134, guid: e190d5ab3fbf2bd4a8186c0dd5a94913, type: 2}

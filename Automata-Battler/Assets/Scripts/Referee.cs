@@ -67,6 +67,12 @@ public class Referee : MonoBehaviour
         RefreshInitiative();
     }
 
+    public void RemoveCard(Card card)
+    {
+        cardList.Remove(card);
+        RefreshInitiative();
+    }
+
     public void RefreshInitiative()
     {
         for (int i = cardList.Count - 1; i >= 0; i--)

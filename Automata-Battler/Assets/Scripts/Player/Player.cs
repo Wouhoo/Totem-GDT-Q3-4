@@ -92,6 +92,7 @@ public class Player : MonoBehaviour
 
     public void BeginTurn()
     {
+        ResetMana();
         playerStateManager._isPlayerTurn = true;
         playerStateManager.ToState(PlayerState.ViewingHand);
     }

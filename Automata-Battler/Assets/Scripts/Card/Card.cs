@@ -15,7 +15,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 public class Card : MonoBehaviour, ISelectable
 {
     // Card references
-    private Board board; // there is only 1
+    private Board board;
+    private Referee referee;
 
     private CardAnimator cardAnimator;
     private CardRenderer cardRenderer;
@@ -44,9 +45,9 @@ public class Card : MonoBehaviour, ISelectable
     void Awake()
     {
         board = FindFirstObjectByType<Board>();
+        referee = FindFirstObjectByType<Referee>();
         cardAnimator = GetComponent<CardAnimator>();
         cardRenderer = GetComponent<CardRenderer>();
-
     }
 
     void Start()
@@ -150,6 +151,7 @@ public class Card : MonoBehaviour, ISelectable
     {
         // Remove from board
         board.Set_TileOccupant(position, null);
+        referee.RemoveCard(this);
         // destroy this game object
         Destroy(gameObject);
     }
