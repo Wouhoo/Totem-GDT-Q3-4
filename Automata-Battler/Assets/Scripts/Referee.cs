@@ -20,21 +20,23 @@ public class Referee : MonoBehaviour
             Instance = this;
         else
             Destroy(gameObject);
+    }
 
+    void Start()
+    {
+        player2.gameObject.SetActive(false);
         activePlayer = player1;
+        activePlayer.DrawCards();
+        activePlayer.BeginTurn();
     }
 
     public void EndTurn()
     {
         Debug.Log(round);
-        player1.EndTurn();
-        player1.WatchGame();
-        ExecuteCards();
-        player1.DrawCards();
-        player1.BeginTurn();
+        activePlayer.EndTurn();
+        activePlayer.WatchGame();
+        activePlayer.gameObject.SetActive(false);
 
-
-        /*
         if (round % 2 == 0 && activePlayer == player1)
             activePlayer = player2;
         else if (round % 2 == 0 && activePlayer == player2)
@@ -49,7 +51,11 @@ public class Referee : MonoBehaviour
         }
         else if (round % 2 == 1 && activePlayer == player2)
             activePlayer = player1;
-        */
+
+        activePlayer.gameObject.SetActive(true);
+
+        activePlayer.DrawCards();
+        activePlayer.BeginTurn();
     }
 
     public void ExecuteCards()

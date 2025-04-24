@@ -7,6 +7,7 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField] private Transform boardViewTarget;
     [SerializeField] private Transform handViewTarget;
+    [SerializeField] private Transform cameraTransform;
     [SerializeField] private float transitionDuration = 1.0f;
     private PlayerStateManager playerStateManager;
 
@@ -30,8 +31,8 @@ public class CameraController : MonoBehaviour
     {
         playerStateManager.SetState(PlayerState.Transitioning);
 
-        Vector3 startPos = transform.position;
-        Quaternion startRot = transform.rotation;
+        Vector3 startPos = cameraTransform.position;
+        Quaternion startRot = cameraTransform.rotation;
 
         Vector3 endPos = target.position;
         Quaternion endRot = target.rotation;
@@ -41,13 +42,13 @@ public class CameraController : MonoBehaviour
         while (t < 1f)
         {
             t += Time.deltaTime / transitionDuration;
-            transform.position = Vector3.Lerp(startPos, endPos, t);
-            transform.rotation = Quaternion.Slerp(startRot, endRot, t);
+            cameraTransform.position = Vector3.Lerp(startPos, endPos, t);
+            cameraTransform.rotation = Quaternion.Slerp(startRot, endRot, t);
             yield return null;
         }
 
-        transform.position = endPos;
-        transform.rotation = endRot;
+        cameraTransform.position = endPos;
+        cameraTransform.rotation = endRot;
 
         // Return to appropriate state
         playerStateManager.SetState(targetState);

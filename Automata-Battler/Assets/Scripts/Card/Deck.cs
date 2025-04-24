@@ -6,6 +6,8 @@ public class Deck : MonoBehaviour
     [SerializeField] private List<GameObject> prefabs;
     [SerializeField] private List<GameObject> deck = new List<GameObject>();
 
+    [SerializeField] public List<Transform> slots;
+
 
     void Awake()
     {

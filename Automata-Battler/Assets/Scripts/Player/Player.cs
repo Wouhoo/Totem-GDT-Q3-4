@@ -23,9 +23,8 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        DrawCards();
-        playerStateManager._isPlayerTurn = true;
-        playerStateManager.ToState(PlayerState.ViewingHand);
+        // playerStateManager._isPlayerTurn = false;
+        // playerStateManager.ToState(PlayerState.ViewingHand);
     }
 
     //
@@ -45,7 +44,7 @@ public class Player : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             Card card = _hand[i];
-            card.transform.position = new Vector3(20 * i, 0, -25);
+            card.transform.position = deck.slots[i].position;
         }
     }
 
@@ -53,11 +52,11 @@ public class Player : MonoBehaviour
     // Mana System
     //
 
-    public int _mana { get; private set; } = 5;
+    public int _mana { get; private set; } = 3;
 
     public void ResetMana()
     {
-        _mana = 5;
+        _mana = 3;
     }
 
     //

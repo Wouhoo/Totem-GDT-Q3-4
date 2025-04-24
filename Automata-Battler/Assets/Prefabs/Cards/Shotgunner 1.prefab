@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8180277049089740017}
   - component: {fileID: 7600848862062600045}
   m_Layer: 7
-  m_Name: Shotgunner
+  m_Name: Shotgunner 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -57,13 +57,13 @@ MonoBehaviour:
   inPlay: 0
   instructions:
   - instructionType: 0
-    direction: 0
+    direction: 3
   - instructionType: 3
-    direction: 1
+    direction: 4
   - instructionType: 3
-    direction: 0
+    direction: 3
   - instructionType: 3
-    direction: 5
+    direction: 2
 --- !u!114 &6314694864999609049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,7 +146,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c106ae7efcdd0a349976f80b1398a855, type: 2}
+  - {fileID: 2100000, guid: 2a2bb5001ef06894898fbc5dbe93b950, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

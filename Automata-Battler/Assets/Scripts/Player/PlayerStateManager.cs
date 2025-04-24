@@ -12,7 +12,7 @@ public class PlayerStateManager : MonoBehaviour
 
     public PlayerState _currentState { get; private set; }
 
-    public bool _isPlayerTurn;
+    public bool _isPlayerTurn = false;
 
     void Awake()
     {
