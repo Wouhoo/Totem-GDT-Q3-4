@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
@@ -17,14 +18,7 @@ public class Player : MonoBehaviour
     void Awake()
     {
         playerStateManager = GetComponent<PlayerStateManager>();
-
         referee = FindFirstObjectByType<Referee>();
-    }
-
-    void Start()
-    {
-        // playerStateManager._isPlayerTurn = false;
-        // playerStateManager.ToState(PlayerState.ViewingHand);
     }
 
     //
@@ -63,7 +57,7 @@ public class Player : MonoBehaviour
     // Play Card
     //
 
-    public bool PlayCard(Card card, HexCell tile)
+    public async Task<bool> PlayCard(Card card, HexCell tile)
     {
         if (!_hand.Contains(card)) // card not in hand
             return false;
@@ -73,7 +67,7 @@ public class Player : MonoBehaviour
             return false;
 
         // Else we now play our card
-        card.PlaceCard(tile.coordinates);
+        await card.PlaceCard(tile.coordinates);
         _hand.Remove(card);
         _mana -= card._cost;
         referee.AddCard(card);
@@ -84,16 +78,16 @@ public class Player : MonoBehaviour
     // Forced to watch by referee
     //
 
-    public void WatchGame()
+    public async Task WatchGame()
     {
-        playerStateManager.ToState(PlayerState.WatchingGame);
+        await playerStateManager.ToState(PlayerState.WatchingGame);
     }
 
-    public void BeginTurn()
+    public async Task BeginTurn()
     {
         ResetMana();
+        await playerStateManager.ToState(PlayerState.ViewingHand);
         playerStateManager._isPlayerTurn = true;
-        playerStateManager.ToState(PlayerState.ViewingHand);
     }
 
     public void EndTurn()

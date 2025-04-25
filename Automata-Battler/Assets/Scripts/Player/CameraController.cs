@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerStateManager))]
@@ -11,26 +12,21 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float transitionDuration = 1.0f;
     private PlayerStateManager playerStateManager;
 
-    private Coroutine currentTransition;
-
     void Awake()
     {
         playerStateManager = GetComponent<PlayerStateManager>();
     }
 
-    public void MoveCamera(PlayerState toState)
+    public async Task MoveCamera(PlayerState toState)
     {
-        if (currentTransition != null) StopCoroutine(currentTransition);
         if (toState == PlayerState.ViewingHand)
-            StartCoroutine(TransitionTo(handViewTarget, toState));
+            await TransitionTo(handViewTarget);
         else
-            StartCoroutine(TransitionTo(boardViewTarget, toState));
+            await TransitionTo(boardViewTarget);
     }
 
-    private IEnumerator TransitionTo(Transform target, PlayerState targetState)
+    private async Task TransitionTo(Transform target)
     {
-        playerStateManager.SetState(PlayerState.Transitioning);
-
         Vector3 startPos = cameraTransform.position;
         Quaternion startRot = cameraTransform.rotation;
 
@@ -41,18 +37,13 @@ public class CameraController : MonoBehaviour
 
         while (t < 1f)
         {
-            t += Time.deltaTime / transitionDuration;
             cameraTransform.position = Vector3.Lerp(startPos, endPos, t);
             cameraTransform.rotation = Quaternion.Slerp(startRot, endRot, t);
-            yield return null;
+            t += Time.deltaTime / transitionDuration;
+            await Task.Yield();
         }
 
         cameraTransform.position = endPos;
         cameraTransform.rotation = endRot;
-
-        // Return to appropriate state
-        playerStateManager.SetState(targetState);
-
-        currentTransition = null;
     }
 }

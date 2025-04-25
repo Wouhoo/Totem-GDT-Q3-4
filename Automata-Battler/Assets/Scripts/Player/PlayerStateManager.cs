@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 [RequireComponent(typeof(Player))]
@@ -8,7 +9,7 @@ public class PlayerStateManager : MonoBehaviour
 {
     private CameraController cameraController;
     private SelectionManager selectionManager;
-
+    private Player player;
 
     public PlayerState _currentState { get; private set; }
 
@@ -16,21 +17,18 @@ public class PlayerStateManager : MonoBehaviour
 
     void Awake()
     {
+        player = GetComponent<Player>();
         cameraController = GetComponent<CameraController>();
         selectionManager = GetComponent<SelectionManager>();
     }
 
-    public void ToState(PlayerState toState)
+    public async Task ToState(PlayerState toState)
     {
+        _currentState = PlayerState.Transitioning;
         selectionManager.UpdateSelectables(toState);
-        cameraController.MoveCamera(toState); // This takes multiple frames to conclude
-    }
-
-    public void SetState(PlayerState state)
-    {
-        // Should only be called by the camera controller after a sucsessful transition has been made
-        _currentState = state;
-        Debug.Log(_currentState);
+        await cameraController.MoveCamera(toState); // This takes multiple frames to conclude
+        _currentState = toState;
+        Debug.Log($"{player} change state to {_currentState} , isPlaying = {_isPlayerTurn}");
     }
 
     public bool IsInteractionAllowed()

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
 
 [RequireComponent(typeof(Player))]
 [RequireComponent(typeof(PlayerStateManager))]
@@ -42,7 +43,7 @@ public class SelectionManager : MonoBehaviour
 
         ManageHover(selected);
         if (Input.GetMouseButtonDown(0))
-            ManageSelection(selected);
+            ManageSelection(selected);  // THIS IS OK! (NOT AWAIT)
     }
 
     private ISelectable GetSelectable()
@@ -70,22 +71,26 @@ public class SelectionManager : MonoBehaviour
             currentHover.OnHoverEnter();
     }
 
-    private void ManageSelection(ISelectable selectable)
+    private async Task ManageSelection(ISelectable selectable)
     {
+        Debug.Log($"{player} selected {selectable}");
         switch (playerStateManager._currentState)
         {
             case PlayerState.PlacingCard:
                 if (selectable is HexCell tile)
                 {
-                    if (player.PlayCard(selectedCard, tile))
+                    Task<bool> task_PlayCard = player.PlayCard(selectedCard, tile);
+                    await task_PlayCard;
+                    bool res_PlayCard = task_PlayCard.Result;
+                    if (res_PlayCard)
                     {
                         selectedCard = null;
-                        playerStateManager.ToState(PlayerState.ViewingBoard);
+                        await playerStateManager.ToState(PlayerState.ViewingBoard);
                         break;
                     }
                 }
                 selectedCard = null;
-                playerStateManager.ToState(PlayerState.ViewingBoard);
+                await playerStateManager.ToState(PlayerState.ViewingBoard);
                 break;
 
             case PlayerState.ViewingHand:
@@ -94,15 +99,15 @@ public class SelectionManager : MonoBehaviour
                     if (player._hand.Contains(card) && card._cost <= player._mana) // card in hand and we have enough mana
                     {
                         selectedCard = card;
-                        playerStateManager.ToState(PlayerState.PlacingCard);
+                        await playerStateManager.ToState(PlayerState.PlacingCard);
                     }
                 }
                 else if (selectable is Button button1)
                 {
                     if (button1 == toBoard_Button)
-                        playerStateManager.ToState(PlayerState.ViewingBoard);
+                        await playerStateManager.ToState(PlayerState.ViewingBoard);
                     else if (button1 == play_Button)
-                        referee.EndTurn();
+                        await referee.EndTurn();
                 }
                 break;
 
@@ -110,9 +115,9 @@ public class SelectionManager : MonoBehaviour
                 if (selectable is Button button2)
                 {
                     if (button2 == toHand_Button)
-                        playerStateManager.ToState(PlayerState.ViewingHand);
+                        await playerStateManager.ToState(PlayerState.ViewingHand);
                     else if (button2 == play_Button)
-                        referee.EndTurn();
+                        await referee.EndTurn();
                 }
                 break;
 

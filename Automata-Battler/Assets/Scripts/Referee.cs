@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 using System;
+using System.Threading.Tasks;
 
 public class Referee : MonoBehaviour
 {
@@ -24,29 +25,29 @@ public class Referee : MonoBehaviour
 
     void Start()
     {
-        player2.gameObject.SetActive(false);
         activePlayer = player1;
         activePlayer.DrawCards();
-        activePlayer.BeginTurn();
+        activePlayer.ResetMana();
+        activePlayer.BeginTurn(); // THIS IS OK! (NOT AWAIT)
     }
 
-    public void EndTurn()
+    public async Task EndTurn()
     {
         Debug.Log(round);
         activePlayer.EndTurn();
-        activePlayer.WatchGame();
+        await activePlayer.WatchGame();
         activePlayer.gameObject.SetActive(false);
 
         if (round % 2 == 0 && activePlayer == player1)
             activePlayer = player2;
         else if (round % 2 == 0 && activePlayer == player2)
         {
-            ExecuteCards();
+            await ExecuteCards();
             round++;
         }
         else if (round % 2 == 1 && activePlayer == player1)
         {
-            ExecuteCards();
+            await ExecuteCards();
             round++;
         }
         else if (round % 2 == 1 && activePlayer == player2)
@@ -55,15 +56,15 @@ public class Referee : MonoBehaviour
         activePlayer.gameObject.SetActive(true);
 
         activePlayer.DrawCards();
-        activePlayer.BeginTurn();
+        await activePlayer.BeginTurn();
     }
 
-    public void ExecuteCards()
+    public async Task ExecuteCards()
     {
         // Execute cards from most recent to oldest
         for (int i = cardList.Count - 1; i >= 0; i--)
         {
-            cardList[i].ExecuteInstructions();
+            await cardList[i].ExecuteInstructions();
         }
     }
 

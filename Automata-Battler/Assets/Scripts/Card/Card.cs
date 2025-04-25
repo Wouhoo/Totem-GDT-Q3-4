@@ -6,6 +6,7 @@ using Unity.Mathematics.Geometry;
 using Unity.Mathematics;
 using UnityEngine.UIElements;
 using UnityEditor.Scripting;
+using System.Threading.Tasks;
 
 using Mono.Cecil.Cil;
 using System.Linq;
@@ -98,12 +99,12 @@ public class Card : MonoBehaviour, ISelectable
         }
     }
 
-    public void PlaceCard(HexCoordinates pos)
+    public async Task PlaceCard(HexCoordinates pos)
     {
         // should already be checked that placement is valid
         position = pos;
         //temp:
-        cardAnimator.Move_asJump(pos);
+        await cardAnimator.Move_asJump(pos);
         inPlay = true;
 
     }
@@ -112,32 +113,32 @@ public class Card : MonoBehaviour, ISelectable
     // INSTRUCTIONS
     // 
 
-    public void ExecuteInstructions()
+    public async Task ExecuteInstructions()
     {
         foreach (var call in _instructions)
         {
             switch (call.instructionType)
             {
                 case CardInstructionType.Move:
-                    Move_asJump(call.direction, 1);
+                    await Move_asJump(call.direction, 1);
                     break;
                 case CardInstructionType.Jump:
-                    Move_asJump(call.direction, 2);
+                    await Move_asJump(call.direction, 2);
                     break;
                 case CardInstructionType.Slide:
-                    Move_asSlide(call.direction, 99);
+                    await Move_asSlide(call.direction, 99);
                     break;
                 case CardInstructionType.Attack:
-                    Attack_asJump(call.direction, 1, _damage);
+                    await Attack_asJump(call.direction, 1, _damage);
                     break;
                 case CardInstructionType.Arrow:
-                    Attack_asJump(call.direction, 2, _damage);
+                    await Attack_asJump(call.direction, 2, _damage);
                     break;
                 case CardInstructionType.Shoot:
-                    Attack_asSlide(call.direction, 99, _damage);
+                    await Attack_asSlide(call.direction, 99, _damage);
                     break;
                 case CardInstructionType.Die:
-                    Die();
+                    await Die();
                     break;
             }
         }
@@ -147,16 +148,17 @@ public class Card : MonoBehaviour, ISelectable
     // INSTRUCTION FUNCTIONS
     //
 
-    private void Die()
+    private async Task Die()
     {
         // Remove from board
+        await cardAnimator.Die();
         board.Set_TileOccupant(position, null);
         referee.RemoveCard(this);
         // destroy this game object
         Destroy(gameObject);
     }
 
-    private void Move_asJump(HexDirection direction, int byAmount)
+    private async Task Move_asJump(HexDirection direction, int byAmount)
     {
         HexCoordinates target = position + byAmount * direction.GetRelativeCoordinates();
 
@@ -165,16 +167,16 @@ public class Card : MonoBehaviour, ISelectable
             board.Set_TileOccupant(position, null);
             position = target;
             board.Set_TileOccupant(position, this);
-            cardAnimator.Move_asJump(position);
+            await cardAnimator.Move_asJump(position);
             return;
         }
 
         // Failed to move
-        // animate
+        await cardAnimator.Move_asJump_FAIL(position);
         return;
     }
 
-    private void Move_asSlide(HexDirection direction, int byAmount)
+    private async Task Move_asSlide(HexDirection direction, int byAmount)
     {
         HexCoordinates targetDirection = direction.GetRelativeCoordinates();
 
@@ -191,7 +193,7 @@ public class Card : MonoBehaviour, ISelectable
             board.Set_TileOccupant(position, null);
             position += amountMoved * targetDirection;
             board.Set_TileOccupant(position, this);
-            cardAnimator.Move_asSlide(position);
+            await cardAnimator.Move_asSlide(position);
             return;
         }
 
@@ -199,13 +201,13 @@ public class Card : MonoBehaviour, ISelectable
         return;
     }
 
-    private void Attack_asJump(HexDirection direction, int byAmount, int damageAmount)
+    private async Task Attack_asJump(HexDirection direction, int byAmount, int damageAmount)
     {
         HexCoordinates target = position + byAmount * direction.GetRelativeCoordinates();
 
         if (board.CanAttack(target)) // ask if attack is possible
         {
-            board.TileOccupant(target).TakeDamage(damageAmount);
+            await board.TileOccupant(target).TakeDamage(damageAmount);
             return;
         }
 
@@ -213,7 +215,7 @@ public class Card : MonoBehaviour, ISelectable
         return;
     }
 
-    private void Attack_asSlide(HexDirection direction, int byAmount, int damageAmount)
+    private async Task Attack_asSlide(HexDirection direction, int byAmount, int damageAmount)
     {
         HexCoordinates targetDirection = direction.GetRelativeCoordinates();
 
@@ -230,7 +232,7 @@ public class Card : MonoBehaviour, ISelectable
         // successfull attack
         if (board.CanAttack(target))
         {
-            board.TileOccupant(target).TakeDamage(damageAmount);
+            await board.TileOccupant(target).TakeDamage(damageAmount);
             return;
         }
 
@@ -238,15 +240,15 @@ public class Card : MonoBehaviour, ISelectable
         return;
     }
 
-    public void TakeDamage(int amount) // Note this instruction is public!
+    public async Task TakeDamage(int amount) // Note this instruction is public!
     {
         health = math.max(0, health - amount);
 
-        cardAnimator.TakeDamage();
+        await cardAnimator.TakeDamage();
         cardRenderer.Render_Health();
 
         if (health == 0)
-            Die();
+            await Die();
     }
 
 }
