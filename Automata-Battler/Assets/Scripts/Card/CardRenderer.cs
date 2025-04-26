@@ -51,7 +51,7 @@ public class CardRenderer : MonoBehaviour
     {
         textInstructions.text = string.Join(" ", card._instructions.Select(instruction =>
         {
-            return instruction.Visualization();
+            return instruction.GetVisual();
         }));
     }
 }

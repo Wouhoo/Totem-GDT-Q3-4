@@ -6,7 +6,7 @@ public enum CardInstructionType
     Jump,
     Slide,
     Attack,
-    Arrow,
+    Lob,
     Shoot,
     Die
 }

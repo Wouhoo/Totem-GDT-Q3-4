@@ -18,8 +18,6 @@ public class Card : MonoBehaviour, ISelectable
     // Card references
     private Board board;
     private Referee referee;
-
-    private CardAnimator cardAnimator;
     private CardRenderer cardRenderer;
 
     // Prefab Stuff
@@ -44,7 +42,6 @@ public class Card : MonoBehaviour, ISelectable
     {
         board = FindFirstObjectByType<Board>();
         referee = FindFirstObjectByType<Referee>();
-        cardAnimator = GetComponent<CardAnimator>();
         cardRenderer = GetComponent<CardRenderer>();
     }
 
@@ -54,7 +51,7 @@ public class Card : MonoBehaviour, ISelectable
     }
 
     // 
-    // SET (the only external thing that can really happen other then executing instructions)
+    // Setting Functions
     //
 
     public void Set_Owner(Player player)
@@ -66,6 +63,17 @@ public class Card : MonoBehaviour, ISelectable
     {
         _initiative = amount;
         cardRenderer.Render_Initiative();
+    }
+
+    public void Set_Position(HexCoordinates pos)
+    {
+        _position = pos;
+    }
+
+    public void Set_Health(int amount)
+    {
+        health = amount;
+        cardRenderer.Render_Health();
     }
 
     // 
@@ -102,7 +110,7 @@ public class Card : MonoBehaviour, ISelectable
         _position = pos;
         board.Set_TileOccupant(_position, this);
         //temp:
-        await cardAnimator.Move_asJump(pos);
+        await CardAnimator.Lerp_JumpTo(transform, HexCoordinates.ToWorldPosition(pos), 0.2f);
         inPlay = true;
     }
 
@@ -112,150 +120,7 @@ public class Card : MonoBehaviour, ISelectable
 
     public async Task ExecuteInstructions()
     {
-        foreach (var call in _instructions)
-        {
-            Debug.Log(call.instructionType);
-            switch (call.instructionType)
-            {
-                case CardInstructionType.Move:
-                    await Move_asJump(call.direction, 1);
-                    break;
-                case CardInstructionType.Jump:
-                    await Move_asJump(call.direction, 2);
-                    break;
-                case CardInstructionType.Slide:
-                    await Move_asSlide(call.direction, 99);
-                    break;
-                case CardInstructionType.Attack:
-                    await Attack_asJump(call.direction, 1, _damage);
-                    break;
-                case CardInstructionType.Arrow:
-                    await Attack_asJump(call.direction, 2, _damage);
-                    break;
-                case CardInstructionType.Shoot:
-                    await Attack_asSlide(call.direction, 99, _damage);
-                    break;
-                case CardInstructionType.Die:
-                    await Die();
-                    break;
-            }
-        }
+        foreach (var instruction in instructions)
+            await instruction.Execute(this);
     }
-
-    // 
-    // INSTRUCTION FUNCTIONS
-    //
-
-    private async Task Die()
-    {
-        // Remove from board
-        await cardAnimator.Die();
-        board.Set_TileOccupant(_position, null);
-        referee.RemoveCard(this);
-        // destroy this game object
-        Destroy(gameObject);
-    }
-
-    private async Task Move_asJump(HexDirection direction, int byAmount)
-    {
-        HexCoordinates target = _position + byAmount * direction.GetRelativeCoordinates();
-
-        if (board.CanPlace(target)) // ask if move is possible
-        {
-            board.Set_TileOccupant(_position, null);
-            _position = target;
-            board.Set_TileOccupant(_position, this);
-            await cardAnimator.Move_asJump(_position);
-            return;
-        }
-
-        // Failed to move
-        await cardAnimator.Move_asJump_FAIL(target);
-        return;
-    }
-
-    private async Task Move_asSlide(HexDirection direction, int byAmount)
-    {
-        HexCoordinates targetDirection = direction.GetRelativeCoordinates();
-
-        int amountMoved = 0;
-        for (int i = 0; i < byAmount; i++)
-        {
-            if (!board.CanPlace(_position + (amountMoved + 1) * targetDirection))
-                break;
-            amountMoved++;
-        }
-
-        if (amountMoved != 0)
-        {
-            board.Set_TileOccupant(_position, null);
-            _position += amountMoved * targetDirection;
-            board.Set_TileOccupant(_position, this);
-            await cardAnimator.Move_asSlide(_position);
-            return;
-        }
-
-        // Failed to move
-        return;
-    }
-
-    private async Task Attack_asJump(HexDirection direction, int byAmount, int damageAmount)
-    {
-        HexCoordinates target = _position + byAmount * direction.GetRelativeCoordinates();
-
-
-        Debug.Log(target);
-        Debug.Log(board.TileExistance(target));
-        Debug.Log(board.TileOccupant(target));
-
-        if (board.CanAttack(target)) // ask if attack is possible
-        {
-
-            await cardAnimator.Attack_asJump_1(target);
-            await board.TileOccupant(target).TakeDamage(damageAmount);
-            await cardAnimator.Attack_asJump_1(_position);
-            return;
-        }
-
-        // Failed to attack
-        await cardAnimator.Move_asJump_FAIL(_position);
-        return;
-    }
-
-    private async Task Attack_asSlide(HexDirection direction, int byAmount, int damageAmount)
-    {
-        HexCoordinates targetDirection = direction.GetRelativeCoordinates();
-
-        int amountMoved = 1;
-        for (int i = 1; i <= byAmount; i++)
-        {
-            if (!board.CanPlace(_position + amountMoved * targetDirection))
-                break;
-            amountMoved++;
-        }
-
-        HexCoordinates target = _position + amountMoved * targetDirection;
-
-        // successfull attack
-        if (board.CanAttack(target))
-        {
-            await board.TileOccupant(target).TakeDamage(damageAmount);
-            return;
-        }
-
-        // Failed to attack
-        return;
-    }
-
-    public async Task TakeDamage(int amount) // Note this instruction is public!
-    {
-        health = math.max(0, health - amount);
-
-        await cardAnimator.TakeDamage();
-        cardRenderer.Render_Health();
-
-        if (health == 0)
-            await Die();
-    }
-
 }
