@@ -12,6 +12,7 @@ public class Referee : MonoBehaviour
     private Player activePlayer;
     private int round = 0;
     public List<Card> cardList { get; private set; } = new List<Card>(); // in order of play (newest last)
+    private HashSet<Card> toRemove = new HashSet<Card>();
 
     public static Referee Instance { get; private set; }
 
@@ -62,13 +63,23 @@ public class Referee : MonoBehaviour
         await activePlayer.BeginTurn();
     }
 
+
+    private bool busyExecuting = false;
     public async Task ExecuteCards()
     {
+        busyExecuting = true;
         // Execute cards from most recent to oldest
         for (int i = cardList.Count - 1; i >= 0; i--)
         {
-            await cardList[i].ExecuteInstructions();
+            if (cardList[i] != null) // check if card still exists
+                await cardList[i].ExecuteInstructions();
         }
+
+        // Remove cards after executions to prevent order errors
+        cardList.RemoveAll(item => item == null);
+        RefreshInitiative();
+
+        busyExecuting = false;
     }
 
     public void AddCard(Card card)
@@ -79,16 +90,19 @@ public class Referee : MonoBehaviour
 
     public void RemoveCard(Card card)
     {
-        cardList.Remove(card);
-        RefreshInitiative();
+        if (busyExecuting)
+            Debug.Log("Ruh oh - something biiiig oopsies");
+        else
+        {
+            cardList.Remove(card);
+            RefreshInitiative();
+        }
     }
 
     public void RefreshInitiative()
     {
         for (int i = cardList.Count - 1; i >= 0; i--)
-        {
             cardList[i].Set_Initiative(i);
-        }
     }
 
     // Special actions

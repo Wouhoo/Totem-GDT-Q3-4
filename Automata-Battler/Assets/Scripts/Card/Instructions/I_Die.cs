@@ -9,14 +9,14 @@ public class I_Die : MonoBehaviour
     {
         Debug.Log($"Executing Instruction: I_Die ({card})");
         Board board = FindFirstObjectByType<Board>();
-        Referee referee = FindFirstObjectByType<Referee>();
+        // Referee referee = FindFirstObjectByType<Referee>();
 
         await Animate(card);
         // Remove from board
         board.Set_TileOccupant(card._position, null);
-        referee.RemoveCard(card);
+        // referee.RemoveCard(card);
         // destroy card game object
-        // Destroy(card.gameObject);
+        Destroy(card.gameObject);
     }
 
     public static string GetVisual()
