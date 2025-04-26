@@ -54,6 +54,11 @@ public class SelectionManager : MonoBehaviour
             ISelectable selectable = hit.collider.GetComponent<ISelectable>();
             if (allowedSelectables.Contains(selectable))
                 return selectable;
+            //sorry tim im workaround-ing ~Lars
+            else if (selectable is HexCell)
+            {
+                return selectable;
+            }
         }
         return null;
     }
@@ -63,7 +68,7 @@ public class SelectionManager : MonoBehaviour
         // if new object equals old object then pass
         if (currentHover == selectable)
             return;
-
+        Debug.Log("currentHover is now: " + currentHover);
         if (currentHover != null)
             currentHover.OnHoverExit();
         currentHover = selectable;

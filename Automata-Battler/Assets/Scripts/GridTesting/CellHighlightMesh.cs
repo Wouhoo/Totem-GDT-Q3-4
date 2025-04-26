@@ -1,16 +1,12 @@
-using UnityEditor;
 using UnityEngine;
 
-//[ExecuteAlways]
-public class BoardCellMesh : MonoBehaviour {
+public class CellHighlightMesh : MonoBehaviour
+{
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
     MeshCollider meshCollider;
 
-    [SerializeField] public Color currentColor = Color.white; 
-
-    [Header("Border mesh")]
-    [SerializeField] public float borderSize = .05f; 
+    [SerializeField] public Color currentColor = Color.yellow; 
 
     // Reference to your mesh, which you rebuild as needed.
     private Mesh mesh;
@@ -29,19 +25,6 @@ public class BoardCellMesh : MonoBehaviour {
         }
         // Optionally, ensure a material is assigned.
     }
-
-    //no, don't do this Unity will complain
-    // void OnValidate() {
-    //     if(meshFilter == null)
-    //         meshFilter = GetComponent<MeshFilter>();
-
-    //     if(mesh == null) {
-    //         mesh = new Mesh();
-    //         mesh.name = "HexMesh";
-    //         meshFilter.sharedMesh = mesh;
-    //     }
-    //     GenerateMesh();
-    // }
 
     void Awake()
     {
@@ -66,7 +49,7 @@ public class BoardCellMesh : MonoBehaviour {
         vertices[0] = Vector3.zero; // center
         // Assume HexMetrics.corners is your static array of 6 corner positions.
         for (int i = 0; i < 6; i++) {
-            vertices[i + 1] = HexMetrics.corners[i] * (1-borderSize);
+            vertices[i + 1] = HexMetrics.corners[i];
         }
         mesh.vertices = vertices;
 
