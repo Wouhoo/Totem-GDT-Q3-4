@@ -13,7 +13,6 @@ public class PlayerStateManager : MonoBehaviour
 
     public PlayerState _currentState { get; private set; }
 
-    public bool _isPlayerTurn = false;
 
     void Awake()
     {
@@ -28,11 +27,11 @@ public class PlayerStateManager : MonoBehaviour
         selectionManager.UpdateSelectables(toState);
         await cameraController.MoveCamera(toState); // This takes multiple frames to conclude
         _currentState = toState;
-        Debug.Log($"{player} change state to {_currentState} , isPlaying = {_isPlayerTurn}");
+        Debug.Log($"{player} change state to {_currentState}");
     }
 
-    public bool IsInteractionAllowed()
+    public bool IsHoverAllowed()
     {
-        return (_currentState == PlayerState.ViewingBoard || _currentState == PlayerState.ViewingHand || _currentState == PlayerState.PlacingCard) && _isPlayerTurn;
+        return _currentState == PlayerState.ViewingBoard || _currentState == PlayerState.ViewingHand || _currentState == PlayerState.PlacingCard;
     }
 }

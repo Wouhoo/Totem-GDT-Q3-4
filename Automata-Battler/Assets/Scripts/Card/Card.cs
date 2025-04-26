@@ -24,22 +24,19 @@ public class Card : MonoBehaviour, ISelectable
 
     // Prefab Stuff
     [Header("Card Properties")]
-    private HexCoordinates position;
-    private Player ownerPlayer;
+    public HexCoordinates _position { get; private set; }
+    public Player _ownerPlayer { get; private set; }
     [SerializeField] private int cost = 1;
     [SerializeField] private int health = 1;
     [SerializeField] private int damage = 1;
-    [SerializeField] private int initiative;
+    public int _initiative { get; private set; }
     [SerializeField] private bool inPlay = false; // true = on the board, false = in hand.
     [SerializeField] private List<CardInstruction> instructions = new List<CardInstruction>();
 
     // Getting functions
-    public HexCoordinates _position => position;
-    public Player _ownerPlayer => ownerPlayer;
     public int _cost => cost;
     public int _health => health;
     public int _damage => damage;
-    public int _initiative => initiative;
     public bool _inPlay => inPlay;
     public List<CardInstruction> _instructions => instructions;
 
@@ -62,12 +59,12 @@ public class Card : MonoBehaviour, ISelectable
 
     public void Set_Owner(Player player)
     {
-        ownerPlayer = player;
+        _ownerPlayer = player;
     }
 
     public void Set_Initiative(int amount)
     {
-        initiative = amount;
+        _initiative = amount;
         cardRenderer.Render_Initiative();
     }
 
@@ -102,11 +99,11 @@ public class Card : MonoBehaviour, ISelectable
     public async Task PlaceCard(HexCoordinates pos)
     {
         // should already be checked that placement is valid
-        position = pos;
+        _position = pos;
+        board.Set_TileOccupant(_position, this);
         //temp:
         await cardAnimator.Move_asJump(pos);
         inPlay = true;
-
     }
 
     //
@@ -117,6 +114,7 @@ public class Card : MonoBehaviour, ISelectable
     {
         foreach (var call in _instructions)
         {
+            Debug.Log(call.instructionType);
             switch (call.instructionType)
             {
                 case CardInstructionType.Move:
@@ -152,7 +150,7 @@ public class Card : MonoBehaviour, ISelectable
     {
         // Remove from board
         await cardAnimator.Die();
-        board.Set_TileOccupant(position, null);
+        board.Set_TileOccupant(_position, null);
         referee.RemoveCard(this);
         // destroy this game object
         Destroy(gameObject);
@@ -160,19 +158,19 @@ public class Card : MonoBehaviour, ISelectable
 
     private async Task Move_asJump(HexDirection direction, int byAmount)
     {
-        HexCoordinates target = position + byAmount * direction.GetRelativeCoordinates();
+        HexCoordinates target = _position + byAmount * direction.GetRelativeCoordinates();
 
         if (board.CanPlace(target)) // ask if move is possible
         {
-            board.Set_TileOccupant(position, null);
-            position = target;
-            board.Set_TileOccupant(position, this);
-            await cardAnimator.Move_asJump(position);
+            board.Set_TileOccupant(_position, null);
+            _position = target;
+            board.Set_TileOccupant(_position, this);
+            await cardAnimator.Move_asJump(_position);
             return;
         }
 
         // Failed to move
-        await cardAnimator.Move_asJump_FAIL(position);
+        await cardAnimator.Move_asJump_FAIL(target);
         return;
     }
 
@@ -183,17 +181,17 @@ public class Card : MonoBehaviour, ISelectable
         int amountMoved = 0;
         for (int i = 0; i < byAmount; i++)
         {
-            if (!board.CanPlace(position + (amountMoved + 1) * targetDirection))
+            if (!board.CanPlace(_position + (amountMoved + 1) * targetDirection))
                 break;
             amountMoved++;
         }
 
         if (amountMoved != 0)
         {
-            board.Set_TileOccupant(position, null);
-            position += amountMoved * targetDirection;
-            board.Set_TileOccupant(position, this);
-            await cardAnimator.Move_asSlide(position);
+            board.Set_TileOccupant(_position, null);
+            _position += amountMoved * targetDirection;
+            board.Set_TileOccupant(_position, this);
+            await cardAnimator.Move_asSlide(_position);
             return;
         }
 
@@ -203,15 +201,24 @@ public class Card : MonoBehaviour, ISelectable
 
     private async Task Attack_asJump(HexDirection direction, int byAmount, int damageAmount)
     {
-        HexCoordinates target = position + byAmount * direction.GetRelativeCoordinates();
+        HexCoordinates target = _position + byAmount * direction.GetRelativeCoordinates();
+
+
+        Debug.Log(target);
+        Debug.Log(board.TileExistance(target));
+        Debug.Log(board.TileOccupant(target));
 
         if (board.CanAttack(target)) // ask if attack is possible
         {
+
+            await cardAnimator.Attack_asJump_1(target);
             await board.TileOccupant(target).TakeDamage(damageAmount);
+            await cardAnimator.Attack_asJump_1(_position);
             return;
         }
 
         // Failed to attack
+        await cardAnimator.Move_asJump_FAIL(_position);
         return;
     }
 
@@ -222,12 +229,12 @@ public class Card : MonoBehaviour, ISelectable
         int amountMoved = 1;
         for (int i = 1; i <= byAmount; i++)
         {
-            if (!board.CanPlace(position + amountMoved * targetDirection))
+            if (!board.CanPlace(_position + amountMoved * targetDirection))
                 break;
             amountMoved++;
         }
 
-        HexCoordinates target = position + amountMoved * targetDirection;
+        HexCoordinates target = _position + amountMoved * targetDirection;
 
         // successfull attack
         if (board.CanAttack(target))

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
+using NUnit.Framework.Constraints;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
@@ -19,6 +20,11 @@ public class Player : MonoBehaviour
     {
         playerStateManager = GetComponent<PlayerStateManager>();
         referee = FindFirstObjectByType<Referee>();
+    }
+
+    void Start()
+    {
+        // playerStateManager.ToState(PlayerState.ViewingHand);
     }
 
     //
@@ -78,6 +84,8 @@ public class Player : MonoBehaviour
     // Forced to watch by referee
     //
 
+    public bool _isPlayerTurn { get; private set; } = false;
+
     public async Task WatchGame()
     {
         await playerStateManager.ToState(PlayerState.WatchingGame);
@@ -86,12 +94,14 @@ public class Player : MonoBehaviour
     public async Task BeginTurn()
     {
         ResetMana();
+        // Temp?:
         await playerStateManager.ToState(PlayerState.ViewingHand);
-        playerStateManager._isPlayerTurn = true;
+        _isPlayerTurn = true;
     }
 
     public void EndTurn()
     {
-        playerStateManager._isPlayerTurn = false;
+        DrawCards();
+        _isPlayerTurn = false;
     }
 }

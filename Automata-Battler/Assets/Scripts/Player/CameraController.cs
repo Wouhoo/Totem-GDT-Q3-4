@@ -21,6 +21,9 @@ public class CameraController : MonoBehaviour
     {
         if (toState == PlayerState.ViewingHand)
             await TransitionTo(handViewTarget);
+        else if (toState == PlayerState.ViewingAction)
+            return; //TODO
+                    // await TransitionTo(actionViewTarget);
         else
             await TransitionTo(boardViewTarget);
     }

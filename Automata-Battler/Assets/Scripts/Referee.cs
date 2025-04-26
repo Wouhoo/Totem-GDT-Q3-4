@@ -25,17 +25,20 @@ public class Referee : MonoBehaviour
 
     void Start()
     {
+        player1.DrawCards();
+        player2.DrawCards();
         activePlayer = player1;
-        activePlayer.DrawCards();
-        activePlayer.ResetMana();
+        player2.gameObject.SetActive(false);
         activePlayer.BeginTurn(); // THIS IS OK! (NOT AWAIT)
     }
 
     public async Task EndTurn()
     {
         Debug.Log(round);
+
         activePlayer.EndTurn();
-        await activePlayer.WatchGame();
+
+        // Temp:
         activePlayer.gameObject.SetActive(false);
 
         if (round % 2 == 0 && activePlayer == player1)
@@ -53,9 +56,9 @@ public class Referee : MonoBehaviour
         else if (round % 2 == 1 && activePlayer == player2)
             activePlayer = player1;
 
+        // TEMP: 
         activePlayer.gameObject.SetActive(true);
 
-        activePlayer.DrawCards();
         await activePlayer.BeginTurn();
     }
 

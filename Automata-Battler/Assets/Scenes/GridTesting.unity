@@ -151,7 +151,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6869b95d9bde5c34dbf415e3bbf525c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isPlayerTurn: 0
 --- !u!114 &18532498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -286,7 +285,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6869b95d9bde5c34dbf415e3bbf525c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isPlayerTurn: 0
 --- !u!114 &60397016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1358,6 +1356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ff3e60248388d248aafd0a48d034ff8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttonType: 1
 --- !u!1001 &508242627
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1544,6 +1543,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ff3e60248388d248aafd0a48d034ff8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttonType: 0
 --- !u!4 &630520252 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4108379205787065912, guid: da68fe0eaca50434494b61b65cd0b2f3, type: 3}
@@ -3228,6 +3228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ff3e60248388d248aafd0a48d034ff8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttonType: 2
 --- !u!1 &2090184642
 GameObject:
   m_ObjectHideFlags: 0

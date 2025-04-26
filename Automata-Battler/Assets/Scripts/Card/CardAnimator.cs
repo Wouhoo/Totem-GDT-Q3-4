@@ -46,11 +46,13 @@ public class CardAnimator : MonoBehaviour
 
     public async Task Attack_asJump_1(HexCoordinates toPos)
     {
+        Vector3 start = transform.position;
+        Vector3 target = HexCoordinates.ToWorldPosition(toPos) + new Vector3(0, 2, 0);
         float elapsed = 0f;
         float duration = 0.5f;
         while (elapsed < duration)
         {
-            // TODO
+            transform.position = Vector3.Lerp(start, target, elapsed / duration);
             elapsed += Time.deltaTime;
             await Task.Yield();
         }
@@ -58,11 +60,13 @@ public class CardAnimator : MonoBehaviour
     }
     public async Task Attack_asJump_2(HexCoordinates toPos)
     {
+        Vector3 start = transform.position;
+        Vector3 target = HexCoordinates.ToWorldPosition(toPos);
         float elapsed = 0f;
         float duration = 0.5f;
         while (elapsed < duration)
         {
-            // TODO
+            transform.position = Vector3.Lerp(start, target, elapsed / duration);
             elapsed += Time.deltaTime;
             await Task.Yield();
         }

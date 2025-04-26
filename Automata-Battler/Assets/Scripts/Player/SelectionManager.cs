@@ -37,12 +37,12 @@ public class SelectionManager : MonoBehaviour
 
     void Update()
     {
-        if (!playerStateManager.IsInteractionAllowed()) return; // Interactions are disabled
+        if (!playerStateManager.IsHoverAllowed()) return; // Interactions are fully disabled
 
         ISelectable selected = GetSelectable();
 
         ManageHover(selected);
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0)) // Player attempts to click
             ManageSelection(selected);  // THIS IS OK! (NOT AWAIT)
     }
 
@@ -77,7 +77,7 @@ public class SelectionManager : MonoBehaviour
         switch (playerStateManager._currentState)
         {
             case PlayerState.PlacingCard:
-                if (selectable is HexCell tile)
+                if (selectable is HexCell tile && player._isPlayerTurn)
                 {
                     Task<bool> task_PlayCard = player.PlayCard(selectedCard, tile);
                     await task_PlayCard;
@@ -90,11 +90,11 @@ public class SelectionManager : MonoBehaviour
                     }
                 }
                 selectedCard = null;
-                await playerStateManager.ToState(PlayerState.ViewingBoard);
+                await playerStateManager.ToState(PlayerState.ViewingHand);
                 break;
 
             case PlayerState.ViewingHand:
-                if (selectable is Card card)
+                if (selectable is Card card && player._isPlayerTurn)
                 {
                     if (player._hand.Contains(card) && card._cost <= player._mana) // card in hand and we have enough mana
                     {
@@ -103,22 +103,12 @@ public class SelectionManager : MonoBehaviour
                     }
                 }
                 else if (selectable is Button button1)
-                {
-                    if (button1 == toBoard_Button)
-                        await playerStateManager.ToState(PlayerState.ViewingBoard);
-                    else if (button1 == play_Button)
-                        await referee.EndTurn();
-                }
+                    await ManageButtonSelection(button1);
                 break;
 
             case PlayerState.ViewingBoard:
                 if (selectable is Button button2)
-                {
-                    if (button2 == toHand_Button)
-                        await playerStateManager.ToState(PlayerState.ViewingHand);
-                    else if (button2 == play_Button)
-                        await referee.EndTurn();
-                }
+                    await ManageButtonSelection(button2);
                 break;
 
             case PlayerState.WatchingGame:
@@ -131,46 +121,83 @@ public class SelectionManager : MonoBehaviour
         }
     }
 
+    // Utility functions for managing selections
+
+    private async Task ManageButtonSelection(Button button)
+    {
+        Debug.Log(button.buttonType);
+        switch (button.buttonType)
+        {
+            case ButtonType.ViewHand:
+                await playerStateManager.ToState(PlayerState.ViewingHand);
+                break;
+            case ButtonType.ViewBoard:
+                await playerStateManager.ToState(PlayerState.ViewingBoard);
+                break;
+            case ButtonType.EndTurn:
+                await referee.EndTurn();
+                break;
+        }
+    }
+
+    // Setting Selectables
+
     private HashSet<ISelectable> allowedSelectables;
     public void UpdateSelectables(PlayerState playerState)
     {
+        allowedSelectables = new HashSet<ISelectable>();
         switch (playerState)
         {
             case PlayerState.PlacingCard:
-                allowedSelectables = new HashSet<ISelectable>();
-                // Tiles with nothing on them
-                foreach (HexCell tile in board.cells.Values)
-                {
-                    if (tile.Get_Card() == null)
-                        allowedSelectables.Add(tile);
-                }
+                allowedSelectables.UnionWith(Get_EmptyTiles());
                 break;
 
             case PlayerState.ViewingHand:
-                allowedSelectables = new HashSet<ISelectable>();
-                // Cards in hand + play button + toboard button
-                foreach (Card card in player._hand)
-                    allowedSelectables.Add(card);
+                allowedSelectables.UnionWith(Get_CardsInHand());
                 allowedSelectables.Add(play_Button);
                 allowedSelectables.Add(toBoard_Button);
                 break;
 
             case PlayerState.ViewingBoard:
-                allowedSelectables = new HashSet<ISelectable>();
-                // Cards on board + play button + tohand button
-                foreach (Card card in referee.cardList)
-                    allowedSelectables.Add(card);
+                allowedSelectables.UnionWith(Get_CardsOnBoard());
                 allowedSelectables.Add(play_Button);
                 allowedSelectables.Add(toHand_Button);
                 break;
 
             case PlayerState.WatchingGame:
-                // None
                 break;
 
             case PlayerState.Transitioning:
-                // None
                 break;
         }
+    }
+
+    // Utility functions for getting selectables
+
+    private HashSet<ISelectable> Get_CardsInHand()
+    {
+        HashSet<ISelectable> selectables = new HashSet<ISelectable>();
+        foreach (Card card in player._hand)
+            selectables.Add(card);
+        return selectables;
+    }
+
+    private HashSet<ISelectable> Get_CardsOnBoard()
+    {
+        HashSet<ISelectable> selectables = new HashSet<ISelectable>();
+        foreach (Card card in referee.cardList)
+            selectables.Add(card);
+        return selectables;
+    }
+
+    private HashSet<ISelectable> Get_EmptyTiles()
+    {
+        HashSet<ISelectable> selectables = new HashSet<ISelectable>();
+        foreach (HexCell tile in board.cells.Values)
+        {
+            if (tile.Get_Card() == null)
+                selectables.Add(tile);
+        }
+        return selectables;
     }
 }
