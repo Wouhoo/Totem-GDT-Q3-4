@@ -84,11 +84,22 @@ public class Card : MonoBehaviour, ISelectable
     public void OnHoverEnter()
     {
         // glow
+        var OutlineController = GetComponent<OutlineController>();
+        if (OutlineController != null)
+        {
+            OutlineController.SetOutline(true);
+        }
+
     }
 
     public void OnHoverExit()
     {
         // stop glowing
+        var OutlineController = GetComponent<OutlineController>();
+        if (OutlineController != null)
+        {
+            OutlineController.SetOutline(false);
+        }
     }
 
     public void OnSelect()

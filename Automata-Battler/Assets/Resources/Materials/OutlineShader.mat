@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Outline Shader
+  m_Name: OutlineShader
   m_Shader: {fileID: -6465566751694194690, guid: c9b980c2f899d4166833685449a5af71, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -51,8 +51,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Enabled: 0
     - _Fade_Distance: 1
-    - _Outline_Thickness: 0.01
+    - _Outline_Thickness: 0.02
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
