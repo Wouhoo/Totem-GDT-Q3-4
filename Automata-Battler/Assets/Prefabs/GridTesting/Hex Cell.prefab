@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5ce807379e4a4f1f92f3327d9c52869, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentColor: {r: 0, g: 1, b: 1, a: 1}
+  currentColor: {r: 0, g: 1, b: 1, a: 0.5882353}
 --- !u!1 &4996091297011373451
 GameObject:
   m_ObjectHideFlags: 0
@@ -361,5 +361,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82ddc33f908fc4c04b8b483ceaafe397, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentColor: {r: 1, g: 1, b: 1, a: 1}
+  currentColor: {r: 1, g: 1, b: 1, a: 0.39215687}
   borderSize: 0.05
