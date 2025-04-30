@@ -7,6 +7,7 @@ using Unity.Services.Relay.Models;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
+using System.Threading.Tasks;
 using TMPro;
 
 public class RelayManager : MonoBehaviour // Script for initializing a Unity Relay connection.
@@ -28,20 +29,25 @@ public class RelayManager : MonoBehaviour // Script for initializing a Unity Rel
         Instance = this;
     }
 
-    private async void Start() // async keyword required for waiting on this function
+    private void Start()
     {
         waitingForPlayersScreen.SetActive(false);
-        await UnityServices.InitializeAsync(); // Anything below this point won't be executed until services have been initialized
-        // Authenticate by anonymous sign-in (and wait until we're authenticated)
-        AuthenticationService.Instance.SignedIn += () =>
-        {
-            Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId); // Log player ID on sign in
-        };
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+    }
+
+    public void StartSingleplayer()
+    {
+        // Start the game in singleplayer mode.
+        // It is still required to start hosting on NetworkManager, but this is purely so RPCs execute correctly;
+        // you don't actually need an internet connection for this to work.
+        GameStarter.Instance.singleplayer = true;
+        NetworkManager.Singleton.gameObject.GetComponent<UnityTransport>().SetConnectionData("127.0.0.1", 7777); // Instead of using relay, open a "connection" on localhost
+        NetworkManager.Singleton.StartHost();
     }
 
     public async void CreateRelay()
     {
+        await InitializeServices(); // Anything below this point won't be executed until services have been initialized
+
         // Create a new relay (called by Host)
         try
         {
@@ -65,6 +71,10 @@ public class RelayManager : MonoBehaviour // Script for initializing a Unity Rel
 
     public async void JoinRelay()
     {
+        //Debug.Log("Here1");
+        await InitializeServices(); // Anything below this point won't be executed until services have been initialized
+        //Debug.Log("Here3");
+
         // Join a relay (called by Client)
         try
         {
@@ -81,5 +91,18 @@ public class RelayManager : MonoBehaviour // Script for initializing a Unity Rel
         {
             Debug.Log(e);
         }
+    }
+
+    private async Task InitializeServices()
+    {
+        // Initialize & log into Unity Gaming Services
+        await UnityServices.InitializeAsync(); 
+        // Authenticate by anonymous sign-in (and wait until we're authenticated)
+        AuthenticationService.Instance.SignedIn += () =>
+        {
+            Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId); // Log player ID on sign in
+        };
+        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        //Debug.Log("Here2");
     }
 }
