@@ -53,7 +53,8 @@ public class Board : MonoBehaviour
 			cells[cell.coordinates] = cell;
 
 			//IMPORTANT this means: Cell is not shown if it isn't in the grid
-			cell.mesh.GenerateMesh();
+			//no longer required, cells have their own meshes from the start
+			//cell.mesh.GenerateMesh();
 
 			Text label = Instantiate<Text>(cellLabelPrefab);
 			label.rectTransform.SetParent(gridCanvas.transform, false);

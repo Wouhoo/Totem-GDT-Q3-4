@@ -45,14 +45,20 @@ public class HexCell : MonoBehaviour, ISelectable
     public void OnSelect() { }
     public void OnHoverEnter() 
     {
-        Debug.Log("Cell hover enter at: " + coordinates);
-        highlightMesh.SetActive(true);
+        var OutlineController = GetComponent<OutlineController>();
+        if (OutlineController != null)
+        {
+            OutlineController.SetOutline(true);
+        }
 
     }
     public void OnHoverExit() 
     { 
-        Debug.Log("Cell hover exit at: " + coordinates);
-        highlightMesh.SetActive(false);
+        var OutlineController = GetComponent<OutlineController>();
+        if (OutlineController != null)
+        {
+            OutlineController.SetOutline(false);
+        }
     }
 
 }

@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEngine;
 
 //[ExecuteAlways]
+//TODO: TOTALLY REDUNDANT NOW ~Lars
 public class BoardCellMesh : MonoBehaviour {
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
@@ -57,6 +58,7 @@ public class BoardCellMesh : MonoBehaviour {
         GenerateMesh();
     }
 
+    
     public void GenerateMesh() {
         
         mesh.Clear();

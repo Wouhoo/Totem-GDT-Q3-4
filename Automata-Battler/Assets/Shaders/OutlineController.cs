@@ -11,7 +11,8 @@ public class OutlineController : MonoBehaviour
 
     private void Awake()
     {
-        outlineMaterialTemplate = Resources.Load<Material>("Materials/OutlineShader"); //THAT IS THE DUMBEST SHIT I HAVE SEEN ALL WEEK AND I CODE DAFNY FFS WHY IS IT SO SPECIFIC
+        //outlineMaterialTemplate = Resources.Load<Material>("Materials/OutlineShader"); //THAT IS THE DUMBEST SHIT I HAVE SEEN ALL WEEK AND I CODE DAFNY FFS WHY IS IT SO SPECIFIC
+        outlineMaterialTemplate = Resources.Load<Material>("Materials/Shader Graphs_XZ Stretch Shader");
         _renderer = GetComponent<Renderer>();
         _propBlock = new MaterialPropertyBlock();
 
