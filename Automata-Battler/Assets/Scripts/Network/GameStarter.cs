@@ -6,8 +6,6 @@ public class GameStarter : NetworkBehaviour // Loads the game scene from the mai
     // Make this a singleton
     public static GameStarter Instance { get; private set; }
 
-    public bool singleplayer = false;
-
     private void Awake()
     {
         if (Instance != null)
@@ -28,8 +26,8 @@ public class GameStarter : NetworkBehaviour // Loads the game scene from the mai
 
     private void NetworkManager_OnClientConnectedCallback(ulong obj)
     {
-        // Load game when both players have connected or the game is in singleplayer
-        if(NetworkManager.Singleton.ConnectedClientsList.Count == 2 || singleplayer)
+        // Load game when both players have connected
+        if(NetworkManager.Singleton.ConnectedClientsList.Count == 2)
         {
             // TODO: Replace scene name with actual game scene name (if we ever change that)
             NetworkManager.SceneManager.LoadScene("Scenes/GridTesting", UnityEngine.SceneManagement.LoadSceneMode.Single); // LoadMode: only loads the new scene, unloads all previous ones
