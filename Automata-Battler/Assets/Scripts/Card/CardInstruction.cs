@@ -68,6 +68,11 @@ public struct CardInstruction
         Debug.Log("Visual not implemented.");
         return "";
     }
+
+    public void Rotate(int byAmount)
+    {
+        this.direction = this.direction.Rotate(byAmount);
+    }
 }
 
 

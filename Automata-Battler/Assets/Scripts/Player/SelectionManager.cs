@@ -55,10 +55,10 @@ public class SelectionManager : MonoBehaviour
             if (allowedSelectables.Contains(selectable))
                 return selectable;
             //sorry tim im workaround-ing ~Lars
-            else if (selectable is HexCell)
-            {
-                return selectable;
-            }
+            // else if (selectable is HexCell)
+            // {
+            //return selectable;
+            //}
         }
         return null;
     }
@@ -165,6 +165,7 @@ public class SelectionManager : MonoBehaviour
 
             case PlayerState.ViewingBoard:
                 allowedSelectables.UnionWith(Get_CardsOnBoard());
+                allowedSelectables.UnionWith(Get_EmptyTiles());
                 allowedSelectables.Add(play_Button);
                 allowedSelectables.Add(toHand_Button);
                 break;

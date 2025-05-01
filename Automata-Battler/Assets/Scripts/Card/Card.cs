@@ -19,6 +19,7 @@ public class Card : MonoBehaviour, ISelectable
     private Board board;
     private Referee referee;
     private CardRenderer cardRenderer;
+    private MeshRenderer meshRenderer;
 
     // Prefab Stuff
     [Header("Card Properties")]
@@ -43,6 +44,7 @@ public class Card : MonoBehaviour, ISelectable
         board = FindFirstObjectByType<Board>();
         referee = FindFirstObjectByType<Referee>();
         cardRenderer = GetComponent<CardRenderer>();
+        meshRenderer = GetComponent<MeshRenderer>();
     }
 
     void Start()
@@ -57,6 +59,7 @@ public class Card : MonoBehaviour, ISelectable
     public void Set_Owner(Player player)
     {
         _ownerPlayer = player;
+        meshRenderer.material = player.cardMaterial;
     }
 
     public void Set_Initiative(int amount)
@@ -131,7 +134,21 @@ public class Card : MonoBehaviour, ISelectable
 
     public async Task ExecuteInstructions()
     {
-        foreach (var instruction in instructions)
+        foreach (CardInstruction instruction in instructions)
             await instruction.Execute(this);
+    }
+
+    // Special instruction:
+
+    public void Rotate(int byAmount = 0)
+    {
+        for (int i = 0; i < instructions.Count; i++)
+        {
+            CardInstruction instruction = instructions[i];
+            instruction.Rotate(byAmount);
+            instructions[i] = instruction;
+            Debug.Log(instructions[i].GetVisual());
+        }
+        cardRenderer.Render_Instructions();
     }
 }

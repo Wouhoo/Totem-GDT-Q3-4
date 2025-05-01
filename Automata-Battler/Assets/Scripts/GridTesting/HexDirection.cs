@@ -33,4 +33,9 @@ public static class HexDirectionExtensions
     {
         return directionRelativeCoordinates[direction];
     }
+
+    public static HexDirection Rotate(this HexDirection direction, int byAmount)
+    {
+        return (HexDirection)(((int)direction + byAmount) % 6);
+    }
 }

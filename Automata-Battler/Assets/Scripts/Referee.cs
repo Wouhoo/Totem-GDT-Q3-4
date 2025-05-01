@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 public class Referee : MonoBehaviour
 {
     [SerializeField] private Player player1;
+    public Player _player1 => player1;
     [SerializeField] private Player player2;
     private Player activePlayer;
     private int round = 0;

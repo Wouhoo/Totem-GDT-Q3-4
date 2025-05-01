@@ -11,11 +11,12 @@ GameObject:
   - component: {fileID: 2258352908710507920}
   - component: {fileID: 1917568921908935741}
   - component: {fileID: 6272969405024136741}
-  - component: {fileID: 8381414334951864711}
   - component: {fileID: 8180277049089740017}
   - component: {fileID: 7600848862062600045}
+  - component: {fileID: 8870509317267164601}
+  - component: {fileID: 8182669411801096124}
   m_Layer: 7
-  m_Name: Shotgunner
+  m_Name: Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 15, y: 1, z: 15}
+  m_LocalScale: {x: 8, y: 1, z: 8}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4419226816236505785}
@@ -49,19 +50,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9a1638c72e9d7541bbb9afa32db2284, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cost: 2
+  cost: 1
   health: 1
   damage: 1
   inPlay: 0
-  instructions:
-  - instructionType: 0
-    direction: 0
-  - instructionType: 3
-    direction: 1
-  - instructionType: 3
-    direction: 0
-  - instructionType: 3
-    direction: 5
+  instructions: []
 --- !u!114 &6272969405024136741
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79,27 +72,6 @@ MonoBehaviour:
   textDamage: {fileID: 8213350080353812017}
   textInitiative: {fileID: 4616331059128715832}
   textInstructions: {fileID: 4165875441736839793}
---- !u!65 &8381414334951864711
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 723037082471106720}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!33 &8180277049089740017
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -107,7 +79,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 723037082471106720}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 2534964839176971238, guid: 8d69e70be865c4ea39522a6e1b5db649, type: 3}
 --- !u!23 &7600848862062600045
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -131,7 +103,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c106ae7efcdd0a349976f80b1398a855, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -153,6 +125,42 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8870509317267164601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723037082471106720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8faf3a62c2a9149cc97d1a2e79da1796, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMaterialTemplate: {fileID: 2100000, guid: 39a97e51829064876bda1964e5812b4a, type: 2}
+  materialIndex: 0
+--- !u!64 &8182669411801096124
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723037082471106720}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 2534964839176971238, guid: 8d69e70be865c4ea39522a6e1b5db649, type: 3}
 --- !u!1 &1569923647480010714
 GameObject:
   m_ObjectHideFlags: 0
@@ -861,7 +869,7 @@ RectTransform:
   m_GameObject: {fileID: 6878457094599187883}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2816629641919865012}
@@ -1005,7 +1013,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Shotgunner
+  m_text: Footsoldier
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e190d5ab3fbf2bd4a8186c0dd5a94913, type: 2}
   m_sharedMaterial: {fileID: 8479616224764583134, guid: e190d5ab3fbf2bd4a8186c0dd5a94913, type: 2}

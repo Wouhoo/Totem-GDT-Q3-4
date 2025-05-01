@@ -15,16 +15,14 @@ public class Player : MonoBehaviour
     private Referee referee;
     private PlayerStateManager playerStateManager;
     [SerializeField] private Deck deck;
+    private CardManager cardManager;
+    public Material cardMaterial;
 
     void Awake()
     {
         playerStateManager = GetComponent<PlayerStateManager>();
         referee = FindFirstObjectByType<Referee>();
-    }
-
-    void Start()
-    {
-        // playerStateManager.ToState(PlayerState.ViewingHand);
+        cardManager = FindFirstObjectByType<CardManager>();
     }
 
     //
@@ -39,13 +37,26 @@ public class Player : MonoBehaviour
             return;
         int neededCards = 5 - _hand.Count;
         for (int i = 0; i < neededCards; i++)
-            _hand.Add(deck.DrawCard());
+            _hand.Add(DrawCard());
 
         for (int i = 0; i < 5; i++)
         {
             Card card = _hand[i];
             card.transform.position = deck.slots[i].position;
         }
+    }
+
+    public Card DrawCard()
+    {
+        int index = Random.Range(0, cardManager.playableCards.Count);
+        GameObject cardObject = Instantiate(cardManager.playableCards[index], cardManager.transform);
+        Card card = cardObject.GetComponent<Card>();
+        card.Set_Owner(this);
+        if (this != referee._player1)
+        {
+            card.Rotate(3); // align with player view
+        }
+        return card;
     }
 
     //
