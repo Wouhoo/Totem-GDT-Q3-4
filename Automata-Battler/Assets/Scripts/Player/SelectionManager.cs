@@ -201,7 +201,7 @@ public class SelectionManager : MonoBehaviour
         HashSet<ISelectable> selectables = new HashSet<ISelectable>();
         foreach (HexCell tile in board.cells.Values)
         {
-            if (tile.Get_Card() == null && (tile.commander == this || tile.commander == null))
+            if (tile.Get_Card() == null && (tile.commander == player || tile.commander == null))
                 selectables.Add(tile);
         }
         return selectables;
