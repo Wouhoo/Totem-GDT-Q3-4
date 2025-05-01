@@ -154,7 +154,7 @@ public class SelectionManager : MonoBehaviour
         switch (playerState)
         {
             case PlayerState.PlacingCard:
-                allowedSelectables.UnionWith(Get_EmptyTiles());
+                allowedSelectables.UnionWith(Get_ValidEmptyTiles());
                 break;
 
             case PlayerState.ViewingHand:
@@ -165,7 +165,7 @@ public class SelectionManager : MonoBehaviour
 
             case PlayerState.ViewingBoard:
                 allowedSelectables.UnionWith(Get_CardsOnBoard());
-                allowedSelectables.UnionWith(Get_EmptyTiles());
+                allowedSelectables.UnionWith(Get_ValidEmptyTiles());
                 allowedSelectables.Add(play_Button);
                 allowedSelectables.Add(toHand_Button);
                 break;
@@ -196,12 +196,12 @@ public class SelectionManager : MonoBehaviour
         return selectables;
     }
 
-    private HashSet<ISelectable> Get_EmptyTiles()
+    private HashSet<ISelectable> Get_ValidEmptyTiles()
     {
         HashSet<ISelectable> selectables = new HashSet<ISelectable>();
         foreach (HexCell tile in board.cells.Values)
         {
-            if (tile.Get_Card() == null)
+            if (tile.Get_Card() == null && (tile.commander == this || tile.commander == null))
                 selectables.Add(tile);
         }
         return selectables;

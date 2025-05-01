@@ -147,7 +147,6 @@ public class Card : MonoBehaviour, ISelectable
             CardInstruction instruction = instructions[i];
             instruction.Rotate(byAmount);
             instructions[i] = instruction;
-            Debug.Log(instructions[i].GetVisual());
         }
         cardRenderer.Render_Instructions();
     }

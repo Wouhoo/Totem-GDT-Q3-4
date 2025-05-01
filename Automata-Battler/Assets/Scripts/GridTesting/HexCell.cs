@@ -11,6 +11,7 @@ public class HexCell : MonoBehaviour, ISelectable
     private SpriteRenderer placeholderSprite;
     [SerializeField] public BoardCellMesh mesh;
     [SerializeField] public GameObject highlightMesh;
+    [SerializeField] public Player commander;
 
     //turn off the sprite in play mode, as the mesh will be generated
     void Start()
@@ -43,7 +44,7 @@ public class HexCell : MonoBehaviour, ISelectable
     }
 
     public void OnSelect() { }
-    public void OnHoverEnter() 
+    public void OnHoverEnter()
     {
         var OutlineController = GetComponent<OutlineController>();
         if (OutlineController != null)
@@ -52,8 +53,8 @@ public class HexCell : MonoBehaviour, ISelectable
         }
 
     }
-    public void OnHoverExit() 
-    { 
+    public void OnHoverExit()
+    {
         var OutlineController = GetComponent<OutlineController>();
         if (OutlineController != null)
         {

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
 using NUnit.Framework.Constraints;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
@@ -48,14 +49,12 @@ public class Player : MonoBehaviour
 
     public Card DrawCard()
     {
-        int index = Random.Range(0, cardManager.playableCards.Count);
+        int index = UnityEngine.Random.Range(0, cardManager.playableCards.Count);
         GameObject cardObject = Instantiate(cardManager.playableCards[index], cardManager.transform);
         Card card = cardObject.GetComponent<Card>();
         card.Set_Owner(this);
         if (this != referee._player1)
-        {
             card.Rotate(3); // align with player view
-        }
         return card;
     }
 
@@ -68,6 +67,22 @@ public class Player : MonoBehaviour
     public void ResetMana()
     {
         _mana = 3;
+    }
+
+    // Damage system
+
+    public int _health { get; private set; } = 10;
+
+    public void TakeDamage(int amount)
+    {
+        _health = math.max(0, _health - amount);
+        if (_health == 0)
+            Die();
+    }
+
+    private void Die()
+    {
+        // TODO
     }
 
     //

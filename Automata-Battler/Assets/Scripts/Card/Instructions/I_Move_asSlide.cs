@@ -14,7 +14,7 @@ public class I_Move_asSlide : MonoBehaviour
         int amountMoved = 0;
         for (int i = 0; i < moveAmount; i++)
         {
-            if (!board.CanPlace(card._position + (amountMoved + 1) * targetDirection))
+            if (!board.CanPlace(card._ownerPlayer, card._position + (amountMoved + 1) * targetDirection))
                 break;
             amountMoved++;
         }

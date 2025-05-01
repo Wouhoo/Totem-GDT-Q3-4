@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem; //fucking sucks
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class Board : MonoBehaviour
 {
@@ -121,9 +122,20 @@ public class Board : MonoBehaviour
 		return cells[pos].Get_Card();
 	}
 
+	public bool TileIsHostileCommander(Player player, HexCoordinates pos)
+	{
+		if (!TileExistance(pos))
+		{
+			Debug.Log("Error: Non-existant tile");
+			return false;
+		}
+		if (cells[pos].commander != null && cells[pos].commander != player)
+			return true;
+		return false;
+	}
+
 	// NOTE: in general cards should only add and remove themselves, if you want a card to move you tell the card, not the board!
 
-	//maybe have these conditions be checked before calling, instead of being part of the function -Lars
 	public void Set_TileOccupant(HexCoordinates pos, Card card = null)
 	{
 		if (!TileExistance(pos))
@@ -138,7 +150,7 @@ public class Board : MonoBehaviour
 			return;
 		}
 
-		if (card != null && TileOccupant(pos) != null) // Adds a card to a tile 
+		if (card != null && TileOccupant(pos) != null && !TileIsHostileCommander(card._ownerPlayer, pos)) // Adds a card to a tile 
 		{
 			Debug.Log("Error: tried adding occupant to an occupied tile");
 			return;
@@ -147,13 +159,31 @@ public class Board : MonoBehaviour
 		cells[pos].Set_Card(card);
 	}
 
-	public bool CanPlace(HexCoordinates pos)
+	public bool CanPlace(Player player, HexCoordinates pos)
 	{
-		return (TileExistance(pos) && TileOccupant(pos) == null);
+		if (!TileExistance(pos))
+			return false;
+		return (TileExistance(pos) && TileOccupant(pos) == null && !TileIsHostileCommander(player, pos));
 	}
 
-	public bool CanAttack(HexCoordinates pos)
+	public bool CanAttack(Player player, HexCoordinates pos)
 	{
-		return (TileExistance(pos) && TileOccupant(pos) != null);
+		if (!TileExistance(pos)) return false;
+		if (TileOccupant(pos) != null) return true;
+		if (TileIsHostileCommander(player, pos)) return true;
+		return false;
+	}
+
+	public async Task Attack(Player player, HexCoordinates pos, int damageAmount)
+	{
+		if (!CanAttack(player, pos))
+		{
+			Debug.Log("Error: tried invalid attack");
+			return;
+		}
+		if (TileOccupant(pos) != null)
+			await I_TakeDamage.Execute(TileOccupant(pos), damageAmount);
+		else if (TileIsHostileCommander(player, pos))
+			cells[pos].commander.TakeDamage(damageAmount);
 	}
 }

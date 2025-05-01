@@ -11,7 +11,7 @@ public class I_Move_asJump : MonoBehaviour
         Board board = FindFirstObjectByType<Board>();
         HexCoordinates target = card._position + moveAmount * direction.GetRelativeCoordinates();
 
-        if (board.CanPlace(target)) // ask if move is possible
+        if (board.CanPlace(card._ownerPlayer, target)) // ask if move is possible
         {
             board.Set_TileOccupant(card._position, null);
             card.Set_Position(target);

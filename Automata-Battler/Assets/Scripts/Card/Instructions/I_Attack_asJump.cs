@@ -12,10 +12,10 @@ public class I_Attack_asJump : MonoBehaviour
 
         HexCoordinates target = card._position + moveAmount * direction.GetRelativeCoordinates();
 
-        if (board.CanAttack(target)) // ask if attack is possible
+        if (board.CanAttack(card._ownerPlayer, target)) // ask if attack is possible
         {
             await Animate_Success(card, target);
-            await I_TakeDamage.Execute(board.TileOccupant(target), damageAmount);
+            await board.Attack(card._ownerPlayer, target, damageAmount);
             return;
         }
         else // Failed to attack

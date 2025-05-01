@@ -15,16 +15,16 @@ public class I_Attack_asSlide : MonoBehaviour
         int amountMoved = 1;
         for (int i = 1; i <= moveAmount; i++)
         {
-            if (!board.CanPlace(card._position + amountMoved * targetDirection))
+            if (!board.CanPlace(card._ownerPlayer, card._position + amountMoved * targetDirection))
                 break;
             amountMoved++;
         }
         HexCoordinates target = card._position + amountMoved * targetDirection;
 
-        if (board.CanAttack(target)) // successfull attack
+        if (board.CanAttack(card._ownerPlayer, target)) // successfull attack
         {
             await Animate_Success(card, target);
-            await I_TakeDamage.Execute(board.TileOccupant(target), damageAmount);
+            await board.Attack(card._ownerPlayer, target, damageAmount);
         }
         else // Failed to attack
             await Animate_Failure(card);
