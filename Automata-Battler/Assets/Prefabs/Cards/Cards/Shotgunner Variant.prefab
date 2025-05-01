@@ -80,6 +80,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6706120280879270475, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
+      propertyPath: m_text
+      value: Shotgunner
+      objectReference: {fileID: 0}
+    - target: {fileID: 8870509317267164601, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
+      propertyPath: width
+      value: 1.07
+      objectReference: {fileID: 0}
+    - target: {fileID: 8870509317267164601, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
+      propertyPath: color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8870509317267164601, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
+      propertyPath: color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8870509317267164601, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
+      propertyPath: color.g
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
