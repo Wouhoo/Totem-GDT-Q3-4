@@ -39,7 +39,7 @@ public class RelayManager : MonoBehaviour // Script for initializing a Unity Rel
         // Start the game in singleplayer mode.
         // It is still required to start hosting on NetworkManager, but this is purely so RPCs execute correctly;
         // you don't actually need an internet connection for this to work.
-        //GameStarter.Instance.singleplayer = true; @Wouter you removed the 'singleplayer' attribute from GameStarter so this won't compile ~Lars
+        GameStarter.Instance.singleplayer = true; 
         NetworkManager.Singleton.gameObject.GetComponent<UnityTransport>().SetConnectionData("127.0.0.1", 7777); // Instead of using relay, open a "connection" on localhost
         NetworkManager.Singleton.StartHost();
     }
