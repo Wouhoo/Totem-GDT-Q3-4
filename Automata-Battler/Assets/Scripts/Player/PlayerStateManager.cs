@@ -9,29 +9,35 @@ public class PlayerStateManager : MonoBehaviour
 {
     private CameraController cameraController;
     private SelectionManager selectionManager;
-    private Player player;
 
     public PlayerState _currentState { get; private set; }
+    public PlayerCameraState _currentCameraState { get; private set; }
+    public PlayerRequestState _currentRequestState { get; private set; }
 
 
     void Awake()
     {
-        player = GetComponent<Player>();
         cameraController = GetComponent<CameraController>();
         selectionManager = GetComponent<SelectionManager>();
     }
 
-    public async Task ToState(PlayerState toState)
+    public async Task ToState(PlayerState toState, PlayerCameraState toCamera, PlayerRequestState toRequest)
     {
+        Debug.Log("Start Transition");
         _currentState = PlayerState.Transitioning;
-        selectionManager.UpdateSelectables(toState);
-        await cameraController.MoveCamera(toState); // This takes multiple frames to conclude
+        _currentRequestState = PlayerRequestState.None;
+        Debug.Log(1);
+        selectionManager.UpdateSelectables(toState, toCamera, toRequest);
+        Debug.Log(2);
+        await cameraController.MoveCamera(toCamera); // This takes multiple frames to conclude // To Wouter: maybe multiple instances of this since both use the same camera? (is it easier to give each player their own camera? Dunno?)
         _currentState = toState;
-        Debug.Log($"{player} change state to {_currentState}");
+        _currentCameraState = toCamera;
+        _currentRequestState = toRequest;
+        Debug.Log($"Change state to {_currentState}, {_currentCameraState}, {_currentRequestState}");
     }
 
     public bool IsHoverAllowed()
     {
-        return _currentState == PlayerState.ViewingBoard || _currentState == PlayerState.ViewingHand || _currentState == PlayerState.PlacingCard;
+        return _currentState != PlayerState.Transitioning || _currentState == PlayerState.WatchingGame;
     }
 }

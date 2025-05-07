@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
+using NUnit.Framework.Constraints;
 
 [RequireComponent(typeof(Player))]
 [RequireComponent(typeof(PlayerStateManager))]
 [DisallowMultipleComponent]
 public class SelectionManager : MonoBehaviour
 {
-    private Player player;
+    private Player player; // To Wouter: int thing
     private PlayerStateManager playerStateManager;
     private Referee referee;
     private Board board;
@@ -22,11 +23,11 @@ public class SelectionManager : MonoBehaviour
     [SerializeField] private Button play_Button;
 
     private ISelectable currentHover;
-    private Card selectedCard;
+    private IAction currentAction;
 
     void Awake()
     {
-        player = GetComponent<Player>();
+        player = GetComponent<Player>(); // To Wouter: int thing
         playerStateManager = GetComponent<PlayerStateManager>();
 
         referee = FindFirstObjectByType<Referee>();
@@ -39,7 +40,7 @@ public class SelectionManager : MonoBehaviour
     {
         if (!playerStateManager.IsHoverAllowed()) return; // Interactions are fully disabled
 
-        ISelectable selected = GetSelectable();
+        ISelectable selected = GetSelectable(); // To Wouter: So all function on this game object will be server side
 
         ManageHover(selected);
         if (Input.GetMouseButtonDown(0)) // Player attempts to click
@@ -48,17 +49,12 @@ public class SelectionManager : MonoBehaviour
 
     private ISelectable GetSelectable()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // To Wouter: will using a "main" camera cause issues?
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, selectablesLayerMask))
         {
             ISelectable selectable = hit.collider.GetComponent<ISelectable>();
             if (allowedSelectables.Contains(selectable))
                 return selectable;
-            //sorry tim im workaround-ing ~Lars
-            // else if (selectable is HexCell)
-            // {
-            //return selectable;
-            //}
         }
         return null;
     }
@@ -70,59 +66,42 @@ public class SelectionManager : MonoBehaviour
             return;
         Debug.Log("currentHover is now: " + currentHover);
         if (currentHover != null)
-            currentHover.OnHoverExit();
+            currentHover.OnHoverExit(); // To Wouter: this can be done client side
         currentHover = selectable;
         if (currentHover != null)
-            currentHover.OnHoverEnter();
+            currentHover.OnHoverEnter(); // To Wouter: this can be done client side
     }
 
     private async Task ManageSelection(ISelectable selectable)
     {
         Debug.Log($"{player} selected {selectable}");
-        switch (playerStateManager._currentState)
+        if (playerStateManager._currentRequestState == PlayerRequestState.None) // Begin selection process
         {
-            case PlayerState.PlacingCard:
-                if (selectable is HexCell tile && player._isPlayerTurn)
-                {
-                    Task<bool> task_PlayCard = player.PlayCard(selectedCard, tile);
-                    await task_PlayCard;
-                    bool res_PlayCard = task_PlayCard.Result;
-                    if (res_PlayCard)
-                    {
-                        selectedCard = null;
-                        await playerStateManager.ToState(PlayerState.ViewingBoard);
-                        break;
-                    }
-                }
-                selectedCard = null;
-                await playerStateManager.ToState(PlayerState.ViewingHand);
-                break;
-
-            case PlayerState.ViewingHand:
-                if (selectable is Card card && player._isPlayerTurn)
-                {
-                    if (player._hand.Contains(card) && card._cost <= player._mana) // card in hand and we have enough mana
-                    {
-                        selectedCard = card;
-                        await playerStateManager.ToState(PlayerState.PlacingCard);
-                    }
-                }
-                else if (selectable is Button button1)
-                    await ManageButtonSelection(button1);
-                break;
-
-            case PlayerState.ViewingBoard:
-                if (selectable is Button button2)
-                    await ManageButtonSelection(button2);
-                break;
-
-            case PlayerState.WatchingGame:
-                // should never happen...
-                break;
-
-            case PlayerState.Transitioning:
-                // should never happen...
-                break;
+            if (selectable is Button button)
+            {
+                await ManageButtonSelection(button);
+                return;
+            }
+            else if (selectable is IAction action)
+            {
+                // pre action check for mana if needed:
+                if (selectable is AbstractCard card && card._cost > player._mana) // To Wouter: int thing
+                    return;
+                currentAction = action;
+                await playerStateManager.ToState(PlayerState.Acting, currentAction.Get_ActionCamera(), currentAction.Get_ActionInput());
+                return;
+            }
+        }
+        else // Finish selection process
+        {
+            if (currentAction == null)
+                return; // UHHHHHH... NOT POSSIBLE HOPEFULLY????
+            await currentAction.Act(selectable); // To Wouter: server side i think
+            currentAction = null;
+            // if sucsess
+            // await playerStateManager.ToState(PlayerState.Playing, PlayerCameraState.ViewingBoard, PlayerRequestState.None);
+            // if fail
+            await playerStateManager.ToState(PlayerState.Playing, PlayerCameraState.ViewingHand, PlayerRequestState.None);
         }
     }
 
@@ -134,47 +113,65 @@ public class SelectionManager : MonoBehaviour
         switch (button.buttonType)
         {
             case ButtonType.ViewHand:
-                await playerStateManager.ToState(PlayerState.ViewingHand);
+                await playerStateManager.ToState(playerStateManager._currentState, PlayerCameraState.ViewingHand, PlayerRequestState.None);
                 break;
             case ButtonType.ViewBoard:
-                await playerStateManager.ToState(PlayerState.ViewingBoard);
+                await playerStateManager.ToState(playerStateManager._currentState, PlayerCameraState.ViewingBoard, PlayerRequestState.None);
                 break;
             case ButtonType.EndTurn:
-                await referee.EndTurn();
+                await referee.EndTurn(); // To Wouter: server side i think
                 break;
         }
     }
 
     // Setting Selectables
 
-    private HashSet<ISelectable> allowedSelectables;
-    public void UpdateSelectables(PlayerState playerState)
+    private HashSet<ISelectable> allowedSelectables = new HashSet<ISelectable>();
+    public void UpdateSelectables(PlayerState playerState, PlayerCameraState playerCamera, PlayerRequestState playerRequest)
     {
         allowedSelectables = new HashSet<ISelectable>();
-        switch (playerState)
+        if (playerState == PlayerState.Transitioning || playerState == PlayerState.WatchingGame)
+            return;
+        else if (playerRequest == PlayerRequestState.None) // Begin a selection process
         {
-            case PlayerState.PlacingCard:
-                allowedSelectables.UnionWith(Get_ValidEmptyTiles());
-                break;
+            switch (playerCamera)
+            {
+                case PlayerCameraState.ViewingHand:
+                    allowedSelectables.UnionWith(Get_CardsInHand());
+                    allowedSelectables.Add(play_Button);
+                    allowedSelectables.Add(toBoard_Button);
+                    return;
 
-            case PlayerState.ViewingHand:
-                allowedSelectables.UnionWith(Get_CardsInHand());
-                allowedSelectables.Add(play_Button);
-                allowedSelectables.Add(toBoard_Button);
-                break;
+                case PlayerCameraState.ViewingBoard:
+                    allowedSelectables.UnionWith(Get_CardsOnBoard());
+                    allowedSelectables.UnionWith(Get_ValidEmptyTiles());
+                    allowedSelectables.Add(play_Button);
+                    allowedSelectables.Add(toHand_Button);
+                    return;
 
-            case PlayerState.ViewingBoard:
-                allowedSelectables.UnionWith(Get_CardsOnBoard());
-                allowedSelectables.UnionWith(Get_ValidEmptyTiles());
-                allowedSelectables.Add(play_Button);
-                allowedSelectables.Add(toHand_Button);
-                break;
-
-            case PlayerState.WatchingGame:
-                break;
-
-            case PlayerState.Transitioning:
-                break;
+                case PlayerCameraState.ViewingActions:
+                    allowedSelectables.UnionWith(Get_CardsOnBoard());
+                    allowedSelectables.UnionWith(Get_ValidEmptyTiles());
+                    allowedSelectables.Add(play_Button);
+                    allowedSelectables.Add(toHand_Button);
+                    allowedSelectables.Add(toBoard_Button);
+                    return;
+            }
+        }
+        else if (playerState == PlayerState.Acting)
+        {
+            switch (playerRequest)
+            {
+                case PlayerRequestState.Tiles_ValidEmpty:
+                    allowedSelectables.UnionWith(Get_ValidEmptyTiles());
+                    return;
+                case PlayerRequestState.Cards_InHand:
+                    allowedSelectables.UnionWith(Get_CardsInHand());
+                    return;
+                case PlayerRequestState.Cards_InPlay:
+                    allowedSelectables.UnionWith(Get_CardsOnBoard());
+                    return;
+            }
         }
     }
 
@@ -183,7 +180,7 @@ public class SelectionManager : MonoBehaviour
     private HashSet<ISelectable> Get_CardsInHand()
     {
         HashSet<ISelectable> selectables = new HashSet<ISelectable>();
-        foreach (Card card in player._hand)
+        foreach (AbstractCard card in player._hand) // To Wouter: specify player int thing
             selectables.Add(card);
         return selectables;
     }
@@ -201,7 +198,7 @@ public class SelectionManager : MonoBehaviour
         HashSet<ISelectable> selectables = new HashSet<ISelectable>();
         foreach (HexCell tile in board.cells.Values)
         {
-            if (tile.Get_Card() == null && (tile.commander == player || tile.commander == null))
+            if (tile.Get_Card() == null && (tile.commander == player || tile.commander == null)) // To Wouter: int thing
                 selectables.Add(tile);
         }
         return selectables;

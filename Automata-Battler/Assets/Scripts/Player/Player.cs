@@ -7,7 +7,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 
-
 [RequireComponent(typeof(PlayerStateManager))]
 [DisallowMultipleComponent]
 public class Player : MonoBehaviour
@@ -24,52 +23,45 @@ public class Player : MonoBehaviour
         playerStateManager = GetComponent<PlayerStateManager>();
         referee = FindFirstObjectByType<Referee>();
         cardManager = FindFirstObjectByType<CardManager>();
+
+        // To Wouter: Assign intergers here (not start, since the ref needs them at start!)
     }
 
     //
     // Hand
     //
 
-    public List<Card> _hand { get; private set; } = new List<Card>();
+    public List<AbstractCard> _hand { get; private set; } = new List<AbstractCard>();
 
     public void DrawCards()
     {
-        if (_hand.Count == 5)
-            return;
         int neededCards = 5 - _hand.Count;
         for (int i = 0; i < neededCards; i++)
-            _hand.Add(DrawCard());
+            _hand.Add(cardManager.DrawCard(this));  // To Wouter: pass the player int instead of "this" or smth
 
         for (int i = 0; i < 5; i++)
         {
-            Card card = _hand[i];
+            AbstractCard card = _hand[i];
             card.transform.position = deck.slots[i].position;
         }
     }
 
-    public Card DrawCard()
-    {
-        int index = UnityEngine.Random.Range(0, cardManager.playableCards.Count);
-        GameObject cardObject = Instantiate(cardManager.playableCards[index], cardManager.transform);
-        Card card = cardObject.GetComponent<Card>();
-        card.Set_Owner(this);
-        if (this != referee._player1)
-            card.Rotate(3); // align with player view
-        return card;
-    }
-
     //
-    // Mana System
+    // Mana & Damage System
     //
 
-    public int _mana { get; private set; } = 3;
+    public int _mana = 3;
 
-    public void ResetMana()
+    public bool AttemptManaUse(int amount)
     {
-        _mana = 3;
+        if (amount >= _mana)
+        {
+            _mana -= amount;
+            return true;
+        }
+        else
+            return false;
     }
-
-    // Damage system
 
     public int _health { get; private set; } = 10;
 
@@ -86,48 +78,28 @@ public class Player : MonoBehaviour
     }
 
     //
-    // Play Card
+    // State Changes For The Ref:
     //
-
-    public async Task<bool> PlayCard(Card card, HexCell tile)
-    {
-        if (!_hand.Contains(card)) // card not in hand
-            return false;
-        if (tile.Get_Card() != null) // tile not free
-            return false;
-        if (card._cost > _mana) // not enough mana
-            return false;
-
-        // Else we now play our card
-        await card.PlaceCard(tile.coordinates);
-        _hand.Remove(card);
-        _mana -= card._cost;
-        referee.AddCard(card);
-        return true;
-    }
-
-    //
-    // Forced to watch by referee
-    //
-
-    public bool _isPlayerTurn { get; private set; } = false;
-
-    public async Task WatchGame()
-    {
-        await playerStateManager.ToState(PlayerState.WatchingGame);
-    }
 
     public async Task BeginTurn()
     {
-        ResetMana();
-        // Temp?:
-        await playerStateManager.ToState(PlayerState.ViewingHand);
-        _isPlayerTurn = true;
+        _mana = 3;
+        await playerStateManager.ToState(PlayerState.Playing, PlayerCameraState.ViewingHand, PlayerRequestState.None);
+    }
+
+    public async Task BeginView()
+    {
+        _mana = 3;
+        await playerStateManager.ToState(PlayerState.Viewing, PlayerCameraState.ViewingHand, PlayerRequestState.None);
+    }
+
+    public async Task WatchGame()
+    {
+        await playerStateManager.ToState(PlayerState.WatchingGame, PlayerCameraState.ViewingBoard, PlayerRequestState.None);
     }
 
     public void EndTurn()
     {
         DrawCards();
-        _isPlayerTurn = false;
     }
 }

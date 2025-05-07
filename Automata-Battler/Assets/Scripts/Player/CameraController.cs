@@ -10,21 +10,15 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Transform handViewTarget;
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private float transitionDuration = 1.0f;
-    private PlayerStateManager playerStateManager;
 
-    void Awake()
+    public async Task MoveCamera(PlayerCameraState toState)
     {
-        playerStateManager = GetComponent<PlayerStateManager>();
-    }
-
-    public async Task MoveCamera(PlayerState toState)
-    {
-        if (toState == PlayerState.ViewingHand)
+        if (toState == PlayerCameraState.ViewingHand)
             await TransitionTo(handViewTarget);
-        else if (toState == PlayerState.ViewingAction)
+        else if (toState == PlayerCameraState.ViewingActions)
             return; //TODO
                     // await TransitionTo(actionViewTarget);
-        else
+        else if (toState == PlayerCameraState.ViewingBoard)
             await TransitionTo(boardViewTarget);
     }
 

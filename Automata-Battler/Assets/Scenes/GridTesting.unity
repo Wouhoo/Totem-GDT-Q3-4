@@ -205,6 +205,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deck: {fileID: 832808019}
   cardMaterial: {fileID: 2100000, guid: 2a2bb5001ef06894898fbc5dbe93b950, type: 2}
+  _mana: 3
 --- !u!4 &18532501
 Transform:
   m_ObjectHideFlags: 0
@@ -257,6 +258,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deck: {fileID: 399449846}
   cardMaterial: {fileID: 2100000, guid: c106ae7efcdd0a349976f80b1398a855, type: 2}
+  _mana: 3
 --- !u!4 &60397014
 Transform:
   m_ObjectHideFlags: 0
@@ -270,7 +272,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1746278656}
   - {fileID: 399449845}
   - {fileID: 2101598855}
   - {fileID: 1954201437}
@@ -3121,37 +3122,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player1: {fileID: 60397013}
   player2: {fileID: 18532500}
---- !u!1 &1746278655
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1746278656}
-  m_Layer: 0
-  m_Name: Action Card Slot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1746278656
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1746278655}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 10.472841, y: -3.9559715, z: 39.96379}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 60397014}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1759318998 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4108379205787065912, guid: da68fe0eaca50434494b61b65cd0b2f3, type: 3}
@@ -3350,12 +3320,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: decd469733e577e48b19cde15cce163e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playableCards:
+  cards:
   - {fileID: 6598594609115212169, guid: caa356b533fe924438e7f389cc9af227, type: 3}
   - {fileID: 5364881578889058240, guid: 247cc511eebffb04299b1741e849fb76, type: 3}
   - {fileID: 3391547892623095297, guid: 92c8dfaef8638854586a3891f0f8f84f, type: 3}
   - {fileID: 8741970680909964692, guid: 654b45a52b666bd47a042e9c83b64a3b, type: 3}
   - {fileID: 2641220852286931854, guid: 15a36d9cadaba5f4bb865393a3f6a07b, type: 3}
+  - {fileID: 60763234058066513, guid: 4db21513a5219564c8cfd54741e0caec, type: 3}
 --- !u!4 &1852071831
 Transform:
   m_ObjectHideFlags: 0

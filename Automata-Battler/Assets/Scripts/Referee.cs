@@ -13,8 +13,6 @@ public class Referee : MonoBehaviour
     private Player activePlayer;
     private int round = 0;
     public List<Card> cardList { get; private set; } = new List<Card>(); // in order of play (newest last)
-    private HashSet<Card> toRemove = new HashSet<Card>();
-
     public static Referee Instance { get; private set; }
 
     private void Awake()
@@ -32,6 +30,7 @@ public class Referee : MonoBehaviour
         activePlayer = player1;
         player2.gameObject.SetActive(false);
         activePlayer.BeginTurn(); // THIS IS OK! (NOT AWAIT)
+        // and otherPlayer.BeginView(); (if they were active...)
     }
 
     public async Task EndTurn()
@@ -62,13 +61,11 @@ public class Referee : MonoBehaviour
         activePlayer.gameObject.SetActive(true);
 
         await activePlayer.BeginTurn();
+        // and otherPlayer.BeginView();
     }
 
-
-    private bool busyExecuting = false;
     public async Task ExecuteCards()
     {
-        busyExecuting = true;
         // Execute cards from most recent to oldest
         for (int i = cardList.Count - 1; i >= 0; i--)
         {
@@ -79,45 +76,18 @@ public class Referee : MonoBehaviour
         // Remove cards after executions to prevent order errors
         cardList.RemoveAll(item => item == null);
         RefreshInitiative();
-
-        busyExecuting = false;
     }
 
     public void AddCard(Card card)
     {
+        // Note that removing cards is almoast always done during execution time, and then we dont want to refresh initiative, so thats why the remove function doesnt exist :P
         cardList.Add(card);
         RefreshInitiative();
-    }
-
-    public void RemoveCard(Card card)
-    {
-        if (busyExecuting)
-            Debug.Log("Ruh oh - something biiiig oopsies");
-        else
-        {
-            cardList.Remove(card);
-            RefreshInitiative();
-        }
     }
 
     public void RefreshInitiative()
     {
         for (int i = cardList.Count - 1; i >= 0; i--)
             cardList[i].Set_Initiative(i);
-    }
-
-    // Special actions
-
-    public void Action_ChangeCardOwner(Card card)
-    {
-
-    }
-    public void Action_RotateCardInstructions(int byAmount)
-    {
-
-    }
-    public void Action_FreezeCard()
-    {
-
     }
 }

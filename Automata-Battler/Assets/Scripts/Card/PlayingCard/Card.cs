@@ -13,19 +13,17 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 
 [DisallowMultipleComponent]
-public class Card : MonoBehaviour, ISelectable
+public class Card : AbstractCard, IAction
 {
     // Card references
     private Board board;
     private Referee referee;
     private CardRenderer cardRenderer;
-    private MeshRenderer meshRenderer;
 
     // Prefab Stuff
     [Header("Card Properties")]
     public HexCoordinates _position { get; private set; }
-    public Player _ownerPlayer { get; private set; }
-    [SerializeField] private int cost = 1;
+
     [SerializeField] private int health = 1;
     [SerializeField] private int damage = 1;
     public int _initiative { get; private set; }
@@ -33,7 +31,6 @@ public class Card : MonoBehaviour, ISelectable
     [SerializeField] private List<CardInstruction> instructions = new List<CardInstruction>();
 
     // Getting functions
-    public int _cost => cost;
     public int _health => health;
     public int _damage => damage;
     public bool _inPlay => inPlay;
@@ -44,7 +41,6 @@ public class Card : MonoBehaviour, ISelectable
         board = FindFirstObjectByType<Board>();
         referee = FindFirstObjectByType<Referee>();
         cardRenderer = GetComponent<CardRenderer>();
-        meshRenderer = GetComponent<MeshRenderer>();
     }
 
     void Start()
@@ -55,12 +51,6 @@ public class Card : MonoBehaviour, ISelectable
     // 
     // Setting Functions
     //
-
-    public void Set_Owner(Player player)
-    {
-        _ownerPlayer = player;
-        meshRenderer.material = player.cardMaterial;
-    }
 
     public void Set_Initiative(int amount)
     {
@@ -77,55 +67,6 @@ public class Card : MonoBehaviour, ISelectable
     {
         health = amount;
         cardRenderer.Render_Health();
-    }
-
-    // 
-    // PLAYER INTERACTIONS
-    //
-
-
-    public void OnHoverEnter()
-    {
-        // glow
-        var OutlineController = GetComponent<OutlineController>();
-        if (OutlineController != null)
-        {
-            OutlineController.SetOutline(true);
-        }
-
-    }
-
-    public void OnHoverExit()
-    {
-        // stop glowing
-        var OutlineController = GetComponent<OutlineController>();
-        if (OutlineController != null)
-        {
-            OutlineController.SetOutline(false);
-        }
-    }
-
-    public void OnSelect()
-    {
-        if (inPlay)
-        {
-
-        }
-        else // inHand
-        {
-            // heavy glow?
-            // move to play?
-        }
-    }
-
-    public async Task PlaceCard(HexCoordinates pos)
-    {
-        // should already be checked that placement is valid
-        _position = pos;
-        board.Set_TileOccupant(_position, this);
-        //temp:
-        await CardAnimator.Lerp_JumpTo(transform, HexCoordinates.ToWorldPosition(pos), 0.2f);
-        inPlay = true;
     }
 
     //
@@ -149,5 +90,41 @@ public class Card : MonoBehaviour, ISelectable
             instructions[i] = instruction;
         }
         cardRenderer.Render_Instructions();
+    }
+
+    //
+    // Placement Action
+    //
+
+    public PlayerCameraState Get_ActionCamera()
+    {
+        return PlayerCameraState.ViewingBoard;
+    }
+    public PlayerRequestState Get_ActionInput()
+    {
+        return PlayerRequestState.Tiles_ValidEmpty;
+    }
+    public async Task Act(ISelectable selectable)
+    {
+        if (selectable is HexCell tile)
+        {
+            if (!_ownerPlayer._hand.Contains(this)) // card not in hand
+                return; // false
+            if (tile.Get_Card() != null) // tile not free
+                return; // false
+            if (_ownerPlayer.AttemptManaUse(_cost))
+            {
+                // We now play our card
+                _position = tile.coordinates;
+                board.Set_TileOccupant(_position, this); // To Wouter: say it with meeeee, serveveveveveveeeerrrrrr sideeeeeeeeeee (i think)
+                //temp:
+                await CardAnimator.Lerp_JumpTo(transform, HexCoordinates.ToWorldPosition(tile.coordinates), 0.2f);
+                inPlay = true;
+                _ownerPlayer._hand.Remove(this); // To Wouter: "this" is.... will this work client side??? (also int thingy)
+                referee.AddCard(this);
+                return; //true
+            }
+        }
+        // else invalid input
     }
 }
