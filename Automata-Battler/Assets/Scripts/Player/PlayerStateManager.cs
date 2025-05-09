@@ -26,9 +26,7 @@ public class PlayerStateManager : MonoBehaviour
         Debug.Log("Start Transition");
         _currentState = PlayerState.Transitioning;
         _currentRequestState = PlayerRequestState.None;
-        Debug.Log(1);
         selectionManager.UpdateSelectables(toState, toCamera, toRequest);
-        Debug.Log(2);
         await cameraController.MoveCamera(toCamera); // This takes multiple frames to conclude // To Wouter: maybe multiple instances of this since both use the same camera? (is it easier to give each player their own camera? Dunno?)
         _currentState = toState;
         _currentCameraState = toCamera;

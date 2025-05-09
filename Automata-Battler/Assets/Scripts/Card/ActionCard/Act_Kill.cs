@@ -14,6 +14,7 @@ public class Act_Kill : AbstractCard, IAction
             {
                 await I_Die.Execute(card);
                 _ownerPlayer._hand.Remove(this); // To Wouter: int thingy
+                Destroy(this.gameObject);
             }
         }
         // else we failed

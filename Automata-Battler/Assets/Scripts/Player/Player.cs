@@ -54,7 +54,7 @@ public class Player : MonoBehaviour
 
     public bool AttemptManaUse(int amount)
     {
-        if (amount >= _mana)
+        if (amount <= _mana)
         {
             _mana -= amount;
             return true;

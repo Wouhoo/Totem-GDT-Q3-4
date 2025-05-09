@@ -114,6 +114,7 @@ public class Card : AbstractCard, IAction
                 return; // false
             if (_ownerPlayer.AttemptManaUse(_cost))
             {
+                Debug.Log("?");
                 // We now play our card
                 _position = tile.coordinates;
                 board.Set_TileOccupant(_position, this); // To Wouter: say it with meeeee, serveveveveveveeeerrrrrr sideeeeeeeeeee (i think)
