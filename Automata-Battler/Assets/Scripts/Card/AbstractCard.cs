@@ -1,6 +1,7 @@
 using UnityEngine;
+using Unity.Netcode;
 
-public class AbstractCard : MonoBehaviour, ISelectable
+public class AbstractCard : NetworkBehaviour, ISelectable
 {
     public void OnHoverEnter()
     {

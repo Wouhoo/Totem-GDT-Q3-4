@@ -110,7 +110,7 @@ public class Card : AbstractCard, IAction
         {
             if (!_ownerPlayer._hand.Contains(this)) // card not in hand
                 return; // false
-            if (tile.Get_Card() != null) // tile not free
+            if (tile.GetCard() != null) // tile not free
                 return; // false
             if (_ownerPlayer.AttemptManaUse(_cost))
             {

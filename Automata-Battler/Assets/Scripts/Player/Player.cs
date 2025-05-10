@@ -3,6 +3,7 @@ using System.Data.Common;
 using System.Threading.Tasks;
 using NUnit.Framework.Constraints;
 using Unity.Mathematics;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
@@ -11,6 +12,8 @@ using UnityEngine.Rendering.Universal;
 [DisallowMultipleComponent]
 public class Player : MonoBehaviour
 {
+    public static Player Instance { get; private set; } // In multiplayer, this is now a singleton
+
     [SerializeField] private static bool activePlayer;
     private Referee referee;
     private PlayerStateManager playerStateManager;
@@ -18,13 +21,21 @@ public class Player : MonoBehaviour
     private CardManager cardManager;
     public Material cardMaterial;
 
+    private ulong playerId;
+
     void Awake()
     {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+
         playerStateManager = GetComponent<PlayerStateManager>();
         referee = FindFirstObjectByType<Referee>();
         cardManager = FindFirstObjectByType<CardManager>();
 
         // To Wouter: Assign intergers here (not start, since the ref needs them at start!)
+        playerId = NetworkManager.Singleton.LocalClientId;
     }
 
     //
@@ -37,13 +48,20 @@ public class Player : MonoBehaviour
     {
         int neededCards = 5 - _hand.Count;
         for (int i = 0; i < neededCards; i++)
-            _hand.Add(cardManager.DrawCard(this));  // To Wouter: pass the player int instead of "this" or smth
+            cardManager.DrawCardRpc(playerId);  // To Wouter: pass the player int instead of "this" or smth
 
         for (int i = 0; i < 5; i++)
         {
             AbstractCard card = _hand[i];
             card.transform.position = deck.slots[i].position;
         }
+    }
+
+    public void AddCardToHand(NetworkBehaviourReference cardReference) // Has to be a separate function so it can be called from CardManager
+    {
+        if(cardReference.TryGet(out AbstractCard card)) // Get AbstractCard from NetworkBehaviourReference
+                                                        // (TryGet returns False if the card cannot be found; this should never happen)
+            _hand.Add(card);
     }
 
     //
