@@ -19,6 +19,7 @@ public class RelayManager : MonoBehaviour // Script for initializing a Unity Rel
     [SerializeField] private TextMeshProUGUI joinCodeText;
     [SerializeField] private TMP_InputField joinCodeField;
     [SerializeField] private GameObject waitingForPlayersScreen;
+    [SerializeField] private GameObject joiningScreen;
 
     private void Awake()
     {
@@ -32,6 +33,8 @@ public class RelayManager : MonoBehaviour // Script for initializing a Unity Rel
     private void Start()
     {
         waitingForPlayersScreen.SetActive(false);
+        joiningScreen.SetActive(false);
+        joinCodeField.onEndEdit.AddListener(delegate { JoinRelay(); }); // Join when pressing enter key on input field
     }
 
     public void StartSingleplayer()
@@ -86,6 +89,7 @@ public class RelayManager : MonoBehaviour // Script for initializing a Unity Rel
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
             NetworkManager.Singleton.StartClient(); // Log in to the relay as client
+            joiningScreen.SetActive(true); // Show "joining" screen
         }
         catch (RelayServiceException e)
         {
