@@ -11,6 +11,23 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private float transitionDuration = 1.0f;
 
+    public void InitializeCamera(ulong playerId)
+    {
+        // Get correct camera targets based on Player ID
+        if (playerId == 1)
+        {
+            boardViewTarget = GameObject.Find("Board Camera Target 1").GetComponent<Transform>(); // Like I said in Player, there's probably a better way to do this
+            handViewTarget = GameObject.Find("Hand Camera Target 1").GetComponent<Transform>();
+        }
+        else
+        {
+            boardViewTarget = GameObject.Find("Board Camera Target 2").GetComponent<Transform>(); // Like I said in Player, there's probably a better way to do this
+            handViewTarget = GameObject.Find("Hand Camera Target 2").GetComponent<Transform>();
+        }
+        cameraTransform.position = handViewTarget.position; // Move camera to correct position at game start
+        cameraTransform.rotation = handViewTarget.rotation;
+    }
+
     public async Task MoveCamera(PlayerCameraState toState)
     {
         if (toState == PlayerCameraState.ViewingHand)

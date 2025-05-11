@@ -133,14 +133,14 @@ public class Board : MonoBehaviour
 		return cells[pos].GetCard();
 	}
 
-	public bool TileIsHostileCommander(Player player, HexCoordinates pos)
+	public bool TileIsHostileCommander(ulong playerId, HexCoordinates pos)
 	{
 		if (!TileExistance(pos))
 		{
 			Debug.Log("Error: Non-existant tile");
 			return false;
 		}
-		if (cells[pos].commander != null && cells[pos].commander != player)
+		if (cells[pos].commander != 0 && cells[pos].commander != playerId) 
 			return true;
 		return false;
 	}
@@ -170,31 +170,31 @@ public class Board : MonoBehaviour
 		cells[pos].SetCard(card);
 	}
 
-	public bool CanPlace(Player player, HexCoordinates pos)
+	public bool CanPlace(ulong playerId, HexCoordinates pos)
 	{
 		if (!TileExistance(pos))
 			return false;
-		return (TileExistance(pos) && TileOccupant(pos) == null && !TileIsHostileCommander(player, pos));
+		return (TileExistance(pos) && TileOccupant(pos) == null && !TileIsHostileCommander(playerId, pos));
 	}
 
-	public bool CanAttack(Player player, HexCoordinates pos)
+	public bool CanAttack(ulong playerId, HexCoordinates pos)
 	{
 		if (!TileExistance(pos)) return false;
 		if (TileOccupant(pos) != null) return true;
-		if (TileIsHostileCommander(player, pos)) return true;
+		if (TileIsHostileCommander(playerId, pos)) return true;
 		return false;
 	}
 
-	public async Task Attack(Player player, HexCoordinates pos, int damageAmount)
+	public async Task Attack(ulong playerId, HexCoordinates pos, int damageAmount)
 	{
-		if (!CanAttack(player, pos))
+		if (!CanAttack(playerId, pos))
 		{
 			Debug.Log("Error: tried invalid attack");
 			return;
 		}
 		if (TileOccupant(pos) != null)
 			await I_TakeDamage.Execute(TileOccupant(pos), damageAmount);
-		else if (TileIsHostileCommander(player, pos))
-			cells[pos].commander.TakeDamage(damageAmount);
+		else if (TileIsHostileCommander(playerId, pos))
+			cells[pos].DamageCommander(damageAmount);
 	}
 }

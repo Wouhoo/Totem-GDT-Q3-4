@@ -10,10 +10,12 @@ public class Act_Kill : AbstractCard, IAction
             if (!card._inPlay)
                 return;
 
-            if (_ownerPlayer.AttemptManaUse(_cost))
+            //if (_ownerPlayer.AttemptManaUse(_cost))
+            if(Player.Instance.AttemptManaUse(_cost))
             {
                 await I_Die.Execute(card);
-                _ownerPlayer._hand.Remove(this); // To Wouter: int thingy
+                //_ownerPlayer._hand.Remove(this); // To Wouter: int thingy
+                Player.Instance._hand.Remove(this);
                 Destroy(this.gameObject);
             }
         }

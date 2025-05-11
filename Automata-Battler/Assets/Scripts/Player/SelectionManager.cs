@@ -8,7 +8,7 @@ using NUnit.Framework.Constraints;
 [DisallowMultipleComponent]
 public class SelectionManager : MonoBehaviour
 {
-    private Player player; // To Wouter: int thing
+    private Player player; // Note: this only the *local* player
     private PlayerStateManager playerStateManager;
     private Referee referee;
     private Board board;
@@ -27,7 +27,7 @@ public class SelectionManager : MonoBehaviour
 
     void Awake()
     {
-        player = GetComponent<Player>(); // To Wouter: int thing
+        player = GetComponent<Player>(); // To Wouter: int thing   <- No, as long as all of this stays local we can just get the Player
         playerStateManager = GetComponent<PlayerStateManager>();
 
         referee = FindFirstObjectByType<Referee>();
@@ -49,7 +49,7 @@ public class SelectionManager : MonoBehaviour
 
     private ISelectable GetSelectable()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // To Wouter: will using a "main" camera cause issues?
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // To Wouter: will using a "main" camera cause issues?   <- It shouldn't, the main camera can be different for both players
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, selectablesLayerMask))
         {
             ISelectable selectable = hit.collider.GetComponent<ISelectable>();
@@ -119,7 +119,8 @@ public class SelectionManager : MonoBehaviour
                 await playerStateManager.ToState(playerStateManager._currentState, PlayerCameraState.ViewingBoard, PlayerRequestState.None);
                 break;
             case ButtonType.EndTurn:
-                await referee.EndTurn(); // To Wouter: server side i think
+                referee.EndTurnRpc(); // To Wouter: server side i think
+                // ^ cannot be awaited anymore since it is async; check if this leads to any troubles
                 break;
         }
     }
@@ -198,7 +199,7 @@ public class SelectionManager : MonoBehaviour
         HashSet<ISelectable> selectables = new HashSet<ISelectable>();
         foreach (HexCell tile in board.cells.Values)
         {
-            if (tile.GetCard() == null && (tile.commander == player || tile.commander == null)) // To Wouter: int thing
+            if (tile.GetCard() == null && (tile.commander == 0 || tile.commander == player.playerId)) // To Wouter: int thing
                 selectables.Add(tile);
         }
         return selectables;

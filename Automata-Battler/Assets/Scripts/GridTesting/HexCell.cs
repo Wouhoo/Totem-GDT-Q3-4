@@ -12,7 +12,7 @@ public class HexCell : NetworkBehaviour, ISelectable
     private SpriteRenderer placeholderSprite;
     [SerializeField] public BoardCellMesh mesh;
     [SerializeField] public GameObject highlightMesh;
-    [SerializeField] public Player commander;
+    [SerializeField] public ulong commander;  // Note: default ("null") value will be 0
 
     //turn off the sprite in play mode, as the mesh will be generated
     void Start()
@@ -99,6 +99,18 @@ public class HexCell : NetworkBehaviour, ISelectable
     {
         if (cardReference.TryGet(out Card card))
             _card = card;
+    }
+
+    public void DamageCommander(int damageAmount) // W: damaging commander now goes through cell instead of directly from board to player,
+                                                  // since I don't want Board to be a NetworkObject (hence it cannot have RPCs)
+    {
+        DamageCommanderRpc(damageAmount, RpcTarget.Single(commander-1, RpcTargetUse.Temp));
+    }
+
+    [Rpc(SendTo.SpecifiedInParams)] // Sent only to the correct player (so Player.Instance will be the player commanding this tile)
+    private void DamageCommanderRpc(int damageAmount, RpcParams rpcParams)
+    {
+        Player.Instance.TakeDamage(damageAmount);
     }
 
     public void OnSelect() { }

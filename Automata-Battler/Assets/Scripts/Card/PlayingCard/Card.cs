@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Mono.Cecil.Cil;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unity.Netcode;
 
 [DisallowMultipleComponent]
 public class Card : AbstractCard, IAction
@@ -104,25 +105,35 @@ public class Card : AbstractCard, IAction
     {
         return PlayerRequestState.Tiles_ValidEmpty;
     }
+
+    // Place a card from hand onto the board (@Tim very confusing naming >:( )
+    // For now this will be done only with client-side validation, since this is much easier
+    // (it does allow cheating if you can manipulate your local game's memory, but eh)
     public async Task Act(ISelectable selectable)
     {
         if (selectable is HexCell tile)
         {
-            if (!_ownerPlayer._hand.Contains(this)) // card not in hand
+            //if (!_ownerPlayer._hand.Contains(this)) // card not in hand
+            if(Player.Instance._hand.Contains(this))
                 return; // false
             if (tile.GetCard() != null) // tile not free
                 return; // false
-            if (_ownerPlayer.AttemptManaUse(_cost))
+            //if (_ownerPlayer.AttemptManaUse(_cost))
+            if(Player.Instance.AttemptManaUse(_cost))
             {
                 Debug.Log("?");
                 // We now play our card
                 _position = tile.coordinates;
                 board.Set_TileOccupant(_position, this); // To Wouter: say it with meeeee, serveveveveveveeeerrrrrr sideeeeeeeeeee (i think)
+                                                         // W: Correct, but the call stack doesn't become server-side until SetCard() :)
                 //temp:
                 await CardAnimator.Lerp_JumpTo(transform, HexCoordinates.ToWorldPosition(tile.coordinates), 0.2f);
                 inPlay = true;
-                _ownerPlayer._hand.Remove(this); // To Wouter: "this" is.... will this work client side??? (also int thingy)
-                referee.AddCard(this);
+                //_ownerPlayer._hand.Remove(this); // To Wouter: "this" is.... will this work client side??? (also int thingy)
+                // Player is a singleton in the multiplayer version, and not a networkobject,
+                // so _hand is just a *local* list of reference which we can add to/remove from as normal.
+                Player.Instance._hand.Remove(this);
+                referee.AddCardRpc(this); // Card instance is implicitly converted to a NetworkBehaviourReference
                 return; //true
             }
         }

@@ -4,13 +4,13 @@ using System.Linq;
 using UnityEngine;
 using System;
 using System.Threading.Tasks;
+using Unity.Netcode;
+using Unity.Services.Matchmaker.Models;
 
-public class Referee : MonoBehaviour
+public class Referee : NetworkBehaviour // The referee is a networkobject; most of its functions are carried out *only on server*.
 {
-    [SerializeField] private Player player1;
-    public Player _player1 => player1;
-    [SerializeField] private Player player2;
-    private Player activePlayer;
+    private ulong activePlayer; // server = 1, client = 2. 0 is reserved as null value to be consistent with the Player.playerId and HexCell.commander fields.
+                                // CAREFUL: when sending an RPC to a specific player, don't forget to subtract 1 in order to convert to actual clientId! (0 for server, 1 for client)
     private int round = 0;
     public List<Card> cardList { get; private set; } = new List<Card>(); // in order of play (newest last)
     public static Referee Instance { get; private set; }
@@ -23,48 +23,69 @@ public class Referee : MonoBehaviour
             Destroy(gameObject);
     }
 
-    void Start()
+    public override void OnNetworkSpawn()
     {
-        player1.DrawCards();
-        player2.DrawCards();
-        activePlayer = player1;
-        player2.gameObject.SetActive(false);
-        activePlayer.BeginTurn(); // THIS IS OK! (NOT AWAIT)
+        PlayerStartGameRpc();
+        activePlayer = 1; // Always make server starting player
+        //player2.gameObject.SetActive(false);
+        PlayerBeginTurnRpc(RpcTarget.Single(activePlayer-1, RpcTargetUse.Temp)); // THIS IS OK! (NOT AWAIT)
         // and otherPlayer.BeginView(); (if they were active...)
     }
 
-    public async Task EndTurn()
+    [Rpc(SendTo.ClientsAndHost)] // Make *everyone* draw their cards at start of game
+    private void PlayerStartGameRpc()
     {
-        Debug.Log(round);
+        Player.Instance.DrawCards();
+        // Other stuff that both players need to do at start of game goes here
+    }
 
-        activePlayer.EndTurn();
+    [Rpc(SendTo.SpecifiedInParams)] // Call BeginTurn on the player with ID specified in rpcParams
+    private void PlayerBeginTurnRpc(RpcParams rpcParams)
+    {
+        Player.Instance.BeginTurn();
+    }
+
+    [Rpc(SendTo.SpecifiedInParams)] // Same thing but for EndTurn
+    private void PlayerEndTurnRpc(RpcParams rpcParams)
+    {
+        Player.Instance.EndTurn();
+    }
+
+    [Rpc(SendTo.Server)] // Turn end stuff is only done on server
+    public void EndTurnRpc() // Was async Task, but RPCs can only be void; check if this causes any problems.
+    {
+        Debug.Log(string.Format("ROUND: {0}", round));
+
+        PlayerEndTurnRpc(RpcTarget.Single(activePlayer - 1, RpcTargetUse.Temp));
 
         // Temp:
-        activePlayer.gameObject.SetActive(false);
+        //activePlayer.gameObject.SetActive(false);
 
-        if (round % 2 == 0 && activePlayer == player1)
-            activePlayer = player2;
-        else if (round % 2 == 0 && activePlayer == player2)
+        if (round % 2 == 0 && activePlayer == 1)
+            activePlayer = 2;
+        else if (round % 2 == 0 && activePlayer == 2)
         {
-            await ExecuteCards();
+            //await ExecuteCards();
+            ExecuteCards(); // Can't await anymore since RPC cannot be async; see if this causes any trouble
             round++;
         }
-        else if (round % 2 == 1 && activePlayer == player1)
+        else if (round % 2 == 1 && activePlayer == 1)
         {
-            await ExecuteCards();
+            //await ExecuteCards();
+            ExecuteCards(); // Can't await anymore since RPC cannot be async; see if this causes any trouble
             round++;
         }
-        else if (round % 2 == 1 && activePlayer == player2)
-            activePlayer = player1;
+        else if (round % 2 == 1 && activePlayer == 2)
+            activePlayer = 1;
 
         // TEMP: 
-        activePlayer.gameObject.SetActive(true);
+        //activePlayer.gameObject.SetActive(true);
 
-        await activePlayer.BeginTurn();
+        PlayerBeginTurnRpc(RpcTarget.Single(activePlayer - 1, RpcTargetUse.Temp)); // Note: cannot be awaited anymore because it is an RPC...
         // and otherPlayer.BeginView();
     }
 
-    public async Task ExecuteCards()
+    public async Task ExecuteCards() // Only called from within a server RPC, hence only executed on server
     {
         // Execute cards from most recent to oldest
         for (int i = cardList.Count - 1; i >= 0; i--)
@@ -78,14 +99,18 @@ public class Referee : MonoBehaviour
         RefreshInitiative();
     }
 
-    public void AddCard(Card card)
+    [Rpc(SendTo.Server)] // Only the server is allowed to add cards to the initiative queue
+    public void AddCardRpc(NetworkBehaviourReference cardReference)
     {
         // Note that removing cards is almoast always done during execution time, and then we dont want to refresh initiative, so thats why the remove function doesnt exist :P
-        cardList.Add(card);
+        if (cardReference.TryGet(out Card card))
+            cardList.Add(card);
+        else
+            Debug.LogError(string.Format("Referee couldn't find card with reference {0}", cardReference));
         RefreshInitiative();
     }
 
-    public void RefreshInitiative()
+    public void RefreshInitiative() // Only called on server
     {
         for (int i = cardList.Count - 1; i >= 0; i--)
             cardList[i].Set_Initiative(i);
