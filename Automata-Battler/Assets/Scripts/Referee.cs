@@ -25,11 +25,20 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
 
     public override void OnNetworkSpawn()
     {
+        StartCoroutine(StartGame()); // Have to do it this way so we can wait until all necessary networkobjects have spawned
+    }
+
+    private IEnumerator StartGame()
+    {
+        // Wait until all NetworkObjects that are necessary to start the game have spawned
+        while(!CardManager.Instance.IsSpawned) // Add more NetworkObjects here as required
+            yield return null;
+
+        // Start the game for the players
         PlayerStartGameRpc();
         activePlayer = 1; // Always make server starting player
-        //player2.gameObject.SetActive(false);
-        PlayerBeginTurnRpc(RpcTarget.Single(activePlayer-1, RpcTargetUse.Temp)); // THIS IS OK! (NOT AWAIT)
-        // and otherPlayer.BeginView(); (if they were active...)
+        PlayerBeginTurnRpc(RpcTarget.Single(activePlayer - 1, RpcTargetUse.Temp)); // THIS IS OK! (NOT AWAIT)
+        PlayerBeginViewRpc(RpcTarget.Single((3 - activePlayer) - 1, RpcTargetUse.Temp));
     }
 
     [Rpc(SendTo.ClientsAndHost)] // Make *everyone* draw their cards at start of game
@@ -43,6 +52,12 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     private void PlayerBeginTurnRpc(RpcParams rpcParams)
     {
         Player.Instance.BeginTurn();
+    }
+
+    [Rpc(SendTo.SpecifiedInParams)] // Same thing but for BeginView
+    private void PlayerBeginViewRpc(RpcParams rpcParams)
+    {
+        Player.Instance.BeginView();
     }
 
     [Rpc(SendTo.SpecifiedInParams)] // Same thing but for EndTurn
@@ -78,11 +93,8 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
         else if (round % 2 == 1 && activePlayer == 2)
             activePlayer = 1;
 
-        // TEMP: 
-        //activePlayer.gameObject.SetActive(true);
-
         PlayerBeginTurnRpc(RpcTarget.Single(activePlayer - 1, RpcTargetUse.Temp)); // Note: cannot be awaited anymore because it is an RPC...
-        // and otherPlayer.BeginView();
+        PlayerBeginViewRpc(RpcTarget.Single((3 - activePlayer) - 1, RpcTargetUse.Temp));
     }
 
     public async Task ExecuteCards() // Only called from within a server RPC, hence only executed on server

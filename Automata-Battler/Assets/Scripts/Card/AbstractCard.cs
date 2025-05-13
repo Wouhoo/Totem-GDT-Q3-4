@@ -27,16 +27,16 @@ public class AbstractCard : NetworkBehaviour, ISelectable
     public void Set_Owner(ulong playerId)
     {
         _ownerPlayer = playerId;
-        //MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-        //meshRenderer.material = player.cardMaterial;
-        GetMaterialRpc(RpcTarget.Single(playerId-1, RpcTargetUse.Temp)); // Get material from correct player
+        SetMaterialRpc(playerId);
     }
 
-    [Rpc(SendTo.SpecifiedInParams)] // TEST: Get player material from the correct player
-    private void GetMaterialRpc(RpcParams rpcParams)
+    [Rpc(SendTo.ClientsAndHost)] // Has to be sent to both players, otherwise the other player's cards will have missing textures
+    private void SetMaterialRpc(ulong playerId)
     {
-        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-        meshRenderer.material = Player.Instance.cardMaterial;
+        if (playerId == 1)
+            gameObject.GetComponent<MeshRenderer>().material = CardManager.Instance.p1Material;
+        else if (playerId == 2) // Keeping the if in case playerId is somehow ever 0 (null)
+            gameObject.GetComponent<MeshRenderer>().material = CardManager.Instance.p2Material;
     }
 
     [SerializeField] private int cost = 1;

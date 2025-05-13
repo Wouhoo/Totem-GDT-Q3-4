@@ -1,36 +1,72 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.XR;
 
 public class CardManager : NetworkBehaviour
 {
+    public static CardManager Instance { get; private set; } // Singleton so the DrawCardRpc doesn't bug out
+    // Note: I *think* this still allows P1 and P2 to have different sets of cards (decks),
+    // but even if not there's ways to get around this.
+
     public List<GameObject> cards = new List<GameObject>();
 
     private Referee referee;
+    // Decks now need to be on the CardManager since the client's Player doesn't have the authority to move cards spawned by the server
+    // Again, there may be better ways to solve this (e.g. using a distributed authority framework rather than server authoritative),
+    // but that would require a major architectural rework that we don't have the time for.
+    [SerializeField] private Deck p1Deck; 
+    [SerializeField] private Deck p2Deck;
+    // Same story for card materials, easier to do that on CardManager now
+    public Material p1Material;
+    public Material p2Material;
 
     void Awake()
     {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+
         referee = FindFirstObjectByType<Referee>();
+        Debug.Log(string.Format("CARDMANAGER CARDS: {0}", cards.Count));
     }
 
     [Rpc(SendTo.Server)] // Execute this only on server; return a NetworkObjectReference which is sent to the correct Player (server or client)
     // NOTE: In the long-term, when both players are able to build their own decks, the client's deck will probably be saved on their device.
     // This means the client needs to be able to send which card they want to draw with this RPC.
-    // The easiest way to accomplish this would probably be to have a "database" of all cards (with no stats modified)
-    // and refer to them by index in this database.
+    // The easiest way to accomplish this would probably be to have a "database" of all cards (with no stats modified) and refer to them by index in this database.
     // For now though, we'll continue drawing random cards for testing purposes until the multiplayer stuff is done.
-    public void DrawCardRpc(ulong playerId)
+    public void DrawCardRpc(ulong playerId, int deckSlot)
     {
+        Debug.Log(string.Format("PLAYER CALLING: {0}, CARDMANAGER CARDS: {1}", playerId, cards.Count));
+
+        // Draw & spawn random card
         int index = UnityEngine.Random.Range(0, cards.Count);
         Debug.Log(string.Format("CARD INDEX: {0}", index));
         GameObject cardObject = Instantiate(cards[index], transform); // To Wouter: other transform? <- Not necessary?
         cardObject.GetComponent<NetworkObject>().Spawn(true);         // Also spawn the card across the network
         Debug.Log(cardObject);
+
+        // Set ownership of card (also sets card material)
         AbstractCard card = cardObject.GetComponent<AbstractCard>();  // AbstractCard extends NetworkBehaviour, so it can actually be used as an argument/return of an RPC
                                                                       // as a NetworkBehaviourReference; no changes required!
-        card.Set_Owner(playerId); // To Wouter: change to players int
-        if (playerId == 2 && card is Card card1)
-            card1.Rotate(3); // align with player view (temp sorta?)
+        card.Set_Owner(playerId);
+
+        // Move card to correct position & orientation
+        if(card is Card card1) // Check if AbstractCard is also an actual Card
+        {
+            if (playerId == 1)
+            {
+                card1.transform.position = p1Deck.slots[deckSlot].position;
+            }
+            else if (playerId == 2)
+            {
+                card1.transform.position = p2Deck.slots[deckSlot].position;
+                card1.transform.rotation = p2Deck.slots[deckSlot].rotation;
+                card1.Rotate(3);
+            }
+        }
 
         // Return card to correct caller
         ReturnCardRpc(card, RpcTarget.Single(playerId-1, RpcTargetUse.Temp));
@@ -39,7 +75,6 @@ public class CardManager : NetworkBehaviour
     [Rpc(SendTo.SpecifiedInParams)] // Runs only on a specific player depending on rpcParams
     private void ReturnCardRpc(NetworkBehaviourReference card, RpcParams rpcParams)
     {
-        Debug.Log("RETURNING CARD TO HAND");
         Player.Instance.AddCardToHand(card);
     }
 }
