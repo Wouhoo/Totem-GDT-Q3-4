@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.UIElements;
 
 public class AbstractCard : NetworkBehaviour, ISelectable
 {
@@ -34,9 +35,14 @@ public class AbstractCard : NetworkBehaviour, ISelectable
     private void SetMaterialRpc(ulong playerId)
     {
         if (playerId == 1)
+        {
             gameObject.GetComponent<MeshRenderer>().material = CardManager.Instance.p1Material;
+        }
         else if (playerId == 2) // Keeping the if in case playerId is somehow ever 0 (null)
+        {
             gameObject.GetComponent<MeshRenderer>().material = CardManager.Instance.p2Material;
+            //gameObject.GetComponent<Card>().Rotate(3);
+        }
     }
 
     [SerializeField] private int cost = 1;

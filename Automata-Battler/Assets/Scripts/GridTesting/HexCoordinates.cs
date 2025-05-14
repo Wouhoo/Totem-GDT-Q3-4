@@ -1,8 +1,9 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 [System.Serializable]
-public struct HexCoordinates
+public struct HexCoordinates : INetworkSerializable
 {
 
 	/*
@@ -60,6 +61,13 @@ public struct HexCoordinates
 		this.x = x;
 		// this.y = y;
 		this.z = z;
+	}
+
+	// Make HexCoordinates serializable over network (has to be done with this exact syntax)
+	public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+	{
+		serializer.SerializeValue(ref x);
+		serializer.SerializeValue(ref z);
 	}
 
 	// //this is from SQUARE GRID coordinates, look at the arguments!

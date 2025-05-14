@@ -64,7 +64,6 @@ public class CardManager : NetworkBehaviour
             {
                 card1.transform.position = p2Deck.slots[deckSlot].position;
                 card1.transform.rotation = p2Deck.slots[deckSlot].rotation;
-                card1.Rotate(3);
             }
         }
 
