@@ -8,7 +8,7 @@ using NUnit.Framework.Constraints;
 [DisallowMultipleComponent]
 public class SelectionManager : MonoBehaviour
 {
-    private Player player; // Note: this only the *local* player
+    //private Player player; // Player is now a singleton, so this is no longer necessary
     private PlayerStateManager playerStateManager;
     private Referee referee;
     private Board board;
@@ -18,8 +18,8 @@ public class SelectionManager : MonoBehaviour
     [SerializeField] private LayerMask buttonsLayerMask;
     private LayerMask selectablesLayerMask;
 
-    [SerializeField] private Button toBoard_Button;
-    [SerializeField] private Button toHand_Button;
+    [SerializeField] private Button toBoard_Button; // No longer set from inspector! (see InitializeButtons)
+    [SerializeField] private Button toHand_Button;  // No longer set from inspector! (see InitializeButtons)
     [SerializeField] private Button play_Button;
 
     private ISelectable currentHover;
@@ -27,13 +27,27 @@ public class SelectionManager : MonoBehaviour
 
     void Awake()
     {
-        player = GetComponent<Player>(); // To Wouter: int thing   <- No, as long as all of this stays local we can just get the Player
         playerStateManager = GetComponent<PlayerStateManager>();
 
         referee = FindFirstObjectByType<Referee>();
         board = FindFirstObjectByType<Board>();
 
         selectablesLayerMask = cardLayerMask | tileLayerMask | buttonsLayerMask;
+    }
+
+    public void InitializeButtons(ulong playerId)
+    {
+        // Get correct buttons based on player ID
+        if (playerId == 1)
+        {
+            toBoard_Button = GameObject.Find("P1 ToBoardButton").GetComponent<Button>();
+            toHand_Button = GameObject.Find("P1 ToHandButton").GetComponent<Button>();
+        }
+        else
+        {
+            toBoard_Button = GameObject.Find("P2 ToBoardButton").GetComponent<Button>();
+            toHand_Button = GameObject.Find("P2 ToHandButton").GetComponent<Button>();
+        }
     }
 
     void Update()
@@ -74,7 +88,7 @@ public class SelectionManager : MonoBehaviour
 
     private async Task ManageSelection(ISelectable selectable)
     {
-        Debug.Log($"{player} selected {selectable}");
+        Debug.Log($"Player {Player.Instance.playerId} selected {selectable}");
         if (playerStateManager._currentRequestState == PlayerRequestState.None) // Begin selection process
         {
             if (selectable is Button button)
@@ -85,8 +99,17 @@ public class SelectionManager : MonoBehaviour
             else if (selectable is IAction action)
             {
                 // pre action check for mana if needed:
-                if (selectable is AbstractCard card && card._cost > player._mana) // To Wouter: int thing
+                if (selectable is AbstractCard card && card._cost > Player.Instance._mana)
+                {
+                    Debug.Log("Not enough mana!");
                     return;
+                }
+                // Also don't allow further action if it's not this player's turn
+                if (selectable is AbstractCard card1 && playerStateManager._currentState != PlayerState.Playing)
+                {
+                    Debug.Log("Not your turn!");
+                    return;
+                }
                 currentAction = action;
                 await playerStateManager.ToState(PlayerState.Acting, currentAction.Get_ActionCamera(), currentAction.Get_ActionInput());
                 return;
@@ -119,7 +142,13 @@ public class SelectionManager : MonoBehaviour
                 await playerStateManager.ToState(playerStateManager._currentState, PlayerCameraState.ViewingBoard, PlayerRequestState.None);
                 break;
             case ButtonType.EndTurn:
-                referee.EndTurnRpc(); // To Wouter: server side i think
+                // You're only allowed to press the button if it's your turn
+                if (playerStateManager._currentState != PlayerState.Playing)
+                {
+                    Debug.Log("Not your turn!");
+                    return;
+                }
+                referee.EndTurnRpc(); // Make server end turn
                 // ^ cannot be awaited anymore since it is async; check if this leads to any troubles
                 break;
         }
@@ -181,7 +210,7 @@ public class SelectionManager : MonoBehaviour
     private HashSet<ISelectable> Get_CardsInHand()
     {
         HashSet<ISelectable> selectables = new HashSet<ISelectable>();
-        foreach (AbstractCard card in player._hand) // To Wouter: specify player int thing
+        foreach (AbstractCard card in Player.Instance._hand) // To Wouter: specify player int thing
             selectables.Add(card);
         return selectables;
     }
@@ -199,7 +228,7 @@ public class SelectionManager : MonoBehaviour
         HashSet<ISelectable> selectables = new HashSet<ISelectable>();
         foreach (HexCell tile in board.cells.Values)
         {
-            if (tile.GetCard() == null && (tile.commander == 0 || tile.commander == player.playerId)) // To Wouter: int thing
+            if (tile.GetCard() == null && tile.commander == Player.Instance.playerId) // Only allow playing on empty tiles owned by this player
                 selectables.Add(tile);
         }
         return selectables;

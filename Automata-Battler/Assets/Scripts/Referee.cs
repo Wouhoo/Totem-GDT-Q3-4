@@ -125,6 +125,6 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     public void RefreshInitiative() // Only called on server
     {
         for (int i = cardList.Count - 1; i >= 0; i--)
-            cardList[i].Set_Initiative(i);
+            cardList[i].SetInitiativeRpc(i);
     }
 }

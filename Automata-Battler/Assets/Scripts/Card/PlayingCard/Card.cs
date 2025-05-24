@@ -5,10 +5,8 @@ using UnityEngine.Rendering;
 using Unity.Mathematics.Geometry;
 using Unity.Mathematics;
 using UnityEngine.UIElements;
-using UnityEditor.Scripting;
 using System.Threading.Tasks;
 
-using Mono.Cecil.Cil;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.Netcode;
@@ -53,7 +51,8 @@ public class Card : AbstractCard, IAction
     // Setting Functions
     //
 
-    public void Set_Initiative(int amount)
+    [Rpc(SendTo.ClientsAndHost)] // Make sure initative is updated for both players
+    public void SetInitiativeRpc(int amount) 
     {
         _initiative = amount;
         cardRenderer.Render_Initiative();
@@ -106,41 +105,27 @@ public class Card : AbstractCard, IAction
         return PlayerRequestState.Tiles_ValidEmpty;
     }
 
-    // Place a card from hand onto the board (@Tim very confusing naming >:( )
+    // Place a card from hand onto the board 
     // For now this will be done only with client-side validation, since this is much easier
     // (it does allow cheating if you can manipulate your local game's memory, but eh)
     public async Task Act(ISelectable selectable)
     {
         if (selectable is HexCell tile)
         {
-            //if (!_ownerPlayer._hand.Contains(this)) // card not in hand
-            if(!Player.Instance._hand.Contains(this))
+            if(!Player.Instance._hand.Contains(this)) // Card not in player's hand
                 return; // false
             if (tile.GetCard() != null) // tile not free
                 return; // false
-            //if (_ownerPlayer.AttemptManaUse(_cost))
             if(Player.Instance.AttemptManaUse(_cost))
             {
                 Debug.Log("PLAYING CARD");
-                Player.Instance._hand.Remove(this);
+                Player.Instance._hand.Remove(this); // Player is not a networkobject, so _hand is just a *local* list of references which we can add to/remove from as normal.
                 // We now play our card
                 _position = tile.coordinates;
-                PlayCardRpc(_position);
-                SetBoardOccupantRpc(_position, this);
-
-
-                //_position = tile.coordinates;
-                //board.Set_TileOccupant(_position, this); // To Wouter: say it with meeeee, serveveveveveveeeerrrrrr sideeeeeeeeeee (i think)
-                                                         // W: Correct, but the call stack doesn't become server-side until SetCard() :)
-                //temp:
-                //await CardAnimator.Lerp_JumpTo(transform, HexCoordinates.ToWorldPosition(tile.coordinates), 0.2f);
-                //inPlay = true;
-                //_ownerPlayer._hand.Remove(this); // To Wouter: "this" is.... will this work client side??? (also int thingy)
-                // Player is a singleton in the multiplayer version, and not a networkobject,
-                // so _hand is just a *local* list of reference which we can add to/remove from as normal.
-
-                referee.AddCardRpc(this); // Card instance is implicitly converted to a NetworkBehaviourReference
-                // ^ Since PlayCardRpc runs on server anyway, we could also call it as a non-rpc function from PlayCardRpc
+                PlayCardRpc(_position);                // Make server move the card to the correct position
+                SetBoardOccupantRpc(_position, this);  // Update board state for all players
+                referee.AddCardRpc(this);              // Add card to server's Referee (Card instance is implicitly converted to a NetworkBehaviourReference)
+                                                       // (Since PlayCardRpc runs on server anyway, we could also call it as a non-rpc function from PlayCardRpc)
                 return; //true
             }
             else

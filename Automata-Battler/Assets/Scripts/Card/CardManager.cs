@@ -44,7 +44,7 @@ public class CardManager : NetworkBehaviour
         // Draw & spawn random card
         int index = UnityEngine.Random.Range(0, cards.Count);
         Debug.Log(string.Format("CARD INDEX: {0}", index));
-        GameObject cardObject = Instantiate(cards[index], transform); // To Wouter: other transform? <- Not necessary?
+        GameObject cardObject = Instantiate(cards[index], transform); 
         cardObject.GetComponent<NetworkObject>().Spawn(true);         // Also spawn the card across the network
         Debug.Log(cardObject);
 
@@ -54,21 +54,39 @@ public class CardManager : NetworkBehaviour
         card.Set_Owner(playerId);
 
         // Move card to correct position & orientation
-        if(card is Card card1) // Check if AbstractCard is also an actual Card
-        {
-            if (playerId == 1)
-            {
-                card1.transform.position = p1Deck.slots[deckSlot].position;
-            }
-            else if (playerId == 2)
-            {
-                card1.transform.position = p2Deck.slots[deckSlot].position;
-                card1.transform.rotation = p2Deck.slots[deckSlot].rotation;
-            }
-        }
+        //if(card is Card card1) // Check if AbstractCard is also an actual Card
+        //{
+        //    MoveCardInHand(card1, playerId, deckSlot);
+        //}
 
         // Return card to correct caller
         ReturnCardRpc(card, RpcTarget.Single(playerId-1, RpcTargetUse.Temp));
+    }
+
+    [Rpc(SendTo.Server)]
+    public void SortHandRpc(NetworkObjectReference[] hand, ulong playerId)
+    {
+        // Sort given player's hand
+        for (int i = 0; i < hand.Length; i++)
+        {
+            // Get card NetworkObject
+            if (hand[i].TryGet(out NetworkObject card))
+            {
+                //Debug.Log(string.Format("MOVING CARD {0} TO PLAYER {1} SLOT {2}", card.name, playerId, i));
+                // Move card to the correct slot
+                if (playerId == 1)
+                {
+                    card.transform.position = p1Deck.slots[i].position;
+                }
+                else if (playerId == 2)
+                {
+                    card.transform.position = p2Deck.slots[i].position;
+                    card.transform.rotation = p2Deck.slots[i].rotation;
+                }
+            }
+            else
+                Debug.LogError("Couldn't find card!");
+        }
     }
 
     [Rpc(SendTo.SpecifiedInParams)] // Runs only on a specific player depending on rpcParams

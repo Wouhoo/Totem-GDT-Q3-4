@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Threading.Tasks;
-using UnityEditor.ProjectWindowCallback;
 
 public static class CardAnimator
 {
