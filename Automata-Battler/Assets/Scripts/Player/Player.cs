@@ -42,11 +42,15 @@ public class Player : MonoBehaviour
         // To Wouter: Assign intergers here (not start, since the ref needs them at start!)
         playerId = NetworkManager.Singleton.LocalClientId + 1; // The +1 is important so we can use 0 as a "null value"
         Debug.Log(string.Format("PLAYER ID: {0}", playerId));
+    }
 
+    private void Start()
+    {
         // Initialize player-specific things 
         cameraController.InitializeCamera(playerId);
         SelectionManager selectionManager = FindFirstObjectByType<SelectionManager>();
         selectionManager.InitializeButtons(playerId);
+        UIManager.Instance.InitializePlayerHUD(playerId);
         // Add other player-specific inits here (e.g. using if(playerId == 1) { ... } else { ... })
     }
 
@@ -108,10 +112,13 @@ public class Player : MonoBehaviour
         if (amount <= _mana)
         {
             _mana -= amount;
+            UIManager.Instance.UpdateManaText(_mana);
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
     public int _health { get; private set; } = 10;
@@ -119,6 +126,9 @@ public class Player : MonoBehaviour
     public void TakeDamage(int amount)
     {
         _health = math.max(0, _health - amount);
+        referee.UpdateCommanderHealthTextRpc(playerId, _health); // W: I know it's a bit weird to route this through the referee,
+                                                                 // but I don't want Player or UIManager to be NetworkObjects.
+                                                                 // The referee will likely have to do more with commander health later anyway.
         if (_health == 0)
             Die();
     }
@@ -135,12 +145,14 @@ public class Player : MonoBehaviour
     public async Task BeginTurn()
     {
         _mana = 3;
+        UIManager.Instance.UpdateManaText(_mana);
         await playerStateManager.ToState(PlayerState.Playing, PlayerCameraState.ViewingHand, PlayerRequestState.None);
     }
 
     public async Task BeginView()
     {
         _mana = 3;
+        UIManager.Instance.UpdateManaText(_mana);
         await playerStateManager.ToState(PlayerState.Viewing, PlayerCameraState.ViewingHand, PlayerRequestState.None);
     }
 

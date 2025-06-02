@@ -77,24 +77,37 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
         //activePlayer.gameObject.SetActive(false);
 
         if (round % 2 == 0 && activePlayer == 1)
+        {
             activePlayer = 2;
+        }
         else if (round % 2 == 0 && activePlayer == 2)
         {
             //await ExecuteCards();
+            ChangeTurnTextRpc(0); // Temporarily set the current active player to 0 (meaning "executing")
             ExecuteCards(); // Can't await anymore since RPC cannot be async; see if this causes any trouble
             round++;
         }
         else if (round % 2 == 1 && activePlayer == 1)
         {
             //await ExecuteCards();
+            ChangeTurnTextRpc(0); // Temporarily set the current active player to 0 (meaning "executing")
             ExecuteCards(); // Can't await anymore since RPC cannot be async; see if this causes any trouble
             round++;
         }
         else if (round % 2 == 1 && activePlayer == 2)
+        {
             activePlayer = 1;
+        }
 
+        ChangeTurnTextRpc(activePlayer);
         PlayerBeginTurnRpc(RpcTarget.Single(activePlayer - 1, RpcTargetUse.Temp)); // Note: cannot be awaited anymore because it is an RPC...
         PlayerBeginViewRpc(RpcTarget.Single((3 - activePlayer) - 1, RpcTargetUse.Temp));
+    }
+
+    [Rpc(SendTo.ClientsAndHost)] // Notify all players who the new active player is so they can change the turn indicator
+    private void ChangeTurnTextRpc(ulong currPlayerId)
+    {
+        UIManager.Instance.ChangeTurnIndicator(currPlayerId);
     }
 
     public async Task ExecuteCards() // Only called from within a server RPC, hence only executed on server
@@ -126,5 +139,13 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     {
         for (int i = cardList.Count - 1; i >= 0; i--)
             cardList[i].SetInitiativeRpc(i);
+    }
+
+
+    [Rpc(SendTo.ClientsAndHost)]
+    public void UpdateCommanderHealthTextRpc(ulong playerId, int health) // Update commander health text for both players (called from Player)
+    {
+        //Debug.Log(string.Format("NEW PLAYER {0} HEALTH: {1}", playerId, health));
+        UIManager.Instance.UpdateCommanderHealthText(playerId, health);
     }
 }

@@ -102,12 +102,14 @@ public class SelectionManager : MonoBehaviour
                 if (selectable is AbstractCard card && card._cost > Player.Instance._mana)
                 {
                     Debug.Log("Not enough mana!");
+                    UIManager.Instance.PlayNotEnoughManaEffect();
                     return;
                 }
                 // Also don't allow further action if it's not this player's turn
                 if (selectable is AbstractCard card1 && playerStateManager._currentState != PlayerState.Playing)
                 {
                     Debug.Log("Not your turn!");
+                    UIManager.Instance.PlayNotYourTurnEffect();
                     return;
                 }
                 currentAction = action;
