@@ -137,7 +137,7 @@ public class Card : AbstractCard, IAction
     public void InvertInstructionsRpc()
     {
         // flip the list
-        instructions.Reverse();
+        // instructions.Reverse();
         // rotate each instruction
         RotateInstructions(3);
     }
