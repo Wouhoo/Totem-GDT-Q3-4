@@ -52,7 +52,7 @@ public class Card : AbstractCard, IAction
     //
 
     [Rpc(SendTo.ClientsAndHost)] // Make sure initative is updated for both players
-    public void SetInitiativeRpc(int amount) 
+    public void SetInitiativeRpc(int amount)
     {
         _initiative = amount;
         cardRenderer.Render_Initiative();
@@ -79,19 +79,6 @@ public class Card : AbstractCard, IAction
             await instruction.Execute(this);
     }
 
-    // Special instruction:
-
-    public void Rotate(int byAmount = 0)
-    {
-        for (int i = 0; i < instructions.Count; i++)
-        {
-            CardInstruction instruction = instructions[i];
-            instruction.Rotate(byAmount);
-            instructions[i] = instruction;
-        }
-        cardRenderer.Render_Instructions();
-    }
-
     //
     // Placement Action
     //
@@ -112,11 +99,11 @@ public class Card : AbstractCard, IAction
     {
         if (selectable is HexCell tile)
         {
-            if(!Player.Instance._hand.Contains(this)) // Card not in player's hand
+            if (!Player.Instance._hand.Contains(this)) // Card not in player's hand
                 return; // false
             if (tile.GetCard() != null) // tile not free
                 return; // false
-            if(Player.Instance.AttemptManaUse(_cost))
+            if (Player.Instance.AttemptManaUse(_cost))
             {
                 Debug.Log("PLAYING CARD");
                 Player.Instance._hand.Remove(this); // Player is not a networkobject, so _hand is just a *local* list of references which we can add to/remove from as normal.
@@ -142,5 +129,27 @@ public class Card : AbstractCard, IAction
         _position = tileCoords;
         CardAnimator.Lerp_JumpTo(transform, HexCoordinates.ToWorldPosition(tileCoords), 0.2f); // Can't await; see if this causes problems
         inPlay = true;
+    }
+
+    // Special (rotation and flippin out yo) instruction:
+
+    [Rpc(SendTo.ClientsAndHost)] // Update the instructions on both host and client
+    public void InvertInstructionsRpc()
+    {
+        // flip the list
+        instructions.Reverse();
+        // rotate each instruction
+        RotateInstructions(3);
+    }
+
+    public void RotateInstructions(int byAmount = 0)
+    {
+        for (int i = 0; i < instructions.Count; i++)
+        {
+            CardInstruction instruction = instructions[i];
+            instruction.Rotate(byAmount);
+            instructions[i] = instruction;
+        }
+        cardRenderer.Render_Instructions();
     }
 }

@@ -58,6 +58,26 @@ public struct CardInstruction
         return "";
     }
 
+    public string GetVisual_Client()
+    {
+        HexDirection clientDirection = this.direction.Rotate(3);
+        switch (this.instructionType)
+        {
+            case CardInstructionType.Move:
+                return I_Move_asJump.GetVisual(clientDirection, 1);
+            case CardInstructionType.Jump:
+                return I_Move_asJump.GetVisual(clientDirection, 2);
+            case CardInstructionType.Attack:
+                return I_Attack_asJump.GetVisual(clientDirection, 1);
+            case CardInstructionType.Lob:
+                return I_Attack_asJump.GetVisual(clientDirection, 2);
+            case CardInstructionType.Die:
+                return I_Die.GetVisual();
+        }
+        Debug.Log("Visual not implemented.");
+        return "";
+    }
+
     public void Rotate(int byAmount)
     {
         this.direction = this.direction.Rotate(byAmount);

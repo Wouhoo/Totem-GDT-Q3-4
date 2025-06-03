@@ -15,7 +15,7 @@ public class CardManager : NetworkBehaviour
     // Decks now need to be on the CardManager since the client's Player doesn't have the authority to move cards spawned by the server
     // Again, there may be better ways to solve this (e.g. using a distributed authority framework rather than server authoritative),
     // but that would require a major architectural rework that we don't have the time for.
-    [SerializeField] private Deck p1Deck; 
+    [SerializeField] private Deck p1Deck;
     [SerializeField] private Deck p2Deck;
     // Same story for card materials, easier to do that on CardManager now
     public Material p1Material;
@@ -44,7 +44,7 @@ public class CardManager : NetworkBehaviour
         // Draw & spawn random card
         int index = UnityEngine.Random.Range(0, cards.Count);
         Debug.Log(string.Format("CARD INDEX: {0}", index));
-        GameObject cardObject = Instantiate(cards[index], transform); 
+        GameObject cardObject = Instantiate(cards[index], transform);
         cardObject.GetComponent<NetworkObject>().Spawn(true);         // Also spawn the card across the network
         Debug.Log(cardObject);
 
@@ -52,6 +52,10 @@ public class CardManager : NetworkBehaviour
         AbstractCard card = cardObject.GetComponent<AbstractCard>();  // AbstractCard extends NetworkBehaviour, so it can actually be used as an argument/return of an RPC
                                                                       // as a NetworkBehaviourReference; no changes required!
         card.Set_Owner(playerId);
+        if (playerId == 2 && card is Card card1) // Flip instructions for player 2
+        {
+            card1.InvertInstructionsRpc();
+        }
 
         // Move card to correct position & orientation
         //if(card is Card card1) // Check if AbstractCard is also an actual Card
@@ -60,7 +64,7 @@ public class CardManager : NetworkBehaviour
         //}
 
         // Return card to correct caller
-        ReturnCardRpc(card, RpcTarget.Single(playerId-1, RpcTargetUse.Temp));
+        ReturnCardRpc(card, RpcTarget.Single(playerId - 1, RpcTargetUse.Temp));
     }
 
     [Rpc(SendTo.Server)]
@@ -81,7 +85,7 @@ public class CardManager : NetworkBehaviour
                 else if (playerId == 2)
                 {
                     card.transform.position = p2Deck.slots[i].position;
-                    card.transform.rotation = p2Deck.slots[i].rotation;
+                    // card.transform.rotation = p2Deck.slots[i].rotation;
                 }
             }
             else

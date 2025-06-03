@@ -1,12 +1,14 @@
 using UnityEngine;
 using TMPro;
 using System.Linq;
+using Unity.Netcode;
 
 [RequireComponent(typeof(Card))]
 [DisallowMultipleComponent]
-public class CardRenderer : MonoBehaviour
+public class CardRenderer : NetworkBehaviour
 {
     private Card card;
+    [SerializeField] private RectTransform canvasTransform;
     [SerializeField] private TextMeshProUGUI textCost;
     [SerializeField] private TextMeshProUGUI textHealth;
     [SerializeField] private TextMeshProUGUI textDamage;
@@ -16,6 +18,9 @@ public class CardRenderer : MonoBehaviour
     void Awake()
     {
         card = GetComponent<Card>();
+        ulong playerId = Player.Instance.playerId;
+        if (playerId == 2)
+            canvasTransform.rotation = Quaternion.Euler(90, 0, 180);
     }
 
     public void Render_All()
@@ -49,9 +54,20 @@ public class CardRenderer : MonoBehaviour
 
     public void Render_Instructions()
     {
-        textInstructions.text = string.Join(" ", card._instructions.Select(instruction =>
+        ulong playerId = Player.Instance.playerId;
+        if (playerId == 1)
         {
-            return instruction.GetVisual();
-        }));
+            textInstructions.text = string.Join(" ", card._instructions.Select(instruction =>
+                    {
+                        return instruction.GetVisual();
+                    }));
+        }
+        else if (playerId == 2)
+        {
+            textInstructions.text = string.Join(" ", card._instructions.Select(instruction =>
+                    {
+                        return instruction.GetVisual_Client();
+                    }));
+        }
     }
 }
