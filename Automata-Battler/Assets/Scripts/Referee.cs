@@ -48,6 +48,11 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
         // Other stuff that both players need to do at start of game goes here
     }
 
+    private async Task PlayerBeginTurn(RpcParams rpcParams)
+    {
+
+    }
+
     [Rpc(SendTo.SpecifiedInParams)] // Call BeginTurn on the player with ID specified in rpcParams
     private void PlayerBeginTurnRpc(RpcParams rpcParams)
     {
@@ -69,6 +74,11 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     [Rpc(SendTo.Server)] // Turn end stuff is only done on server
     public void EndTurnRpc() // Was async Task, but RPCs can only be void; check if this causes any problems.
     {
+        EndTurn();
+    }
+
+    private async void EndTurn()
+    {
         Debug.Log(string.Format("ROUND: {0}", round));
 
         PlayerEndTurnRpc(RpcTarget.Single(activePlayer - 1, RpcTargetUse.Temp));
@@ -84,14 +94,14 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
         {
             //await ExecuteCards();
             ChangeTurnTextRpc(0); // Temporarily set the current active player to 0 (meaning "executing")
-            ExecuteCards(); // Can't await anymore since RPC cannot be async; see if this causes any trouble
+            await ExecuteCards(); // Can't await anymore since RPC cannot be async; see if this causes any trouble
             round++;
         }
         else if (round % 2 == 1 && activePlayer == 1)
         {
             //await ExecuteCards();
             ChangeTurnTextRpc(0); // Temporarily set the current active player to 0 (meaning "executing")
-            ExecuteCards(); // Can't await anymore since RPC cannot be async; see if this causes any trouble
+            await ExecuteCards(); // Can't await anymore since RPC cannot be async; see if this causes any trouble
             round++;
         }
         else if (round % 2 == 1 && activePlayer == 2)

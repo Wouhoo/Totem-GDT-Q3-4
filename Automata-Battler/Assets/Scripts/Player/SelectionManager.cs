@@ -148,6 +148,7 @@ public class SelectionManager : MonoBehaviour
                 if (playerStateManager._currentState != PlayerState.Playing)
                 {
                     Debug.Log("Not your turn!");
+                    UIManager.Instance.PlayNotYourTurnEffect();
                     return;
                 }
                 referee.EndTurnRpc(); // Make server end turn

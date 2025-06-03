@@ -13,9 +13,14 @@ public class I_Move_asJump : MonoBehaviour
 
         if (board.CanPlace(card._ownerPlayer, target)) // ask if move is possible
         {
-            board.Set_TileOccupant(card._position, null);
+            //board.Set_TileOccupant(card._position, null);
+            card.SetBoardOccupantRpc(card._position, null);
+
             card.Set_Position(target);
-            board.Set_TileOccupant(card._position, card);
+
+            //board.Set_TileOccupant(card._position, card);
+            card.SetBoardOccupantRpc(card._position, card);
+
             await Animate_Success(card);
         }
         else // Failed to move

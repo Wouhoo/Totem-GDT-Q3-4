@@ -145,10 +145,13 @@ public class Card : AbstractCard, IAction
     }
 
     [Rpc(SendTo.ClientsAndHost)] // Update the board on both host and client
-    private void SetBoardOccupantRpc(HexCoordinates tileCoords, NetworkBehaviourReference cardReference)
+    public void SetBoardOccupantRpc(HexCoordinates tileCoords, NetworkBehaviourReference cardReference)
     {
         if (cardReference.TryGet(out Card card))
+        {
+            Debug.Log(string.Format("SETTING OCCUPANT OF POSITION {0} TO {1}", tileCoords, card.name));
             board.Set_TileOccupant(tileCoords, card);
+        }
         else
             Debug.LogError(string.Format("Couldn't find card with reference {0}", cardReference));
     }
