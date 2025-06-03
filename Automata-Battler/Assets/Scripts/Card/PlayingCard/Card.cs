@@ -63,7 +63,8 @@ public class Card : AbstractCard, IAction
         _position = pos;
     }
 
-    public void Set_Health(int amount)
+    [Rpc(SendTo.ClientsAndHost)] // Update health for both players
+    public void SetHealthRpc(int amount)
     {
         health = amount;
         cardRenderer.Render_Health();

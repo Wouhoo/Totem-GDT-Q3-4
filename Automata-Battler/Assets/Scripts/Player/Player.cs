@@ -52,6 +52,9 @@ public class Player : MonoBehaviour
         selectionManager.InitializeButtons(playerId);
         UIManager.Instance.InitializePlayerHUD(playerId);
         // Add other player-specific inits here (e.g. using if(playerId == 1) { ... } else { ... })
+
+        referee.PlayerReadyRpc(playerId); // Let the server referee know that this player is ready
+        // (even safer: wait with calling this function until all of the above initializations have finished executing)
     }
 
     //

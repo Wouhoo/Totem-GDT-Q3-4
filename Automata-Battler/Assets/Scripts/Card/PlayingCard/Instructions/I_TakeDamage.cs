@@ -12,7 +12,7 @@ public class I_TakeDamage : MonoBehaviour
         Board board = FindFirstObjectByType<Board>();
         Referee referee = FindFirstObjectByType<Referee>();
 
-        card.Set_Health(math.max(0, card._health - damageAmount));
+        card.SetHealthRpc(math.max(0, card._health - damageAmount));
 
         await Animate(card);
 

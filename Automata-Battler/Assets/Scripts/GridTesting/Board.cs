@@ -152,9 +152,9 @@ public class Board : MonoBehaviour
 			Debug.Log("Error: tried invalid attack");
 			return;
 		}
-		if (TileOccupant(pos) != null)
+        if (TileIsHostileCommander(playerId, pos)) // If target is a commander tile, damage commander (even if there is a unit there)
+            cells[pos].DamageCommander(damageAmount);
+        else if (TileOccupant(pos) != null)
 			await I_TakeDamage.Execute(TileOccupant(pos), damageAmount);
-		else if (TileIsHostileCommander(playerId, pos))
-			cells[pos].DamageCommander(damageAmount);
 	}
 }

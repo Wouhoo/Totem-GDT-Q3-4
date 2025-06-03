@@ -10,6 +10,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Transform handViewTarget;
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private float transitionDuration = 1.0f;
+    //public bool cameraInitialized { get; private set; }
 
     public void InitializeCamera(ulong playerId)
     {
@@ -24,6 +25,7 @@ public class CameraController : MonoBehaviour
             boardViewTarget = GameObject.Find("Board Camera Target 2").GetComponent<Transform>();
             handViewTarget = GameObject.Find("Hand Camera Target 2").GetComponent<Transform>();
         }
+        Debug.Log(string.Format("Moving camera to {0}", handViewTarget.gameObject.name));
         cameraTransform.position = handViewTarget.position; // Move camera to correct position at game start
         cameraTransform.rotation = handViewTarget.rotation;
     }

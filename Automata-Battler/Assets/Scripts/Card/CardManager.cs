@@ -70,6 +70,8 @@ public class CardManager : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void SortHandRpc(NetworkObjectReference[] hand, ulong playerId)
     {
+        //Debug.Log(string.Format("PLAYER CALLING: {0}, HAND SIZE: {1}", playerId, hand.Length));
+
         // Sort given player's hand
         for (int i = 0; i < hand.Length; i++)
         {

@@ -14,6 +14,8 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     private int round = 0;
     public List<Card> cardList { get; private set; } = new List<Card>(); // in order of play (newest last)
     public static Referee Instance { get; private set; }
+    private bool p1Ready;
+    private bool p2Ready;
 
     private void Awake()
     {
@@ -25,20 +27,34 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
 
     public override void OnNetworkSpawn()
     {
-        StartCoroutine(StartGame()); // Have to do it this way so we can wait until all necessary networkobjects have spawned
+        if(IsServer)
+            StartCoroutine(StartGame()); // Have to do it this way so we can wait until all necessary networkobjects have spawned
+    }
+
+    [Rpc(SendTo.Server)]
+    public void PlayerReadyRpc(ulong playerId) // Called by a Player once they have finished their initializations
+    {
+        if(playerId == 1)
+            p1Ready = true;
+        else if(playerId == 2)
+            p2Ready = true;
     }
 
     private IEnumerator StartGame()
     {
-        // Wait until all NetworkObjects that are necessary to start the game have spawned
-        while(!CardManager.Instance.IsSpawned) // Add more NetworkObjects here as required
+        // Wait until all NetworkObjects that are necessary to start the game have spawned and both players have initialized
+        while(!CardManager.Instance.IsSpawned || !p1Ready || !p2Ready) // Add more NetworkObjects here as required
             yield return null;
 
         // Start the game for the players
         PlayerStartGameRpc();
         activePlayer = 1; // Always make server starting player
         PlayerBeginTurnRpc(RpcTarget.Single(activePlayer - 1, RpcTargetUse.Temp)); // THIS IS OK! (NOT AWAIT)
-        PlayerBeginViewRpc(RpcTarget.Single((3 - activePlayer) - 1, RpcTargetUse.Temp));
+        PlayerBeginViewRpc(RpcTarget.Single((3 - activePlayer) - 1, RpcTargetUse.Temp)); // Problem: the camera controller may not have been initialized yet at this point
+        // Theory: the game first starts the transition (with p1's camera targets for both players), then initializes the camera, then finishes transitioning (so still to p1's targets)
+        // We need to wait with the transition until the camera is initialized.
+        // Idea: make the player's initialize functions fire an event on server once initialization is complete.
+        // Make the server's referee listen to this event being fired; once it has fired twice, we know both players have been initialized.
     }
 
     [Rpc(SendTo.ClientsAndHost)] // Make *everyone* draw their cards at start of game
@@ -46,11 +62,6 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     {
         Player.Instance.DrawCards();
         // Other stuff that both players need to do at start of game goes here
-    }
-
-    private async Task PlayerBeginTurn(RpcParams rpcParams)
-    {
-
     }
 
     [Rpc(SendTo.SpecifiedInParams)] // Call BeginTurn on the player with ID specified in rpcParams
@@ -63,6 +74,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     [Rpc(SendTo.SpecifiedInParams)] // Same thing but for BeginView
     private void PlayerBeginViewRpc(RpcParams rpcParams)
     {
+        Debug.Log("STARTING VIEW");
         Player.Instance.BeginView();
     }
 
