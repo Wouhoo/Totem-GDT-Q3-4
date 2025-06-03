@@ -31,6 +31,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI p1CommanderHealthText;
     [SerializeField] TextMeshProUGUI p2CommanderHealthText;
 
+    [Header("End Turn Button")]
+    [SerializeField] TextMeshProUGUI endTurnText;
+
     private void Awake()
     {
         if (Instance == null)
@@ -56,6 +59,7 @@ public class UIManager : MonoBehaviour
         else
         {
             turnText.gameObject.transform.Rotate(0, 0, 180);
+            endTurnText.gameObject.transform.Rotate(0, 0, 180);
             p1CommanderHealthText.transform.Rotate(90, 0, 180);
             p2CommanderHealthText.transform.Rotate(45, 0, 180);
         }

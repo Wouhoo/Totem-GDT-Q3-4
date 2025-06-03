@@ -78,6 +78,14 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
         Player.Instance.BeginView();
     }
 
+    [Rpc(SendTo.ClientsAndHost)] // Similar thing but for WatchGame
+    // This is called when the execution phase starts, and applies to both players!
+    private void PlayerBeginWatchRpc()
+    {
+        Debug.Log("STARTING WATCH");
+        Player.Instance.WatchGame();
+    }
+
     [Rpc(SendTo.SpecifiedInParams)] // Same thing but for EndTurn
     private void PlayerEndTurnRpc(RpcParams rpcParams)
     {
@@ -106,15 +114,17 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
         else if (round % 2 == 0 && activePlayer == 2)
         {
             //await ExecuteCards();
-            ChangeTurnTextRpc(0); // Temporarily set the current active player to 0 (meaning "executing")
-            await ExecuteCards(); // Can't await anymore since RPC cannot be async; see if this causes any trouble
+            PlayerBeginWatchRpc(); // Make players watch the board
+            ChangeTurnTextRpc(0);  // Temporarily set the current active player to 0 (meaning "executing")
+            await ExecuteCards();  // Can't await anymore since RPC cannot be async; see if this causes any trouble
             round++;
         }
         else if (round % 2 == 1 && activePlayer == 1)
         {
             //await ExecuteCards();
-            ChangeTurnTextRpc(0); // Temporarily set the current active player to 0 (meaning "executing")
-            await ExecuteCards(); // Can't await anymore since RPC cannot be async; see if this causes any trouble
+            PlayerBeginWatchRpc(); // Make players watch the board
+            ChangeTurnTextRpc(0);  // Temporarily set the current active player to 0 (meaning "executing")
+            await ExecuteCards();  // Can't await anymore since RPC cannot be async; see if this causes any trouble
             round++;
         }
         else if (round % 2 == 1 && activePlayer == 2)

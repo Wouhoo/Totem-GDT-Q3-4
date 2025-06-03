@@ -167,6 +167,6 @@ public class Player : MonoBehaviour
     public async Task EndTurn()
     {
         DrawCards();
-        await playerStateManager.ToState(PlayerState.Viewing, PlayerCameraState.ViewingHand, PlayerRequestState.None);
+        // Immediately followed by a call to either BeginView or WatchGame in Referee, so no need to change state here
     }
 }
