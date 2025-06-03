@@ -21,7 +21,7 @@ public class CameraController : MonoBehaviour
         }
         else
         {
-            boardViewTarget = GameObject.Find("Board Camera Target 2").GetComponent<Transform>(); 
+            boardViewTarget = GameObject.Find("Board Camera Target 2").GetComponent<Transform>();
             handViewTarget = GameObject.Find("Hand Camera Target 2").GetComponent<Transform>();
         }
         cameraTransform.position = handViewTarget.position; // Move camera to correct position at game start
@@ -32,9 +32,6 @@ public class CameraController : MonoBehaviour
     {
         if (toState == PlayerCameraState.ViewingHand)
             await TransitionTo(handViewTarget);
-        else if (toState == PlayerCameraState.ViewingActions)
-            return; //TODO
-                    // await TransitionTo(actionViewTarget);
         else if (toState == PlayerCameraState.ViewingBoard)
             await TransitionTo(boardViewTarget);
     }
