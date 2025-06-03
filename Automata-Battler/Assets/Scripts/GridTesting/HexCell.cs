@@ -71,34 +71,42 @@ public class HexCell : NetworkBehaviour, ISelectable
     // This update will then be propagated to the client through RPCs.
     public void SetCard(Card card)
     {
+        bool removeOccupant = false;
+        if(card == null)
+            removeOccupant = true; // If card == null we want to remove the card.
+                                   // Note: because NetworkBehaviourReference cannot be null, we still have to send the card reference in this case (though it is unused)
         NetworkBehaviourReference cardReference = new NetworkBehaviourReference(card); // Translate Card instance to NetworkBehaviourReference
-        SetCardServerRpc(cardReference);
+        SetCardServerRpc(cardReference, removeOccupant);
     }
 
     [Rpc(SendTo.Server)] // The actual setting of the card is done on Server (so server can validate & shit)
-    public void SetCardServerRpc(NetworkBehaviourReference cardReference)
+    public void SetCardServerRpc(NetworkBehaviourReference cardReference, bool removeOccupant = false)
     {
         // NETWORKVARIABLE VERSION
         //_cardReference.Value = cardReference;
 
         // RPC VERSION
-        if (cardReference.TryGet(out Card card)) // Translate NetworkBehaviourReference to Card instance if the card exists
+        if (removeOccupant || cardReference.TryGet(out Card card)) // Translate NetworkBehaviourReference to Card instance if we don't want to remove
         {
             // DO SERVER-SIDE VALIDATION HERE
-            SetCardClientRpc(cardReference); // Once server has validated the placement, tell all players what the new card is
+            SetCardClientRpc(cardReference, removeOccupant); // Once server has validated the placement, tell all players what the new card is
                                              // This is required only in the RPC version; it happens automatically in the NETWORKVARIABLE version (that's what NetworkVariables are for)
         }
         else
         {
-            Debug.LogWarning(string.Format("Could not find occupant of cell {0}", coordinates)); // Throw error otherwise
+            Debug.LogError(string.Format("Could not find occupant of cell {0}", coordinates)); // We don't want to remove the occupant, but card does not exist; throw error
         }
     }
 
     [Rpc(SendTo.ClientsAndHost)] // RPC VERSION ONLY
-    public void SetCardClientRpc(NetworkBehaviourReference cardReference)
+    public void SetCardClientRpc(NetworkBehaviourReference cardReference, bool removeOccupant = false)
     {
-        if (cardReference.TryGet(out Card card))
+        if (removeOccupant)
+            _card = null;
+        else if (cardReference.TryGet(out Card card))
             _card = card;
+        else
+            Debug.LogError("Could not find card!");
     }
 
     public void DamageCommander(int damageAmount) // W: damaging commander now goes through cell instead of directly from board to player,

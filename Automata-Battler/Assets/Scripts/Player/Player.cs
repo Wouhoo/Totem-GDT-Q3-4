@@ -161,8 +161,9 @@ public class Player : MonoBehaviour
         await playerStateManager.ToState(PlayerState.WatchingGame, PlayerCameraState.ViewingBoard, PlayerRequestState.None);
     }
 
-    public void EndTurn()
+    public async Task EndTurn()
     {
         DrawCards();
+        await playerStateManager.ToState(PlayerState.Viewing, PlayerCameraState.ViewingHand, PlayerRequestState.None);
     }
 }

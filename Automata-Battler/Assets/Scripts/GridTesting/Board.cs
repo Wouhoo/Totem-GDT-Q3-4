@@ -127,7 +127,7 @@ public class Board : MonoBehaviour
 			return;
 		}
 
-		cells[pos].SetCard(card);
+		cells[pos].SetCard(card); // This first sets the card on server so the server can do validation, then it is set on the client as well
 	}
 
 	public bool CanPlace(ulong playerId, HexCoordinates pos)

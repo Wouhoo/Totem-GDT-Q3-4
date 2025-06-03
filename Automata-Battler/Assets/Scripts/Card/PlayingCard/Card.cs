@@ -122,10 +122,10 @@ public class Card : AbstractCard, IAction
                 Player.Instance._hand.Remove(this); // Player is not a networkobject, so _hand is just a *local* list of references which we can add to/remove from as normal.
                 // We now play our card
                 _position = tile.coordinates;
-                PlayCardRpc(_position);                // Make server move the card to the correct position
-                SetBoardOccupantRpc(_position, this);  // Update board state for all players
-                referee.AddCardRpc(this);              // Add card to server's Referee (Card instance is implicitly converted to a NetworkBehaviourReference)
-                                                       // (Since PlayCardRpc runs on server anyway, we could also call it as a non-rpc function from PlayCardRpc)
+                PlayCardRpc(_position);                   // Make server move the card to the correct position
+                board.Set_TileOccupant(_position, this);  // Update board state for all players
+                referee.AddCardRpc(this);                 // Add card to server's Referee (Card instance is implicitly converted to a NetworkBehaviourReference)
+                                                          // (Since PlayCardRpc runs on server anyway, we could also call it as a non-rpc function from PlayCardRpc)
                 return; //true
             }
             else
@@ -142,17 +142,5 @@ public class Card : AbstractCard, IAction
         _position = tileCoords;
         CardAnimator.Lerp_JumpTo(transform, HexCoordinates.ToWorldPosition(tileCoords), 0.2f); // Can't await; see if this causes problems
         inPlay = true;
-    }
-
-    [Rpc(SendTo.ClientsAndHost)] // Update the board on both host and client
-    public void SetBoardOccupantRpc(HexCoordinates tileCoords, NetworkBehaviourReference cardReference)
-    {
-        if (cardReference.TryGet(out Card card))
-        {
-            Debug.Log(string.Format("SETTING OCCUPANT OF POSITION {0} TO {1}", tileCoords, card.name));
-            board.Set_TileOccupant(tileCoords, card);
-        }
-        else
-            Debug.LogError(string.Format("Couldn't find card with reference {0}", cardReference));
     }
 }

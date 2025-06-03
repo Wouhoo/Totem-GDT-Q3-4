@@ -56,6 +56,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     [Rpc(SendTo.SpecifiedInParams)] // Call BeginTurn on the player with ID specified in rpcParams
     private void PlayerBeginTurnRpc(RpcParams rpcParams)
     {
+        Debug.Log("STARTING TURN");
         Player.Instance.BeginTurn();
     }
 
