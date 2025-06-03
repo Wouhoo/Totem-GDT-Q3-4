@@ -12,8 +12,7 @@ public enum PlayerState
 public enum PlayerCameraState
 {
     ViewingBoard,
-    ViewingHand,
-    ViewingActions
+    ViewingHand
 }
 
 public enum PlayerRequestState

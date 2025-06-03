@@ -30,92 +30,52 @@ public class Board : MonoBehaviour
 		}
 	}
 
-
 	void Awake()
 	{
-        gridCanvas = GetComponentInChildren<Canvas>(); //I still have this rather than have it be on the cells. Could make it only show up with gizmos.
+		gridCanvas = GetComponentInChildren<Canvas>(); //I still have this rather than have it be on the cells. Could make it only show up with gizmos.
 
-        cells = new Dictionary<HexCoordinates, HexCell>();
+		cells = new Dictionary<HexCoordinates, HexCell>();
 
-        //Debug.Log("GENERATING BOARD");
-        GenerateBoard(); // For clarity: this means Board generates a dictionary with references to all board cells.
-                         // *The cells themselves already exist*; they are not spawned here.
+		//Debug.Log("GENERATING BOARD");
+		GenerateBoard(); // For clarity: this means Board generates a dictionary with references to all board cells.
+						 // *The cells themselves already exist*; they are not spawned here.
 
-        // TEST: See if client also received a correct copy of the cells
-        /* Debug.Log("STARTING BOARD PRINT");
+		// TEST: See if client also received a correct copy of the cells
+		/* Debug.Log("STARTING BOARD PRINT");
         foreach (HexCell cell in cells.Values) 
         {
             Debug.Log(cell.coordinates);
         } */
-    }
+	}
 
-    void GenerateBoard()
+	void GenerateBoard()
 	{
-        // Find every HexCell in children (including grandchildren, as they are children of 'Cells' empty parent object)
-        HexCell[] allCells = GetComponentsInChildren<HexCell>();
+		// Find every HexCell in children (including grandchildren, as they are children of 'Cells' empty parent object)
+		HexCell[] allCells = GetComponentsInChildren<HexCell>();
 
-        // Loop through and register each one
-        foreach (var cell in allCells)
-        {
-            // Use the cell’s own coordinates as the key
-            if (cells.ContainsKey(cell.coordinates))  //duplicate check
-            {
-                Debug.LogError("Duplicate Hexcell at hex coordinate: " + cell.coordinates + ", Cell ignored ");
-                continue;
-            }
-            cells[cell.coordinates] = cell;
-
-            //IMPORTANT this means: Cell is not shown if it isn't in the grid
-            //no longer required, cells have their own meshes from the start
-            //cell.mesh.GenerateMesh();
-
-            Text label = Instantiate<Text>(cellLabelPrefab);
-            label.rectTransform.SetParent(gridCanvas.transform, false);
-            label.rectTransform.anchoredPosition = new Vector2(cell.transform.position.x, cell.transform.position.z);
-            label.text = cell.coordinates.ToStringOnSeparateLines();
-        }
-    }
-
-
-	//just the 'touching' check. If turned on prevents card placement so that's why it's commented out
-	// void Update()
-	// {
-	// 	if (Mouse.current.leftButton.isPressed)
-	// 	{
-	// 		HandleInput();
-	// 	}
-	// }
-
-	//unused, see above
-	void HandleInput()
-	{
-		Vector2 mousePosition = Mouse.current.position.ReadValue();
-		Ray inputRay = Camera.main.ScreenPointToRay(mousePosition);
-		RaycastHit hit;
-		if (Physics.Raycast(inputRay, out hit))
+		// Loop through and register each one
+		foreach (var cell in allCells)
 		{
-			TouchCell(hit.point);
+			// Use the cell’s own coordinates as the key
+			if (cells.ContainsKey(cell.coordinates))  //duplicate check
+			{
+				Debug.LogError("Duplicate Hexcell at hex coordinate: " + cell.coordinates + ", Cell ignored ");
+				continue;
+			}
+			cells[cell.coordinates] = cell;
+
+			//IMPORTANT this means: Cell is not shown if it isn't in the grid
+			//no longer required, cells have their own meshes from the start
+			//cell.mesh.GenerateMesh();
+
+			Text label = Instantiate<Text>(cellLabelPrefab);
+			label.rectTransform.SetParent(gridCanvas.transform, false);
+			label.rectTransform.anchoredPosition = new Vector2(cell.transform.position.x, cell.transform.position.z);
+			label.text = cell.coordinates.ToStringOnSeparateLines();
 		}
 	}
 
-	//unused, see above x2
-	void TouchCell(Vector3 position)
-	{
-		position = transform.InverseTransformPoint(position);
-		HexCoordinates coordinates = HexCoordinates.FromWorldPosition(position);
-		Debug.Log("touched at " + coordinates.ToString());
-		HexCell cell = GetHexCellAtHexCoordinate(coordinates);
-		cell.color = touchedColor;
-
-		Debug.Log("Cell world position should be: " + HexCoordinates.ToWorldPosition(coordinates));
-
-		cell.color = Color.magenta;
-		cell.mesh.currentColor = Color.magenta; //cool workaround shhhh
-		cell.mesh.GenerateMesh();
-	}
-
-
-	/////////////////////////////////////////////////////////////TIM COMPATIBILITY STUFF
+	//TIM COMPATIBILITY STUFF
 	public bool TileExistance(HexCoordinates pos)
 	{
 		// Checks if the tile is part of the board
@@ -140,7 +100,7 @@ public class Board : MonoBehaviour
 			Debug.Log("Error: Non-existant tile");
 			return false;
 		}
-		if (cells[pos].commander != 0 && cells[pos].commander != playerId) 
+		if (cells[pos].commander != 0 && cells[pos].commander != playerId)
 			return true;
 		return false;
 	}
@@ -174,7 +134,7 @@ public class Board : MonoBehaviour
 	{
 		if (!TileExistance(pos))
 			return false;
-		return (TileExistance(pos) && TileOccupant(pos) == null && !TileIsHostileCommander(playerId, pos));
+		return TileExistance(pos) && TileOccupant(pos) == null && !TileIsHostileCommander(playerId, pos);
 	}
 
 	public bool CanAttack(ulong playerId, HexCoordinates pos)

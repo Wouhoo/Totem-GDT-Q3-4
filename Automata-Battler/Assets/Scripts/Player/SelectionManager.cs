@@ -181,14 +181,6 @@ public class SelectionManager : MonoBehaviour
                     allowedSelectables.Add(play_Button);
                     allowedSelectables.Add(toHand_Button);
                     return;
-
-                case PlayerCameraState.ViewingActions:
-                    allowedSelectables.UnionWith(Get_CardsOnBoard());
-                    allowedSelectables.UnionWith(Get_ValidEmptyTiles());
-                    allowedSelectables.Add(play_Button);
-                    allowedSelectables.Add(toHand_Button);
-                    allowedSelectables.Add(toBoard_Button);
-                    return;
             }
         }
         else if (playerState == PlayerState.Acting)
