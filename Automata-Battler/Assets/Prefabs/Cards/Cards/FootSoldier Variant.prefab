@@ -18,11 +18,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1917568921908935741, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
       propertyPath: instructions.Array.data[0].instructionType
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1917568921908935741, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
       propertyPath: instructions.Array.data[2].instructionType
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2258352908710507920, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
       propertyPath: m_LocalPosition.x

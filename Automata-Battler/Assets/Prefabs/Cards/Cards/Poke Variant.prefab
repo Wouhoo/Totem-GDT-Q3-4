@@ -30,11 +30,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1917568921908935741, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
       propertyPath: instructions.Array.data[1].instructionType
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1917568921908935741, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
       propertyPath: instructions.Array.data[2].instructionType
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2258352908710507920, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
       propertyPath: m_LocalPosition.x
@@ -75,6 +75,10 @@ PrefabInstance:
     - target: {fileID: 2258352908710507920, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6108780113591403328, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3141417466
       objectReference: {fileID: 0}
     - target: {fileID: 6706120280879270475, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
       propertyPath: m_text
