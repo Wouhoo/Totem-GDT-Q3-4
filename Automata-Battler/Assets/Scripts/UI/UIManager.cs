@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using TMPro;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -34,6 +35,10 @@ public class UIManager : MonoBehaviour
     [Header("End Turn Button")]
     [SerializeField] TextMeshProUGUI endTurnText;
 
+    [Header("Pause Screen")]
+    [SerializeField] GameObject pauseScreen;
+    private bool paused;
+
     private void Awake()
     {
         if (Instance == null)
@@ -46,6 +51,17 @@ public class UIManager : MonoBehaviour
 
         UpdateManaText(3);
         ChangeTurnIndicator(1);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!paused)
+                Pause();
+            else
+                Unpause();
+        }
     }
 
     public void InitializePlayerHUD(ulong playerId)
@@ -79,6 +95,24 @@ public class UIManager : MonoBehaviour
     }
 
 
+    /* COMMANDER HEALTH */
+    public void UpdateCommanderHealthText(ulong playerId, int health)
+    {
+        if (playerId == 1)
+        {
+            p1CommanderHealthText.text = string.Format("♡ {0}/10", health);
+            if (!alreadyAnimating)
+                StartCoroutine("ErrorEffect", p1CommanderHealthText);
+        }
+        else
+        {
+            p2CommanderHealthText.text = string.Format("♡ {0}/10", health);
+            if (!alreadyAnimating)
+                StartCoroutine("ErrorEffect", p2CommanderHealthText);
+        }
+    }
+
+
     /* TURN INDICATOR */
     public void ChangeTurnIndicator(ulong playerId)
     {
@@ -107,24 +141,6 @@ public class UIManager : MonoBehaviour
     }
 
 
-    /* COMMANDER HEALTH */
-    public void UpdateCommanderHealthText(ulong playerId, int health)
-    {
-        if(playerId == 1)
-        {
-            p1CommanderHealthText.text = string.Format("♡ {0}/10", health);
-            if(!alreadyAnimating)
-                StartCoroutine("ErrorEffect", p1CommanderHealthText);
-        }
-        else
-        {
-            p2CommanderHealthText.text = string.Format("♡ {0}/10", health);
-            if(!alreadyAnimating)
-                StartCoroutine("ErrorEffect", p2CommanderHealthText);
-        }
-    }
-
-
     /* COOL EFFECTS */
     IEnumerator ErrorEffect(TextMeshProUGUI textToHighlight)
     {
@@ -139,5 +155,32 @@ public class UIManager : MonoBehaviour
         }
         alreadyAnimating = false;
         yield break;
+    }
+
+
+    /* PAUSE SCREEN */
+    public void Pause()
+    {
+        //sfxPlayer.ClickButtonSound();
+        pauseScreen.SetActive(true);
+        paused = true;
+        //Time.timeScale = 0; // W: This is fine for the client; however, if Time.timeScale = 0 on the server, the client's inputs won't be processed.
+                              // For now I'm disabling it; this means pausing technically doesn't actually pause the game, but it's turn-based anyway, so who really cares
+    }
+
+    public void Unpause()
+    {
+        //sfxPlayer.ClickButtonSound();
+        //helpScreen.SetActive(false);
+        pauseScreen.SetActive(false);
+        paused = false;
+        //Time.timeScale = 1;
+    }
+
+    public void BackToMenu()
+    {
+        //sfxPlayer.ClickButtonSound();
+        Time.timeScale = 0;
+        SceneManager.LoadScene(0);
     }
 }

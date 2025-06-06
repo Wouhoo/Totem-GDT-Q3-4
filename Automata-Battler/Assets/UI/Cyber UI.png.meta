@@ -1,0 +1,1080 @@
+fileFormatVersion: 2
+guid: ebf7e81597051494eb1f3dc17c59dad5
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1506565704288634567
+    second: Cyber UI_0
+  - first:
+      213: -160910350865026763
+    second: Cyber UI_1
+  - first:
+      213: 5461933662408084184
+    second: Cyber UI_2
+  - first:
+      213: -5955753218171928130
+    second: Cyber UI_3
+  - first:
+      213: -4273373120970055266
+    second: Cyber UI_4
+  - first:
+      213: -5677987517746191675
+    second: Cyber UI_5
+  - first:
+      213: 1469016827853935573
+    second: Cyber UI_6
+  - first:
+      213: 7969143577328865387
+    second: Cyber UI_7
+  - first:
+      213: 7238110303632846594
+    second: Cyber UI_8
+  - first:
+      213: 8478863939901817679
+    second: Cyber UI_9
+  - first:
+      213: 4369767462036891289
+    second: Cyber UI_10
+  - first:
+      213: -3975353772824805535
+    second: Cyber UI_11
+  - first:
+      213: -1451411424656895364
+    second: Cyber UI_12
+  - first:
+      213: -5148642927353998354
+    second: Cyber UI_13
+  - first:
+      213: -1922309882693006155
+    second: Cyber UI_14
+  - first:
+      213: 7760467500496881769
+    second: Cyber UI_15
+  - first:
+      213: -8994566004858414572
+    second: Cyber UI_16
+  - first:
+      213: 5675394716372333218
+    second: Cyber UI_17
+  - first:
+      213: -4029078131378316344
+    second: Cyber UI_18
+  - first:
+      213: -2003360069931531755
+    second: Cyber UI_19
+  - first:
+      213: 4251972271059859093
+    second: Cyber UI_20
+  - first:
+      213: -3551854359955643910
+    second: Cyber UI_21
+  - first:
+      213: 3757950022511405396
+    second: Cyber UI_22
+  - first:
+      213: 3128697911546401889
+    second: Cyber UI_23
+  - first:
+      213: -5275779438887960086
+    second: Cyber UI_24
+  - first:
+      213: -4308389096435683020
+    second: Cyber UI_25
+  - first:
+      213: -7409097619814792142
+    second: Cyber UI_26
+  - first:
+      213: -947037674453153850
+    second: Cyber UI_27
+  - first:
+      213: 4268810086520601110
+    second: Cyber UI_28
+  - first:
+      213: -5450286296805756481
+    second: Cyber UI_29
+  - first:
+      213: -7048371250937218088
+    second: Cyber UI_30
+  - first:
+      213: -2592761823181820285
+    second: Cyber UI_31
+  - first:
+      213: 1212601991352930976
+    second: Cyber UI_32
+  - first:
+      213: -5232467556650666889
+    second: Cyber UI_33
+  - first:
+      213: 7314406749392766514
+    second: Cyber UI_34
+  - first:
+      213: 6438437141305680450
+    second: Cyber UI_35
+  - first:
+      213: -6634310441869468270
+    second: Cyber UI_36
+  - first:
+      213: -8162522887234205674
+    second: Cyber UI_37
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Cyber UI_0
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 1082
+        width: 319
+        height: 188
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c609e2a68568e410800000000000000
+      internalID: 1506565704288634567
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_1
+      rect:
+        serializedVersion: 2
+        x: 436
+        y: 1078
+        width: 317
+        height: 194
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 531b10073e454cdf0800000000000000
+      internalID: -160910350865026763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_2
+      rect:
+        serializedVersion: 2
+        x: 849
+        y: 1099
+        width: 154
+        height: 153
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8da05963abfaccb40800000000000000
+      internalID: 5461933662408084184
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_3
+      rect:
+        serializedVersion: 2
+        x: 1082
+        y: 1092
+        width: 168
+        height: 167
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb109f4c00ae85da0800000000000000
+      internalID: -5955753218171928130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_4
+      rect:
+        serializedVersion: 2
+        x: 1306
+        y: 1108
+        width: 181
+        height: 139
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e91a0eba9cde1b4c0800000000000000
+      internalID: -4273373120970055266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_5
+      rect:
+        serializedVersion: 2
+        x: 1550
+        y: 1094
+        width: 158
+        height: 159
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c2e2a59f6cb331b0800000000000000
+      internalID: -5677987517746191675
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_6
+      rect:
+        serializedVersion: 2
+        x: 1777
+        y: 1104
+        width: 159
+        height: 139
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d31e41950ff26410800000000000000
+      internalID: 1469016827853935573
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_7
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 797
+        width: 319
+        height: 213
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b60d5ca7cd5189e60800000000000000
+      internalID: 7969143577328865387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_8
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 809
+        width: 324
+        height: 189
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20f6125d8fee27460800000000000000
+      internalID: 7238110303632846594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_9
+      rect:
+        serializedVersion: 2
+        x: 849
+        y: 827
+        width: 154
+        height: 153
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4387b494d9faa570800000000000000
+      internalID: 8478863939901817679
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_10
+      rect:
+        serializedVersion: 2
+        x: 1088
+        y: 827
+        width: 154
+        height: 161
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 996e4cdca5884ac30800000000000000
+      internalID: 4369767462036891289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_11
+      rect:
+        serializedVersion: 2
+        x: 1304
+        y: 822
+        width: 193
+        height: 153
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16fb4425ec4b4d8c0800000000000000
+      internalID: -3975353772824805535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_12
+      rect:
+        serializedVersion: 2
+        x: 1550
+        y: 832
+        width: 159
+        height: 139
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c72d16acffc8bdbe0800000000000000
+      internalID: -1451411424656895364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_13
+      rect:
+        serializedVersion: 2
+        x: 1778
+        y: 832
+        width: 167
+        height: 140
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee3dcb749885c88b0800000000000000
+      internalID: -5148642927353998354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_14
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 550
+        width: 319
+        height: 184
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5bc4cd5b8559255e0800000000000000
+      internalID: -1922309882693006155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_15
+      rect:
+        serializedVersion: 2
+        x: 435
+        y: 540
+        width: 319
+        height: 203
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96884123318b2bb60800000000000000
+      internalID: 7760467500496881769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_16
+      rect:
+        serializedVersion: 2
+        x: 826
+        y: 552
+        width: 199
+        height: 179
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41a1c93bfd1ec2380800000000000000
+      internalID: -8994566004858414572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_17
+      rect:
+        serializedVersion: 2
+        x: 1065
+        y: 567
+        width: 201
+        height: 170
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a2708dcc6d03ce40800000000000000
+      internalID: 5675394716372333218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_18
+      rect:
+        serializedVersion: 2
+        x: 1317
+        y: 567
+        width: 163
+        height: 155
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8cb96e659c6d518c0800000000000000
+      internalID: -4029078131378316344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_19
+      rect:
+        serializedVersion: 2
+        x: 1548
+        y: 580
+        width: 164
+        height: 142
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 512878271a2a234e0800000000000000
+      internalID: -2003360069931531755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_20
+      rect:
+        serializedVersion: 2
+        x: 1775
+        y: 563
+        width: 163
+        height: 159
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 596755ba04a020b30800000000000000
+      internalID: 4251972271059859093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_21
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 299
+        width: 182
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af1ebe4374745bec0800000000000000
+      internalID: -3551854359955643910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_22
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 300
+        width: 182
+        height: 180
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 459a67f82abe62430800000000000000
+      internalID: 3757950022511405396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_23
+      rect:
+        serializedVersion: 2
+        x: 610
+        y: 445
+        width: 104
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 164da3b8c2e5b6b20800000000000000
+      internalID: 3128697911546401889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_24
+      rect:
+        serializedVersion: 2
+        x: 830
+        y: 300
+        width: 191
+        height: 180
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae106c77d8aa8c6b0800000000000000
+      internalID: -5275779438887960086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_25
+      rect:
+        serializedVersion: 2
+        x: 1103
+        y: 362
+        width: 502
+        height: 119
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 431f8c091f68534c0800000000000000
+      internalID: -4308389096435683020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_26
+      rect:
+        serializedVersion: 2
+        x: 1667
+        y: 69
+        width: 80
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2344fb848f89d2990800000000000000
+      internalID: -7409097619814792142
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_27
+      rect:
+        serializedVersion: 2
+        x: 1817
+        y: 69
+        width: 118
+        height: 399
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c7ce41b0427bd2f0800000000000000
+      internalID: -947037674453153850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_28
+      rect:
+        serializedVersion: 2
+        x: 555
+        y: 297
+        width: 70
+        height: 88
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61a3aa4182cdd3b30800000000000000
+      internalID: 4268810086520601110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_29
+      rect:
+        serializedVersion: 2
+        x: 602
+        y: 323
+        width: 119
+        height: 118
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb1b6ba6d71bc54b0800000000000000
+      internalID: -5450286296805756481
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_30
+      rect:
+        serializedVersion: 2
+        x: 698
+        y: 297
+        width: 70
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8dbbfcee0b72f2e90800000000000000
+      internalID: -7048371250937218088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_31
+      rect:
+        serializedVersion: 2
+        x: 630
+        y: 301
+        width: 63
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38ead0edbd8a40cd0800000000000000
+      internalID: -2592761823181820285
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_32
+      rect:
+        serializedVersion: 2
+        x: 1103
+        y: 220
+        width: 503
+        height: 97
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a2d584261704d010800000000000000
+      internalID: 1212601991352930976
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_33
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 52
+        width: 181
+        height: 180
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 774b413ea7a8267b0800000000000000
+      internalID: -5232467556650666889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_34
+      rect:
+        serializedVersion: 2
+        x: 332
+        y: 64
+        width: 153
+        height: 157
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23686486f2ef18560800000000000000
+      internalID: 7314406749392766514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_35
+      rect:
+        serializedVersion: 2
+        x: 580
+        y: 52
+        width: 181
+        height: 181
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 242e43cb77ce95950800000000000000
+      internalID: 6438437141305680450
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_36
+      rect:
+        serializedVersion: 2
+        x: 835
+        y: 53
+        width: 182
+        height: 179
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29d94be9dc13ee3a0800000000000000
+      internalID: -6634310441869468270
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cyber UI_37
+      rect:
+        serializedVersion: 2
+        x: 1103
+        y: 63
+        width: 513
+        height: 120
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 618c8635ea4e8be80800000000000000
+      internalID: -8162522887234205674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable: {}
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
