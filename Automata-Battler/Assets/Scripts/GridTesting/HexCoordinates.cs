@@ -114,9 +114,9 @@ public struct HexCoordinates : INetworkSerializable
 	//Brexit means Brexit
 	public static Vector3 ToWorldPosition(HexCoordinates hex)
 	{
-		float worldX = HexMetrics.outerRadius * 1.5f * hex.X;
-    	float worldZ = -(HexMetrics.innerRadius * 2f * (hex.Z + hex.X / 2f));
-		
+		float worldX = HexMetrics.outerRadius * 1.5f * hex.X - 30; // -30 & -26 to center the board!
+		float worldZ = -(HexMetrics.innerRadius * 2f * (hex.Z + hex.X / 2f)) - 26;
+
 		return new Vector3(worldX, 0f, worldZ);
 
 	}

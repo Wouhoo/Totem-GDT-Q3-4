@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Serpent Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 1117694161196501464, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
+      propertyPath: m_text
+      value: Serpent
+      objectReference: {fileID: 0}
     - target: {fileID: 1917568921908935741, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
       propertyPath: cost
       value: 2
@@ -92,18 +96,6 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 1292691961
       objectReference: {fileID: 0}
-    - target: {fileID: 6272969405024136741, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
-      propertyPath: canvas
-      value: 
-      objectReference: {fileID: 3182978588831723679}
-    - target: {fileID: 6272969405024136741, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
-      propertyPath: canvasTransform
-      value: 
-      objectReference: {fileID: 5624214186902742925}
-    - target: {fileID: 6272969405024136741, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
-      propertyPath: objectInstructions
-      value: 
-      objectReference: {fileID: 7390542625329953518}
     - target: {fileID: 6706120280879270475, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
       propertyPath: m_text
       value: Serpent
@@ -129,18 +121,3 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
---- !u!1 &3182978588831723679 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6878457094599187883, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
-  m_PrefabInstance: {fileID: 8311681601987980596}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &5624214186902742925 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4419226816236505785, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
-  m_PrefabInstance: {fileID: 8311681601987980596}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &7390542625329953518 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1569923647480010714, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
-  m_PrefabInstance: {fileID: 8311681601987980596}
-  m_PrefabAsset: {fileID: 0}

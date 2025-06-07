@@ -14,7 +14,6 @@ public class PlayerStateManager : MonoBehaviour
     public PlayerCameraState _currentCameraState { get; private set; }
     public PlayerRequestState _currentRequestState { get; private set; }
 
-
     void Awake()
     {
         cameraController = GetComponent<CameraController>();

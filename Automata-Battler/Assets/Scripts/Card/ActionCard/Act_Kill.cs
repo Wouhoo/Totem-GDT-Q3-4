@@ -3,23 +3,27 @@ using UnityEngine;
 
 public class Act_Kill : AbstractCard, IAction
 {
-    public async Task Act(ISelectable selectable)
+    public bool Q_CanBeginAction()
     {
-        if (selectable is Card card)
-        {
-            if (!card._inPlay)
-                return;
+        if (Player.Instance._mana >= _cost)
+            return true;
+        else return false;
+    }
 
-            //if (_ownerPlayer.AttemptManaUse(_cost))
-            if(Player.Instance.AttemptManaUse(_cost))
-            {
-                await I_Die.Execute(card);
-                //_ownerPlayer._hand.Remove(this); // To Wouter: int thingy
-                Player.Instance._hand.Remove(this);
-                Destroy(this.gameObject);
-            }
+    public async Task<PlayerCameraState> Act(ISelectable selectable)
+    {
+        if (selectable is Card card && card._inPlay)
+        {
+            Player.Instance.UseMana(_cost);
+            await I_Die.Execute(card);
+            //_ownerPlayer._hand.Remove(this); // To Wouter: int thingy
+            Player.Instance.RemoveCardFromHand(this);
+            return PlayerCameraState.ViewingBoard;
+            Destroy(this.gameObject); // uhhhhhhhhhhh....?
         }
         // else we failed
+        return PlayerCameraState.ViewingHand;
+
     }
 
     public PlayerCameraState Get_ActionCamera()

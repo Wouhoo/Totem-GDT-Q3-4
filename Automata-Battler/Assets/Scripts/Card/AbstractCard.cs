@@ -24,7 +24,7 @@ public class AbstractCard : NetworkBehaviour, ISelectable
         }
     }
 
-    public ulong _ownerPlayer { get; private set; } // To Wouter: int thing
+    public ulong _ownerPlayer { get; private set; }
     public void Set_Owner(ulong playerId)
     {
         _ownerPlayer = playerId;
@@ -43,6 +43,12 @@ public class AbstractCard : NetworkBehaviour, ISelectable
             gameObject.GetComponent<MeshRenderer>().material = CardManager.Instance.p2Material;
             //gameObject.GetComponent<Card>().Rotate(3);
         }
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    public void Set_WorldPosition_Rpc(Vector3 pos)
+    {
+        transform.position = pos;
     }
 
     [SerializeField] private int cost = 1;

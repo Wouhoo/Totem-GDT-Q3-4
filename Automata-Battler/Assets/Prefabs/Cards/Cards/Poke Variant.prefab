@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Poke Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 1117694161196501464, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
+      propertyPath: m_text
+      value: Poke
+      objectReference: {fileID: 0}
     - target: {fileID: 1917568921908935741, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
       propertyPath: cost
       value: 2
@@ -80,18 +84,6 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 3141417466
       objectReference: {fileID: 0}
-    - target: {fileID: 6272969405024136741, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
-      propertyPath: canvas
-      value: 
-      objectReference: {fileID: 2237846404494099147}
-    - target: {fileID: 6272969405024136741, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
-      propertyPath: canvasTransform
-      value: 
-      objectReference: {fileID: 9020536719416514009}
-    - target: {fileID: 6272969405024136741, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
-      propertyPath: objectInstructions
-      value: 
-      objectReference: {fileID: 6175033254506137786}
     - target: {fileID: 6706120280879270475, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
       propertyPath: m_text
       value: 'Poke
@@ -119,18 +111,3 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
---- !u!1 &2237846404494099147 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6878457094599187883, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
-  m_PrefabInstance: {fileID: 4646409946124525408}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &6175033254506137786 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1569923647480010714, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
-  m_PrefabInstance: {fileID: 4646409946124525408}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &9020536719416514009 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4419226816236505785, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
-  m_PrefabInstance: {fileID: 4646409946124525408}
-  m_PrefabAsset: {fileID: 0}

@@ -9,13 +9,13 @@ using Unity.Services.Matchmaker.Models;
 
 public class Referee : NetworkBehaviour // The referee is a networkobject; most of its functions are carried out *only on server*.
 {
+    public static Referee Instance { get; private set; }
     private ulong activePlayer; // server = 1, client = 2. 0 is reserved as null value to be consistent with the Player.playerId and HexCell.commander fields.
                                 // CAREFUL: when sending an RPC to a specific player, don't forget to subtract 1 in order to convert to actual clientId! (0 for server, 1 for client)
     private int round = 0;
     public List<Card> cardList { get; private set; } = new List<Card>(); // in order of play (newest last)
-    public static Referee Instance { get; private set; }
-    private bool p1Ready;
-    private bool p2Ready;
+    private bool p1Ready = false;
+    private bool p2Ready = false;
 
     private void Awake()
     {
@@ -27,23 +27,23 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
 
     public override void OnNetworkSpawn()
     {
-        if(IsServer)
+        if (IsServer)
             StartCoroutine(StartGame()); // Have to do it this way so we can wait until all necessary networkobjects have spawned
     }
 
     [Rpc(SendTo.Server)]
     public void PlayerReadyRpc(ulong playerId) // Called by a Player once they have finished their initializations
     {
-        if(playerId == 1)
+        if (playerId == 1)
             p1Ready = true;
-        else if(playerId == 2)
+        else if (playerId == 2)
             p2Ready = true;
     }
 
     private IEnumerator StartGame()
     {
         // Wait until all NetworkObjects that are necessary to start the game have spawned and both players have initialized
-        while(!CardManager.Instance.IsSpawned || !p1Ready || !p2Ready) // Add more NetworkObjects here as required
+        while (!CardManager.Instance.IsSpawned || !p1Ready || !p2Ready) // Add more NetworkObjects here as required
             yield return null;
 
         // Start the game for the players
@@ -172,13 +172,5 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     {
         for (int i = cardList.Count - 1; i >= 0; i--)
             cardList[i].SetInitiativeRpc(i);
-    }
-
-
-    [Rpc(SendTo.ClientsAndHost)]
-    public void UpdateCommanderHealthTextRpc(ulong playerId, int health) // Update commander health text for both players (called from Player)
-    {
-        //Debug.Log(string.Format("NEW PLAYER {0} HEALTH: {1}", playerId, health));
-        UIManager.Instance.UpdateCommanderHealthText(playerId, health);
     }
 }

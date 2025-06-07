@@ -23,16 +23,6 @@ public class HexCell : NetworkBehaviour, ISelectable
         highlightMesh.SetActive(false);
     }
 
-    //'Snap' the coordinate of a cell to it's hex coordinate
-    // Only run this in the Editor (not in builds or play mode)
-    void OnValidate()
-    {
-        // using localPosition because parented under Board
-        // Otherwise, use position.
-        transform.localPosition = HexCoordinates.ToWorldPosition(coordinates); ;
-    }
-
-
     //Occupant stuff
     // NOTE BY WOUTER: We want the tile's occupant to be synced at all times.
     // This can be done either through RPCs over and back, or by making it a NetworkVariable (preferred)
@@ -72,7 +62,7 @@ public class HexCell : NetworkBehaviour, ISelectable
     public void SetCard(Card card)
     {
         bool removeOccupant = false;
-        if(card == null)
+        if (card == null)
             removeOccupant = true; // If card == null we want to remove the card.
                                    // Note: because NetworkBehaviourReference cannot be null, we still have to send the card reference in this case (though it is unused)
         NetworkBehaviourReference cardReference = new NetworkBehaviourReference(card); // Translate Card instance to NetworkBehaviourReference
@@ -90,7 +80,7 @@ public class HexCell : NetworkBehaviour, ISelectable
         {
             // DO SERVER-SIDE VALIDATION HERE
             SetCardClientRpc(cardReference, removeOccupant); // Once server has validated the placement, tell all players what the new card is
-                                             // This is required only in the RPC version; it happens automatically in the NETWORKVARIABLE version (that's what NetworkVariables are for)
+                                                             // This is required only in the RPC version; it happens automatically in the NETWORKVARIABLE version (that's what NetworkVariables are for)
         }
         else
         {
@@ -112,7 +102,7 @@ public class HexCell : NetworkBehaviour, ISelectable
     public void DamageCommander(int damageAmount) // W: damaging commander now goes through cell instead of directly from board to player,
                                                   // since I don't want Board to be a NetworkObject (hence it cannot have RPCs)
     {
-        DamageCommanderRpc(damageAmount, RpcTarget.Single(commander-1, RpcTargetUse.Temp));
+        DamageCommanderRpc(damageAmount, RpcTarget.Single(commander - 1, RpcTargetUse.Temp));
     }
 
     [Rpc(SendTo.SpecifiedInParams)] // Sent only to the correct player (so Player.Instance will be the player commanding this tile)

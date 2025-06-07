@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 public class Board : MonoBehaviour
 {
+	public static Board Instance { get; private set; }
 	[SerializeField] public Dictionary<HexCoordinates, HexCell> cells { get; private set; }
 
 	public Text cellLabelPrefab;
@@ -32,6 +33,11 @@ public class Board : MonoBehaviour
 
 	void Awake()
 	{
+		if (Instance == null)
+			Instance = this;
+		else
+			Destroy(gameObject);
+
 		gridCanvas = GetComponentInChildren<Canvas>(); //I still have this rather than have it be on the cells. Could make it only show up with gizmos.
 
 		cells = new Dictionary<HexCoordinates, HexCell>();
@@ -152,9 +158,9 @@ public class Board : MonoBehaviour
 			Debug.Log("Error: tried invalid attack");
 			return;
 		}
-        if (TileIsHostileCommander(playerId, pos)) // If target is a commander tile, damage commander (even if there is a unit there)
-            cells[pos].DamageCommander(damageAmount);
-        else if (TileOccupant(pos) != null)
+		if (TileIsHostileCommander(playerId, pos)) // If target is a commander tile, damage commander (even if there is a unit there)
+			cells[pos].DamageCommander(damageAmount);
+		else if (TileOccupant(pos) != null)
 			await I_TakeDamage.Execute(TileOccupant(pos), damageAmount);
 	}
 }

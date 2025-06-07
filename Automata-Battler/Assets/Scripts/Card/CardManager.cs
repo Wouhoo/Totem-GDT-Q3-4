@@ -37,7 +37,7 @@ public class CardManager : NetworkBehaviour
     // This means the client needs to be able to send which card they want to draw with this RPC.
     // The easiest way to accomplish this would probably be to have a "database" of all cards (with no stats modified) and refer to them by index in this database.
     // For now though, we'll continue drawing random cards for testing purposes until the multiplayer stuff is done.
-    public void DrawCardRpc(ulong playerId, int deckSlot)
+    public void DrawCardRpc(ulong playerId, int handSlot)
     {
         Debug.Log(string.Format("PLAYER CALLING: {0}, CARDMANAGER CARDS: {1}", playerId, cards.Count));
 
@@ -53,51 +53,15 @@ public class CardManager : NetworkBehaviour
                                                                       // as a NetworkBehaviourReference; no changes required!
         card.Set_Owner(playerId);
         if (playerId == 2 && card is Card card1) // Flip instructions for player 2
-        {
-            card1.InvertInstructionsRpc();
-        }
-
-        // Move card to correct position & orientation
-        //if(card is Card card1) // Check if AbstractCard is also an actual Card
-        //{
-        //    MoveCardInHand(card1, playerId, deckSlot);
-        //}
+            card1.RotateInstructionsRpc(3);
 
         // Return card to correct caller
-        ReturnCardRpc(card, RpcTarget.Single(playerId - 1, RpcTargetUse.Temp));
-    }
-
-    [Rpc(SendTo.Server)]
-    public void SortHandRpc(NetworkObjectReference[] hand, ulong playerId)
-    {
-        //Debug.Log(string.Format("PLAYER CALLING: {0}, HAND SIZE: {1}", playerId, hand.Length));
-
-        // Sort given player's hand
-        for (int i = 0; i < hand.Length; i++)
-        {
-            // Get card NetworkObject
-            if (hand[i].TryGet(out NetworkObject card))
-            {
-                //Debug.Log(string.Format("MOVING CARD {0} TO PLAYER {1} SLOT {2}", card.name, playerId, i));
-                // Move card to the correct slot
-                if (playerId == 1)
-                {
-                    card.transform.position = p1Deck.slots[i].position;
-                }
-                else if (playerId == 2)
-                {
-                    card.transform.position = p2Deck.slots[i].position;
-                    // card.transform.rotation = p2Deck.slots[i].rotation;
-                }
-            }
-            else
-                Debug.LogError("Couldn't find card!");
-        }
+        ReturnCardRpc(card, handSlot, RpcTarget.Single(playerId - 1, RpcTargetUse.Temp));
     }
 
     [Rpc(SendTo.SpecifiedInParams)] // Runs only on a specific player depending on rpcParams
-    private void ReturnCardRpc(NetworkBehaviourReference card, RpcParams rpcParams)
+    private void ReturnCardRpc(NetworkBehaviourReference card, int handSlot, RpcParams rpcParams)
     {
-        Player.Instance.AddCardToHand(card);
+        Player.Instance.AddCardToHand(card, handSlot);
     }
 }

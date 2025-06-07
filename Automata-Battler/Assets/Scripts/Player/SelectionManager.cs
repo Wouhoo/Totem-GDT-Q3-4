@@ -10,16 +10,15 @@ public class SelectionManager : MonoBehaviour
 {
     //private Player player; // Player is now a singleton, so this is no longer necessary
     private PlayerStateManager playerStateManager;
-    private Referee referee;
-    private Board board;
 
     [SerializeField] private LayerMask cardLayerMask;
     [SerializeField] private LayerMask tileLayerMask;
     [SerializeField] private LayerMask buttonsLayerMask;
+    [SerializeField] private LayerMask rotationarrowsLayerMask;
     private LayerMask selectablesLayerMask;
 
-    [SerializeField] private Button toBoard_Button; // No longer set from inspector! (see InitializeButtons)
-    [SerializeField] private Button toHand_Button;  // No longer set from inspector! (see InitializeButtons)
+    [SerializeField] private Button toBoard_Button;
+    [SerializeField] private Button toHand_Button;
     [SerializeField] private Button play_Button;
 
     private ISelectable currentHover;
@@ -29,25 +28,7 @@ public class SelectionManager : MonoBehaviour
     {
         playerStateManager = GetComponent<PlayerStateManager>();
 
-        referee = FindFirstObjectByType<Referee>();
-        board = FindFirstObjectByType<Board>();
-
-        selectablesLayerMask = cardLayerMask | tileLayerMask | buttonsLayerMask;
-    }
-
-    public void InitializeButtons(ulong playerId)
-    {
-        // Get correct buttons based on player ID
-        if (playerId == 1)
-        {
-            toBoard_Button = GameObject.Find("P1 ToBoardButton").GetComponent<Button>();
-            toHand_Button = GameObject.Find("P1 ToHandButton").GetComponent<Button>();
-        }
-        else
-        {
-            toBoard_Button = GameObject.Find("P2 ToBoardButton").GetComponent<Button>();
-            toHand_Button = GameObject.Find("P2 ToHandButton").GetComponent<Button>();
-        }
+        selectablesLayerMask = cardLayerMask | tileLayerMask | buttonsLayerMask | rotationarrowsLayerMask;
     }
 
     void Update()
@@ -80,54 +61,48 @@ public class SelectionManager : MonoBehaviour
             return;
         Debug.Log("currentHover is now: " + currentHover);
         if (currentHover != null)
-            currentHover.OnHoverExit(); // To Wouter: this can be done client side
+            currentHover.OnHoverExit(); // This should be done client side
         currentHover = selectable;
         if (currentHover != null)
-            currentHover.OnHoverEnter(); // To Wouter: this can be done client side
+            currentHover.OnHoverEnter(); // This should be done client side
     }
+
+    private void NotYourTurnMessage()
+    {
+        Debug.Log("Not your turn!");
+        UIManager.Instance.PlayNotYourTurnEffect();
+    }
+
 
     private async Task ManageSelection(ISelectable selectable)
     {
         Debug.Log($"Player {Player.Instance.playerId} selected {selectable}");
-        if (playerStateManager._currentRequestState == PlayerRequestState.None) // Begin selection process
+
+        if (playerStateManager._currentState == PlayerState.Transitioning || playerStateManager._currentState == PlayerState.WatchingGame)
+            NotYourTurnMessage();
+        else if (playerStateManager._currentRequestState == PlayerRequestState.None) // Begin selection process
         {
             if (selectable is Button button)
-            {
                 await ManageButtonSelection(button);
-                return;
-            }
-            else if (selectable is IAction action)
+            else if (selectable is IAction action) // Start a new action (possibly)
             {
-                // pre action check for mana if needed:
-                if (selectable is AbstractCard card && card._cost > Player.Instance._mana)
-                {
-                    Debug.Log("Not enough mana!");
-                    UIManager.Instance.PlayNotEnoughManaEffect();
-                    return;
+                if (playerStateManager._currentState != PlayerState.Playing)
+                    NotYourTurnMessage();
+                else if (action.Q_CanBeginAction())
+                {   // Begin the action process
+                    currentAction = action;
+                    await playerStateManager.ToState(PlayerState.Playing, currentAction.Get_ActionCamera(), currentAction.Get_ActionInput());
                 }
-                // Also don't allow further action if it's not this player's turn
-                if (selectable is AbstractCard card1 && playerStateManager._currentState != PlayerState.Playing)
-                {
-                    Debug.Log("Not your turn!");
-                    UIManager.Instance.PlayNotYourTurnEffect();
-                    return;
-                }
-                currentAction = action;
-                await playerStateManager.ToState(PlayerState.Acting, currentAction.Get_ActionCamera(), currentAction.Get_ActionInput());
-                return;
             }
         }
-        else // Finish selection process
+        else if (currentAction != null) // Finish current action process
         {
-            if (currentAction == null)
-                return; // UHHHHHH... NOT POSSIBLE HOPEFULLY????
-            await currentAction.Act(selectable); // To Wouter: server side i think
+            PlayerCameraState PostActionState = await currentAction.Act(selectable);
             currentAction = null;
-            // if sucsess
-            // await playerStateManager.ToState(PlayerState.Playing, PlayerCameraState.ViewingBoard, PlayerRequestState.None);
-            // if fail
-            await playerStateManager.ToState(PlayerState.Playing, PlayerCameraState.ViewingHand, PlayerRequestState.None);
+            await playerStateManager.ToState(PlayerState.Playing, PostActionState, PlayerRequestState.None);
         }
+        else Debug.Log("Error (SelectionManager.ManageSelection): Requesting without an action.");
+        return;
     }
 
     // Utility functions for managing selections
@@ -146,13 +121,10 @@ public class SelectionManager : MonoBehaviour
             case ButtonType.EndTurn:
                 // You're only allowed to press the button if it's your turn
                 if (playerStateManager._currentState != PlayerState.Playing)
-                {
-                    Debug.Log("Not your turn!");
-                    UIManager.Instance.PlayNotYourTurnEffect();
-                    return;
-                }
-                referee.EndTurnRpc(); // Make server end turn
-                // ^ cannot be awaited anymore since it is async; check if this leads to any troubles
+                    NotYourTurnMessage();
+                else
+                    Referee.Instance.EndTurnRpc(); // Make server end turn
+                                                   // ^ cannot be awaited anymore since it is async; check if this leads to any troubles
                 break;
         }
     }
@@ -165,38 +137,38 @@ public class SelectionManager : MonoBehaviour
         allowedSelectables = new HashSet<ISelectable>();
         if (playerState == PlayerState.Transitioning || playerState == PlayerState.WatchingGame)
             return;
-        else if (playerRequest == PlayerRequestState.None) // Begin a selection process
+        switch (playerRequest)
         {
-            switch (playerCamera)
-            {
-                case PlayerCameraState.ViewingHand:
-                    allowedSelectables.UnionWith(Get_CardsInHand());
-                    allowedSelectables.Add(play_Button);
-                    allowedSelectables.Add(toBoard_Button);
-                    return;
+            case PlayerRequestState.None: // Begin a selection process (should be None always when state is Viewing!)
+                switch (playerCamera)
+                {
+                    case PlayerCameraState.ViewingHand:
+                        allowedSelectables.UnionWith(Get_CardsInHand()); // Hover for placement of card & card info
+                        allowedSelectables.Add(play_Button);
+                        allowedSelectables.Add(toBoard_Button);
+                        return;
 
-                case PlayerCameraState.ViewingBoard:
-                    allowedSelectables.UnionWith(Get_CardsOnBoard());
-                    allowedSelectables.UnionWith(Get_ValidEmptyTiles());
-                    allowedSelectables.Add(play_Button);
-                    allowedSelectables.Add(toHand_Button);
-                    return;
-            }
-        }
-        else if (playerState == PlayerState.Acting)
-        {
-            switch (playerRequest)
-            {
-                case PlayerRequestState.Tiles_ValidEmpty:
-                    allowedSelectables.UnionWith(Get_ValidEmptyTiles());
-                    return;
-                case PlayerRequestState.Cards_InHand:
-                    allowedSelectables.UnionWith(Get_CardsInHand());
-                    return;
-                case PlayerRequestState.Cards_InPlay:
-                    allowedSelectables.UnionWith(Get_CardsOnBoard());
-                    return;
-            }
+                    case PlayerCameraState.ViewingBoard:
+                        allowedSelectables.UnionWith(Get_CardsOnBoard()); // Hover for UI and Rotation selection
+                        // allowedSelectables.UnionWith(Get_ValidEmptyTiles()); // Hover for placement on tile
+                        allowedSelectables.Add(play_Button);
+                        allowedSelectables.Add(toHand_Button);
+                        return;
+                }
+                return;
+            case PlayerRequestState.Tiles_ValidEmpty:
+                allowedSelectables.UnionWith(Get_ValidEmptyTiles());
+                return;
+            case PlayerRequestState.Cards_InHand:
+                allowedSelectables.UnionWith(Get_CardsInHand());
+                return;
+            case PlayerRequestState.Cards_InPlay:
+                allowedSelectables.UnionWith(Get_CardsOnBoard());
+                return;
+            case PlayerRequestState.RotationArrows:
+                allowedSelectables.UnionWith(Get_RotationArrows());
+                Debug.Log(allowedSelectables);
+                return;
         }
     }
 
@@ -213,7 +185,7 @@ public class SelectionManager : MonoBehaviour
     private HashSet<ISelectable> Get_CardsOnBoard()
     {
         HashSet<ISelectable> selectables = new HashSet<ISelectable>();
-        foreach (Card card in referee.cardList)
+        foreach (Card card in Referee.Instance.cardList)
             selectables.Add(card);
         return selectables;
     }
@@ -221,10 +193,25 @@ public class SelectionManager : MonoBehaviour
     private HashSet<ISelectable> Get_ValidEmptyTiles()
     {
         HashSet<ISelectable> selectables = new HashSet<ISelectable>();
-        foreach (HexCell tile in board.cells.Values)
+        foreach (HexCell tile in Board.Instance.cells.Values)
         {
             if (tile.GetCard() == null && tile.commander == Player.Instance.playerId) // Only allow playing on empty tiles owned by this player
                 selectables.Add(tile);
+        }
+        return selectables;
+    }
+
+    private HashSet<ISelectable> Get_RotationArrows()
+    {
+        HashSet<ISelectable> selectables = new HashSet<ISelectable>();
+        foreach (Card card in Referee.Instance.cardList)
+        {
+            if (card.Q_RotationArrowsShown)
+            {
+                Debug.Log("HELOOOOOOOOOOO????");
+                selectables.Add(card.ra_Clock);
+                selectables.Add(card.ra_Counter);
+            }
         }
         return selectables;
     }

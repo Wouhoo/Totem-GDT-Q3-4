@@ -5,7 +5,6 @@ public enum PlayerState
     Playing,
     Viewing,
     Transitioning,
-    Acting,
     WatchingGame,
 }
 
@@ -21,5 +20,6 @@ public enum PlayerRequestState
     Tiles,
     Tiles_ValidEmpty,
     Cards_InHand,
-    Cards_InPlay
+    Cards_InPlay,
+    RotationArrows
 }
