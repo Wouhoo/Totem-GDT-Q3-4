@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using TMPro;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] Color errorColor = Color.red;
     [SerializeField] float errorDuration = 0.8f;
     [SerializeField] int increments = 20;
-    private bool alreadyAnimating;
+    private bool alreadyAnimating; 
     // Note: this^ bool is shared by all text elements that can have an error animation, meaning only one can be animating at a time.
     // This is fine for now since only one should be able to happen anyway, but maybe refactor later if we add this effect to more things.
 
@@ -28,10 +29,15 @@ public class UIManager : MonoBehaviour
     private Color p2Color;
 
     [Header("Commander Health Text")]
-    [SerializeField] TextMeshProUGUI commanderHealthText;
+    [SerializeField] TextMeshProUGUI p1CommanderHealthText;
+    [SerializeField] TextMeshProUGUI p2CommanderHealthText;
 
     [Header("End Turn Button")]
     [SerializeField] TextMeshProUGUI endTurnText;
+
+    [Header("Pause Screen")]
+    [SerializeField] GameObject pauseScreen;
+    private bool paused;
 
     private void Awake()
     {
@@ -47,6 +53,35 @@ public class UIManager : MonoBehaviour
         ChangeTurnIndicator(1);
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!paused)
+                Pause();
+            else
+                Unpause();
+        }
+    }
+
+    public void InitializePlayerHUD(ulong playerId)
+    {
+        // Rotate current player and commander health texts to correct position
+        if(playerId == 1)
+        {
+            p1CommanderHealthText.transform.Rotate(-45, 0, 0);
+            p2CommanderHealthText.transform.Rotate(-90, 0, 0);
+        }
+        else
+        {
+            turnText.gameObject.transform.Rotate(0, 0, 180);
+            endTurnText.gameObject.transform.Rotate(0, 0, 180);
+            p1CommanderHealthText.transform.Rotate(90, 0, 180);
+            p2CommanderHealthText.transform.Rotate(45, 0, 180);
+        }
+    }
+
+
     /* MANA TEXT */
     public void UpdateManaText(int mana)
     {
@@ -60,15 +95,33 @@ public class UIManager : MonoBehaviour
     }
 
 
+    /* COMMANDER HEALTH */
+    public void UpdateCommanderHealthText(ulong playerId, int health)
+    {
+        if (playerId == 1)
+        {
+            p1CommanderHealthText.text = string.Format("♡ {0}/10", health);
+            if (!alreadyAnimating)
+                StartCoroutine("ErrorEffect", p1CommanderHealthText);
+        }
+        else
+        {
+            p2CommanderHealthText.text = string.Format("♡ {0}/10", health);
+            if (!alreadyAnimating)
+                StartCoroutine("ErrorEffect", p2CommanderHealthText);
+        }
+    }
+
+
     /* TURN INDICATOR */
     public void ChangeTurnIndicator(ulong playerId)
     {
-        if (playerId == 1) // Orange player
+        if(playerId == 1) // Orange player
         {
             turnText.text = "Current Player: Orange";
             turnTextColor = p1Color;
         }
-        else if (playerId == 2) // Blue player
+        else if(playerId == 2) // Blue player
         {
             turnText.text = "Current Player: Blue";
             turnTextColor = p2Color;
@@ -88,15 +141,6 @@ public class UIManager : MonoBehaviour
     }
 
 
-    /* COMMANDER HEALTH */
-    public void UpdateCommanderHealthText(int health)
-    {
-        commanderHealthText.text = string.Format("♡ {0}/10", health);
-        if (!alreadyAnimating)
-            StartCoroutine("ErrorEffect", commanderHealthText);
-    }
-
-
     /* COOL EFFECTS */
     IEnumerator ErrorEffect(TextMeshProUGUI textToHighlight)
     {
@@ -111,5 +155,32 @@ public class UIManager : MonoBehaviour
         }
         alreadyAnimating = false;
         yield break;
+    }
+
+
+    /* PAUSE SCREEN */
+    public void Pause()
+    {
+        //sfxPlayer.ClickButtonSound();
+        pauseScreen.SetActive(true);
+        paused = true;
+        //Time.timeScale = 0; // W: This is fine for the client; however, if Time.timeScale = 0 on the server, the client's inputs won't be processed.
+                              // For now I'm disabling it; this means pausing technically doesn't actually pause the game, but it's turn-based anyway, so who really cares
+    }
+
+    public void Unpause()
+    {
+        //sfxPlayer.ClickButtonSound();
+        //helpScreen.SetActive(false);
+        pauseScreen.SetActive(false);
+        paused = false;
+        //Time.timeScale = 1;
+    }
+
+    public void BackToMenu()
+    {
+        //sfxPlayer.ClickButtonSound();
+        Time.timeScale = 0;
+        SceneManager.LoadScene(0);
     }
 }
