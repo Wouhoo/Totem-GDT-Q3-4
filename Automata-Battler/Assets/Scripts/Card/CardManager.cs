@@ -11,12 +11,6 @@ public class CardManager : NetworkBehaviour
 
     public List<GameObject> cards = new List<GameObject>();
 
-    private Referee referee;
-    // Decks now need to be on the CardManager since the client's Player doesn't have the authority to move cards spawned by the server
-    // Again, there may be better ways to solve this (e.g. using a distributed authority framework rather than server authoritative),
-    // but that would require a major architectural rework that we don't have the time for.
-    [SerializeField] private Deck p1Deck;
-    [SerializeField] private Deck p2Deck;
     // Same story for card materials, easier to do that on CardManager now
     public Material p1Material;
     public Material p2Material;
@@ -28,7 +22,6 @@ public class CardManager : NetworkBehaviour
         else
             Destroy(gameObject);
 
-        referee = FindFirstObjectByType<Referee>();
         Debug.Log(string.Format("CARDMANAGER CARDS: {0}", cards.Count));
     }
 

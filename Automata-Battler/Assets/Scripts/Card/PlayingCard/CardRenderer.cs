@@ -103,7 +103,7 @@ public class CardRenderer : MonoBehaviour
         }
         foreach (RenderElement renderElement in UIElements_InHand)
             renderElement.RevealAmount(UITarget_InHand);
-        if (Final_InHand_Routine) cost.gameObject.SetActive(false); // disable??
+        // if (Final_InHand_Routine) cost.gameObject.SetActive(false); // disable??
         UIControlerInHand_Active = false;
     }
 
@@ -168,16 +168,17 @@ public class CardRenderer : MonoBehaviour
         }
     }
 
-    private bool Final_InHand_Routine = false;
+    // private bool Final_InHand_Routine = false;
     public void CardNowInPlay()
     {
         UITarget_InHand = 0;
-        Final_InHand_Routine = true;
+        // Final_InHand_Routine = true;
         if (!UIControlerInPlay_Active)
         {
             UIControlerInHand_Active = true;
             StartCoroutine(UI_Controler_InHand());
         }
+        cost.gameObject.SetActive(false);
         initiative.gameObject.SetActive(true);
     }
 }
