@@ -9,6 +9,8 @@ using NUnit.Framework.Constraints;
 public class SelectionManager : MonoBehaviour
 {
     //private Player player; // Player is now a singleton, so this is no longer necessary
+    public static SelectionManager Instance { get; private set; }
+
     private PlayerStateManager playerStateManager;
 
     [SerializeField] private LayerMask cardLayerMask;
@@ -24,8 +26,15 @@ public class SelectionManager : MonoBehaviour
     private ISelectable currentHover;
     private IAction currentAction;
 
+    public bool inputAllowed; // bool so the UI can disable inputs
+
     void Awake()
     {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+
         playerStateManager = GetComponent<PlayerStateManager>();
 
         selectablesLayerMask = cardLayerMask | tileLayerMask | buttonsLayerMask | rotationarrowsLayerMask;
@@ -34,7 +43,8 @@ public class SelectionManager : MonoBehaviour
     void Update()
     {
         if (!playerStateManager.IsHoverAllowed()) return; // Interactions are fully disabled
-
+        if (!inputAllowed) return; 
+        
         ISelectable selected = GetSelectable(); // To Wouter: So all function on this game object will be server side
 
         ManageHover(selected);

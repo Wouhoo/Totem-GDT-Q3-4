@@ -2,6 +2,8 @@
 using TMPro;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using NUnit.Framework;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -38,6 +40,14 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject pauseScreen;
     private bool paused;
 
+    [Header("Tutorial Screen")]
+    [SerializeField] GameObject tutorialScreen;
+    [SerializeField] Image tutorialImage;
+    [SerializeField] Image prevButton;
+    [SerializeField] Image nextButton;
+    [SerializeField] Sprite[] tutorialSlides;
+    private int currentSlide = 0;
+
     private void Awake()
     {
         if (Instance == null)
@@ -50,6 +60,11 @@ public class UIManager : MonoBehaviour
 
         UpdateManaText(3);
         ChangeTurnIndicator(1);
+
+        pauseScreen.SetActive(false);
+        ShowTutorialScreen();
+        SetButtonActive(prevButton, false);
+        SetButtonActive(nextButton, true);
     }
 
     private void Update()
@@ -136,6 +151,7 @@ public class UIManager : MonoBehaviour
         //sfxPlayer.ClickButtonSound();
         pauseScreen.SetActive(true);
         paused = true;
+        SelectionManager.Instance.inputAllowed = false;
         //Time.timeScale = 0; // W: This is fine for the client; however, if Time.timeScale = 0 on the server, the client's inputs won't be processed.
         // For now I'm disabling it; this means pausing technically doesn't actually pause the game, but it's turn-based anyway, so who really cares
     }
@@ -143,9 +159,10 @@ public class UIManager : MonoBehaviour
     public void Unpause()
     {
         //sfxPlayer.ClickButtonSound();
-        //helpScreen.SetActive(false);
+        tutorialScreen.SetActive(false);
         pauseScreen.SetActive(false);
         paused = false;
+        SelectionManager.Instance.inputAllowed = true;
         //Time.timeScale = 1;
     }
 
@@ -154,5 +171,58 @@ public class UIManager : MonoBehaviour
         //sfxPlayer.ClickButtonSound();
         Time.timeScale = 0;
         SceneManager.LoadScene(0);
+    }
+
+    /* TUTORIAL SCREEN */
+    public void ShowTutorialScreen()
+    {
+        pauseScreen.SetActive(false);
+        tutorialScreen.SetActive(true);
+        paused = true;
+        SelectionManager.Instance.inputAllowed = false;
+    }
+
+    public void NextTutorialSlide()
+    {
+        // Do nothing if this is the final slide
+        if (currentSlide == tutorialSlides.Length - 1)
+            return;
+        // If not, go to next slide
+        currentSlide++;
+        tutorialImage.sprite = tutorialSlides[currentSlide];
+        // If we were at the first slide, set the prev button active again
+        if (currentSlide == 1)
+            SetButtonActive(prevButton, true);
+        // If we're now at the final slide, set the next button inactive
+        if (currentSlide == tutorialSlides.Length - 1)
+            SetButtonActive(nextButton, false);
+    }
+
+    public void PrevTutorialSlide()
+    {
+        // Do nothing if this is the first slide
+        if (currentSlide == 0)
+            return;
+        // If not, go to prev slide
+        currentSlide--;
+        tutorialImage.sprite = tutorialSlides[currentSlide];
+        // If we were at the last slide, set the prev button active again
+        if (currentSlide == tutorialSlides.Length - 2)
+            SetButtonActive(nextButton, true);
+        // If we're now at the first slide, set the prev button inactive
+        if (currentSlide == 0)
+            SetButtonActive(prevButton, false);
+    }
+
+    private void SetButtonActive(Image button, bool active)
+    {
+        // Visually make button look active (fully opaque) or inactive (slightly transparent)
+        // Note: doesn't actually disallow you from pressing the button, that's handled by the functions above
+        Color color = button.color;
+        if (active)
+            color.a = 1.0f;
+        else
+            color.a = 0.7f;
+        button.color = color;
     }
 }
