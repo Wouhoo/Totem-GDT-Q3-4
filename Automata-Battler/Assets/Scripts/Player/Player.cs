@@ -128,7 +128,7 @@ public class Player : MonoBehaviour
     // Player Damage & Health System
     //
 
-    public int _health = 1; // TEST; CHANGE BACK! // { get; private set; }
+    public int _health { get; private set; } = 10; // To test game end screen, set to 1
 
     public void TakeDamage(int amount)
     {
