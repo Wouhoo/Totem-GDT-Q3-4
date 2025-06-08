@@ -45,7 +45,7 @@ public class CardRenderer : MonoBehaviour
 
     public void Render_UpdateText()
     {
-        cost.RenderText($"$:{card._cost}");
+        cost.RenderText($"{card._cost}");
         health.RenderText($"{card._health}");
         damage.RenderText($"{card._damage}");
         initiative.RenderText($"{card._initiative}");
