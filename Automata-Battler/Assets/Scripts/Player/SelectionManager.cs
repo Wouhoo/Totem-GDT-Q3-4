@@ -43,8 +43,8 @@ public class SelectionManager : MonoBehaviour
     void Update()
     {
         if (!playerStateManager.IsHoverAllowed()) return; // Interactions are fully disabled
-        if (!inputAllowed) return; 
-        
+        if (!inputAllowed) return;
+
         ISelectable selected = GetSelectable(); // To Wouter: So all function on this game object will be server side
 
         ManageHover(selected);
@@ -218,7 +218,6 @@ public class SelectionManager : MonoBehaviour
         {
             if (card.Q_RotationArrowsShown)
             {
-                Debug.Log("HELOOOOOOOOOOO????");
                 selectables.Add(card.ra_Clock);
                 selectables.Add(card.ra_Counter);
             }

@@ -124,7 +124,8 @@ public class Card : AbstractCard, IAction, ISelectable
         // Action: Rotate the card
         else
         {
-            if (Player.Instance._canRotateCard)
+            Debug.Log("Ehlooeoeooe");
+            if (Player.Instance._canRotateCard && Player.Instance.playerId == _ownerPlayer)
             {
                 cardRenderer.RenderArrows(1);
                 Q_RotationArrowsShown = true;
@@ -175,10 +176,8 @@ public class Card : AbstractCard, IAction, ISelectable
         // Action: Rotate the card
         else // _inPlay == true
         {
-            Debug.Log(1);
             if (selectable is RotationArrow arrow)
             {
-                Debug.Log(2);
                 Player.Instance.UseRotation();
                 if (arrow.clockwise) RotateInstructionsRpc(5);
                 else if (!arrow.clockwise) RotateInstructionsRpc(1);
@@ -192,13 +191,14 @@ public class Card : AbstractCard, IAction, ISelectable
         }
     }
 
-    [Rpc(SendTo.Server)] // Make the server play the card (the client doesn't have the authority to do this)
+    [Rpc(SendTo.ClientsAndHost)] // Make the server play the card (the client doesn't have the authority to do this)
     private void PlayCardRpc(HexCoordinates tileCoords)
     {
         _position = tileCoords;
-        CardAnimator.Lerp_JumpTo(transform, HexCoordinates.ToWorldPosition(tileCoords), 0.2f); // Can't await; see if this causes problems
+        CardAnimator.Card_FlyIn_Rpc(transform, HexCoordinates.ToWorldPosition(tileCoords), Quaternion.identity, 1); // Can't await; see if this causes problems
         _inPlay = true;
     }
+
 
     // Special (rotation and flippin out yo) instruction:
 

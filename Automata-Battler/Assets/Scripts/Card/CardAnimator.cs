@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Threading.Tasks;
+using Unity.Netcode;
 
 public static class CardAnimator
 {
@@ -52,26 +53,15 @@ public static class CardAnimator
         // End: 0
     }
 
+    // Kill me plz :(
 
-    /*
-        public async Task TakeDamage()
-        {
-            float elapsed = 0f;
-            float duration = 0.5f;
-            Quaternion start = transform.rotation;
-            Quaternion target = Quaternion.Euler(start.eulerAngles + new Quaternion(0, 0.3826834f, 0, 0.9238795f).eulerAngles);
-
-            while (elapsed < duration)
-            {
-                float t = Easing_Jolt(elapsed / duration);
-                transform.rotation = Quaternion.Slerp(start, target, t);
-                elapsed += Time.deltaTime;
-                await Task.Yield();
-            }
-
-            transform.rotation = start;
-        }
-        */
-
-
+    [Rpc(SendTo.Server)]
+    public static async Task Card_FlyIn_Rpc(Transform transform, Vector3 targetPos, Quaternion targetRot, float cardScale)
+    {
+        await Lerp_SlideTo(transform, transform.position + new Vector3(0, 100, 0), 0.2f);
+        transform.rotation = targetRot;
+        transform.position = targetPos + new Vector3(0, 100, 0);
+        transform.localScale = new Vector3(8 * cardScale, 1 * cardScale, 8 * cardScale);
+        await Lerp_SlideTo(transform, targetPos, 0.5f);
+    }
 }

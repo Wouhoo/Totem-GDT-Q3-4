@@ -90,23 +90,10 @@ public class Player : MonoBehaviour
         {
             //print("FOUND CARD");
             _hand[handSlot] = card;
-            // Make CardManager sort hand (can't do this locally since the client doesn't have the authority to move card gameobjects).
-            // This requires retrieving the NetworkObjectReferences of the cards in hand (you cannot send a list of NetworkBehaviourReferences,
-            // but *can* send an *array* of Network*Object*References), sending them to the server, and moving them there.
-            // This incurs a significant amount of overhead and is just bad practice all around, but if cards are to be networkobjects, we kinda have to do it this way.
-            // If we had set up the game with multiplayer in mind from the get-go, the card visual (GameObject) would be decoupled from its logic (a data container);
-            // in that case we would sync the Vector3 position in the card data and let client and server both move their visual object locally.
-
-            // Note: this *seems* to be going all right now, although I cannot guarantee that we don't get a race condition here in the future.
-            // If player 2's cards are not being drawn correctly, the first place to look would be here; check if everything is executed in the right order.
-            // NetworkObjectReference[] handToSend = new NetworkObjectReference[_hand.Count];
-            // for (int i = 0; i < handToSend.Length; i++)
-            //     handToSend[i] = _hand[i].NetworkObject;
-            //Debug.Log(string.Format("PLAYER {0} INITIALIZING SORTING WITH A HAND OF SIZE {1}", playerId, handToSend.Length));
-            // CardManager.Instance.SortHandRpc(handToSend, playerId);
-
-            // From tim:
-            card.Set_WorldPosition_Rpc(_handSlotTransforms[handSlot].position);
+            Vector3 additionalRot = new Vector3(0, 0, 0);
+            if (playerId == 2) additionalRot = new Vector3(0, 180, 0);
+            Quaternion slotRot = Quaternion.Euler(_handSlotTransforms[handSlot].rotation.eulerAngles + additionalRot);
+            card.DrawCard_Placement_Rpc(_handSlotTransforms[handSlot].position, slotRot);
         }
     }
 
@@ -173,11 +160,5 @@ public class Player : MonoBehaviour
     public async Task WatchGame()
     {
         await playerStateManager.ToState(PlayerState.WatchingGame, PlayerCameraState.ViewingBoard, PlayerRequestState.None);
-    }
-
-    public async Task EndTurn()
-    {
-        DrawCards();
-        // Immediately followed by a call to either BeginView or WatchGame in Referee, so no need to change state here
     }
 }

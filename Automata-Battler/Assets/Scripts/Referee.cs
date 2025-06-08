@@ -38,7 +38,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     // Triggered on server when a scene is (re)loaded
     private void SceneManager_OnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
     {
-        if(sceneName == "MainMenu") // If the main menu got loaded: someone left the lobby, so shut down network
+        if (sceneName == "MainMenu") // If the main menu got loaded: someone left the lobby, so shut down network
         {
             Debug.Log("Connection shut down!");
             NetworkManager.Singleton.Shutdown();
@@ -100,10 +100,10 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
         Player.Instance.WatchGame();
     }
 
-    [Rpc(SendTo.SpecifiedInParams)] // Same thing but for EndTurn
-    private void PlayerEndTurnRpc(RpcParams rpcParams)
+    [Rpc(SendTo.ClientsAndHost)] // Same thing but for EndTurn
+    private void PlayerEndTurnRpc()
     {
-        Player.Instance.EndTurn();
+        Player.Instance.DrawCards();
     }
 
     [Rpc(SendTo.Server)] // Turn end stuff is only done on server
@@ -116,7 +116,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     {
         Debug.Log(string.Format("ROUND: {0}", round));
 
-        PlayerEndTurnRpc(RpcTarget.Single(activePlayer - 1, RpcTargetUse.Temp));
+        PlayerEndTurnRpc();
 
         // Temp:
         //activePlayer.gameObject.SetActive(false);
@@ -167,11 +167,10 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
         }
 
         // Remove cards after executions to prevent order errors
-        cardList.RemoveAll(item => item == null);
-        RefreshInitiative();
+        RemoveCardsRpc();
     }
 
-    [Rpc(SendTo.Server)] // Only the server is allowed to add cards to the initiative queue
+    [Rpc(SendTo.ClientsAndHost)] // Only the server is allowed to add cards to the initiative queue (client and host to fix huge headache issue with card P2 on board selection)
     public void AddCardRpc(NetworkBehaviourReference cardReference)
     {
         // Note that removing cards is almoast always done during execution time, and then we dont want to refresh initiative, so thats why the remove function doesnt exist :P
@@ -179,6 +178,13 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
             cardList.Add(card);
         else
             Debug.LogError(string.Format("Referee couldn't find card with reference {0}", cardReference));
+        RefreshInitiative();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    public void RemoveCardsRpc()
+    {
+        cardList.RemoveAll(item => item == null);
         RefreshInitiative();
     }
 

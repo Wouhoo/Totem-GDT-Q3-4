@@ -51,6 +51,12 @@ public class AbstractCard : NetworkBehaviour, ISelectable
         transform.position = pos;
     }
 
+    [Rpc(SendTo.ClientsAndHost)] // Why does this work like this??!?!?!?!?!?
+    public void DrawCard_Placement_Rpc(Vector3 newPos, Quaternion newRot)
+    {
+        CardAnimator.Card_FlyIn_Rpc(transform, newPos, newRot, 0.2f);
+    }
+
     [SerializeField] private int cost = 1;
     public int _cost => cost;
 }

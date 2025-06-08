@@ -25,11 +25,12 @@ public class CardManager : NetworkBehaviour
         Debug.Log(string.Format("CARDMANAGER CARDS: {0}", cards.Count));
     }
 
-    [Rpc(SendTo.Server)] // Execute this only on server; return a NetworkObjectReference which is sent to the correct Player (server or client)
+    // Execute this only on server; return a NetworkObjectReference which is sent to the correct Player (server or client)
     // NOTE: In the long-term, when both players are able to build their own decks, the client's deck will probably be saved on their device.
     // This means the client needs to be able to send which card they want to draw with this RPC.
     // The easiest way to accomplish this would probably be to have a "database" of all cards (with no stats modified) and refer to them by index in this database.
     // For now though, we'll continue drawing random cards for testing purposes until the multiplayer stuff is done.
+    [Rpc(SendTo.Server)]
     public void DrawCardRpc(ulong playerId, int handSlot)
     {
         Debug.Log(string.Format("PLAYER CALLING: {0}, CARDMANAGER CARDS: {1}", playerId, cards.Count));
