@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using NUnit.Framework;
 using UnityEngine.UI;
+using Unity.Netcode;
 
 public class UIManager : MonoBehaviour
 {
@@ -40,6 +41,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject pauseScreen;
     private bool paused;
 
+    [Header("Game End Screen")]
+    [SerializeField] GameObject gameEndScreen;
+    [SerializeField] TextMeshProUGUI winLoseText;
+
     [Header("Tutorial Screen")]
     [SerializeField] GameObject tutorialScreen;
     [SerializeField] Image tutorialImage;
@@ -47,6 +52,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] Image nextButton;
     [SerializeField] Sprite[] tutorialSlides;
     private int currentSlide = 0;
+
+    // If you were looking for the game end screen, that's done on the GameEndManager
+    // (that has to be a NetworkObject, which is not needed for the rest of the UI, hence why we handle it separately)
 
     private void Awake()
     {
@@ -169,9 +177,32 @@ public class UIManager : MonoBehaviour
     public void BackToMenu()
     {
         //sfxPlayer.ClickButtonSound();
-        Time.timeScale = 0;
-        SceneManager.LoadScene(0);
+        Referee.Instance.BackToMenuServerRpc();
     }
+
+
+    /* GAME END SCREEN */
+    public void ShowEndScreen(ulong winningPlayer)
+    {
+        gameEndScreen.SetActive(true);
+        SelectionManager.Instance.inputAllowed = false;
+        if(winningPlayer == Player.Instance.playerId) // This player won
+        {
+            winLoseText.text = "YOU WIN!";
+            // Play winning theme
+        }
+        else // Other player won; you lose
+        {
+            winLoseText.text = "YOU LOSE...";
+            // Play losing theme
+        }
+    }
+
+    public void TriggerRematch()
+    {
+        Referee.Instance.RematchRpc();
+    }
+
 
     /* TUTORIAL SCREEN */
     public void ShowTutorialScreen()

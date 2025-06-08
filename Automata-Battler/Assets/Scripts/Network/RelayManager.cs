@@ -23,6 +23,7 @@ public class RelayManager : MonoBehaviour // Script for initializing a Unity Rel
     [SerializeField] private GameObject waitingForPlayersScreen;
     [SerializeField] private GameObject joiningScreen;
     [SerializeField] private TextMeshProUGUI title;
+    [SerializeField] private TextMeshProUGUI lobbyNotFoundText;
 
     private void Awake()
     {
@@ -37,6 +38,7 @@ public class RelayManager : MonoBehaviour // Script for initializing a Unity Rel
     {
         waitingForPlayersScreen.SetActive(false);
         joiningScreen.SetActive(false);
+        lobbyNotFoundText.gameObject.SetActive(false);
         //joinCodeField.onEndEdit.AddListener(delegate { JoinRelay(); }); // Join when pressing enter key on input field
         StartCoroutine("AnimateTitleText");
     }
@@ -119,6 +121,7 @@ public class RelayManager : MonoBehaviour // Script for initializing a Unity Rel
         try
         {
             string joinCode = joinCodeField.text; // Get join code from input field (maybe add validation?)
+
             Debug.Log("Joining relay with code " + joinCode);
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode); // Join relay with given join code
 
@@ -127,21 +130,27 @@ public class RelayManager : MonoBehaviour // Script for initializing a Unity Rel
 
             NetworkManager.Singleton.StartClient(); // Log in to the relay as client
         }
-        catch (RelayServiceException e)
+        catch // There may also be non-RelayServiceException errors
         {
-            Debug.Log(e);
+            lobbyNotFoundText.gameObject.SetActive(true);
+            joiningScreen.SetActive(false);
+            Debug.LogError("Failed to join relay!");
         }
     }
 
     private async Task InitializeServices()
     {
         // Initialize & log into Unity Gaming Services
-        await UnityServices.InitializeAsync(); 
-        // Authenticate by anonymous sign-in (and wait until we're authenticated)
-        AuthenticationService.Instance.SignedIn += () =>
+        await UnityServices.InitializeAsync();
+
+        if (!AuthenticationService.Instance.IsSignedIn)
         {
-            Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId); // Log player ID on sign in
-        };
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            // Authenticate by anonymous sign-in (and wait until we're authenticated)
+            AuthenticationService.Instance.SignedIn += () =>
+            {
+                Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId); // Log player ID on sign in
+            };
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        }
     }
 }

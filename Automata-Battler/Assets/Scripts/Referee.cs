@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Services.Matchmaker.Models;
+using UnityEngine.SceneManagement;
 
 public class Referee : NetworkBehaviour // The referee is a networkobject; most of its functions are carried out *only on server*.
 {
@@ -28,7 +29,20 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     public override void OnNetworkSpawn()
     {
         if (IsServer)
+        {
             StartCoroutine(StartGame()); // Have to do it this way so we can wait until all necessary networkobjects have spawned
+            NetworkManager.Singleton.SceneManager.OnLoadComplete += SceneManager_OnLoadComplete;
+        }
+    }
+
+    // Triggered on server when a scene is (re)loaded
+    private void SceneManager_OnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
+    {
+        if(sceneName == "MainMenu") // If the main menu got loaded: someone left the lobby, so shut down network
+        {
+            Debug.Log("Connection shut down!");
+            NetworkManager.Singleton.Shutdown();
+        }
     }
 
     [Rpc(SendTo.Server)]
@@ -172,5 +186,29 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     {
         for (int i = cardList.Count - 1; i >= 0; i--)
             cardList[i].SetInitiativeRpc(i);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)] // Let all players know the game has ended
+    public void TriggerGameEndRpc(ulong winningPlayer)
+    {
+        // Play cool sound effect or smth
+        UIManager.Instance.ShowEndScreen(winningPlayer);
+        Time.timeScale = 0f;
+    }
+
+    [Rpc(SendTo.Server)]
+    public void RematchRpc()
+    {
+        // Restart the game. Currently, the game is restarted for both players if *either* of them presses the Rematch button.
+        Time.timeScale = 1f;
+        NetworkManager.Singleton.SceneManager.LoadScene("Scenes/GridTesting", UnityEngine.SceneManagement.LoadSceneMode.Single);
+    }
+
+    [Rpc(SendTo.Server)]
+    public void BackToMenuServerRpc()
+    {
+        // Go back to the main menu and shut down the relay connection.
+        NetworkManager.Singleton.SceneManager.LoadScene("Scenes/MainMenu", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        // Because of the SceneManager_OnLoadComplete event, the connection is shut down only once the scene has been loaded for everyone
     }
 }

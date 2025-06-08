@@ -128,19 +128,14 @@ public class Player : MonoBehaviour
     // Player Damage & Health System
     //
 
-    public int _health { get; private set; } = 10;
+    public int _health = 1; // TEST; CHANGE BACK! // { get; private set; }
 
     public void TakeDamage(int amount)
     {
         _health = math.max(0, _health - amount);
         UIManager.Instance.UpdateCommanderHealthText(_health);
         if (_health == 0)
-            Die();
-    }
-
-    private void Die()
-    {
-        // TODO
+            Referee.Instance.TriggerGameEndRpc(3 - this.playerId);
     }
 
     //

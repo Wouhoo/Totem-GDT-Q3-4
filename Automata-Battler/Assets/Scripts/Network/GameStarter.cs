@@ -32,7 +32,7 @@ public class GameStarter : NetworkBehaviour // Loads the game scene from the mai
         if(NetworkManager.Singleton.ConnectedClientsList.Count == 2 || singleplayer)
         {
             // TODO: Replace scene name with actual game scene name (if we ever change that)
-            NetworkManager.SceneManager.LoadScene("Scenes/GridTesting", UnityEngine.SceneManagement.LoadSceneMode.Single); // LoadMode: only loads the new scene, unloads all previous ones
+            NetworkManager.Singleton.SceneManager.LoadScene("Scenes/GridTesting", UnityEngine.SceneManagement.LoadSceneMode.Single); // LoadMode: only loads the new scene, unloads all previous ones
         }
     }
 }
