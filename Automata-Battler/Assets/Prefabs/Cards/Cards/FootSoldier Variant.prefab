@@ -17,6 +17,10 @@ PrefabInstance:
       value: FootSoldier
       objectReference: {fileID: 0}
     - target: {fileID: 1917568921908935741, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
+      propertyPath: health
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1917568921908935741, guid: 37a038d30a0406a4da5664e407cfe855, type: 3}
       propertyPath: instructions.Array.size
       value: 3
       objectReference: {fileID: 0}
