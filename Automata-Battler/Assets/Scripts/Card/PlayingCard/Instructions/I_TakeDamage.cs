@@ -9,6 +9,7 @@ public class I_TakeDamage : MonoBehaviour
     public static async Task Execute(Card card, int damageAmount)
     {
         Debug.Log($"Executing Instruction: I_TakeDamage ({card}, {damageAmount})");
+        card.PlayCardSoundEffectRpc(SFXPlayer.SoundEffect.Damage);
         Board board = FindFirstObjectByType<Board>();
         Referee referee = FindFirstObjectByType<Referee>();
 

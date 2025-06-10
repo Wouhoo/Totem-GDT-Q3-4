@@ -8,6 +8,7 @@ public class I_Move_asJump : MonoBehaviour
     public static async Task Execute(Card card, HexDirection direction, int moveAmount)
     {
         Debug.Log($"Executing Instruction: I_Move_asJump ({card}, {direction}, {moveAmount})");
+        card.PlayCardSoundEffectRpc(SFXPlayer.SoundEffect.CardMove);
         Board board = FindFirstObjectByType<Board>();
         HexCoordinates target = card._position + moveAmount * direction.GetRelativeCoordinates();
 

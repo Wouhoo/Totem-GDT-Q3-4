@@ -53,6 +53,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] Sprite[] tutorialSlides;
     private int currentSlide = 0;
 
+    private bool startUp = true; // to prevent certain sound effects from playing on startup
+
     // If you were looking for the game end screen, that's done on the GameEndManager
     // (that has to be a NetworkObject, which is not needed for the rest of the UI, hence why we handle it separately)
 
@@ -76,6 +78,7 @@ public class UIManager : MonoBehaviour
         ShowTutorialScreen();
         SetButtonActive(prevButton, false);
         SetButtonActive(nextButton, true);
+        startUp = false;
     }
 
     private void Update()
@@ -114,7 +117,6 @@ public class UIManager : MonoBehaviour
     /* TURN INDICATOR */
     public void ChangeTurnIndicator(ulong playerId)
     {
-        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.TurnChange);
         if (playerId == 1) // Orange player
         {
             turnText.text = "Current Player: Orange";
@@ -145,6 +147,7 @@ public class UIManager : MonoBehaviour
     {
         // Instantly change the color to red, then change it back to the starting color over time
         alreadyAnimating = true;
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.Error);
         Color currColor = textToHighlight.color;
         textToHighlight.color = errorColor;
         for (int i = 0; i <= increments; i++)
@@ -193,17 +196,19 @@ public class UIManager : MonoBehaviour
         if(winningPlayer == Player.Instance.playerId) // This player won
         {
             winLoseText.text = "YOU WIN!";
-            // Play winning theme
+            SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.YouWin);
         }
         else // Other player won; you lose
         {
             winLoseText.text = "YOU LOSE...";
-            // Play losing theme
+            SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.YouLose);
         }
+        // Stop playing music / switch to win/lose outro
     }
 
     public void TriggerRematch()
     {
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.ButtonClick);
         Referee.Instance.RematchRpc();
     }
 
@@ -211,7 +216,8 @@ public class UIManager : MonoBehaviour
     /* TUTORIAL SCREEN */
     public void ShowTutorialScreen()
     {
-        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.ButtonClick);
+        if(!startUp) // Don't play when screen is shown on startup
+            SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.ButtonClick);
         pauseScreen.SetActive(false);
         tutorialScreen.SetActive(true);
         paused = true;
@@ -222,7 +228,10 @@ public class UIManager : MonoBehaviour
     {
         // Do nothing if this is the final slide
         if (currentSlide == tutorialSlides.Length - 1)
+        {
+            SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.Error);
             return;
+        }
         // If not, go to next slide
         SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.ButtonClick);
         currentSlide++;
@@ -239,7 +248,10 @@ public class UIManager : MonoBehaviour
     {
         // Do nothing if this is the first slide
         if (currentSlide == 0)
+        {
+            SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.Error);
             return;
+        }
         // If not, go to prev slide
         SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.ButtonClick);
         currentSlide--;

@@ -120,6 +120,7 @@ public class Player : MonoBehaviour
     public void TakeDamage(int amount)
     {
         _health = math.max(0, _health - amount);
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.Damage);
         UIManager.Instance.UpdateCommanderHealthText(_health);
         if (_health == 0)
             Referee.Instance.TriggerGameEndRpc(3 - this.playerId);
@@ -135,6 +136,7 @@ public class Player : MonoBehaviour
     {
         if (_canRotateCard == false)
             Debug.Log("Error (Player.UseRotation): Used non-existant rotation, confirm wether rotation useage was properly checked!");
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.CardRotate);
         _canRotateCard = false;
     }
 

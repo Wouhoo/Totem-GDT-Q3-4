@@ -66,6 +66,7 @@ public class RelayManager : MonoBehaviour // Script for initializing a Unity Rel
 
     public void QuitGame()
     {
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.ButtonClick);
         #if UNITY_EDITOR
             EditorApplication.ExitPlaymode();
         #else
@@ -81,12 +82,14 @@ public class RelayManager : MonoBehaviour // Script for initializing a Unity Rel
         // It is still required to start hosting on NetworkManager, but this is purely so RPCs execute correctly;
         // you don't actually need an internet connection for this to work.
         GameStarter.Instance.singleplayer = true;
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.ButtonClick);
         NetworkManager.Singleton.gameObject.GetComponent<UnityTransport>().SetConnectionData("127.0.0.1", 7777); // Instead of using relay, open a "connection" on localhost
         NetworkManager.Singleton.StartHost();
     }
 
     public async void CreateRelay()
     {
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.ButtonClick);
         waitingForPlayersScreen.SetActive(true); // Show "waiting for players" screen
 
         await InitializeServices(); // Anything below this point won't be executed until services have been initialized
@@ -113,6 +116,7 @@ public class RelayManager : MonoBehaviour // Script for initializing a Unity Rel
 
     public async void JoinRelay()
     {
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.ButtonClick);
         joiningScreen.SetActive(true); // Show "joining" screen
 
         await InitializeServices(); // Anything below this point won't be executed until services have been initialized
@@ -132,6 +136,7 @@ public class RelayManager : MonoBehaviour // Script for initializing a Unity Rel
         }
         catch // There may also be non-RelayServiceException errors
         {
+            SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.Error);
             lobbyNotFoundText.gameObject.SetActive(true);
             joiningScreen.SetActive(false);
             Debug.LogError("Failed to join relay!");

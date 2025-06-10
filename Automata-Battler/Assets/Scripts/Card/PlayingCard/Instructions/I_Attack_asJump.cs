@@ -8,6 +8,7 @@ public class I_Attack_asJump : MonoBehaviour
     public static async Task Execute(Card card, HexDirection direction, int moveAmount, int damageAmount)
     {
         Debug.Log($"Executing Instruction: I_Attack_asJump ({card}, {direction}, {moveAmount}, {damageAmount})");
+        card.PlayCardSoundEffectRpc(SFXPlayer.SoundEffect.CardAttack);
         Board board = FindFirstObjectByType<Board>();
 
         HexCoordinates target = card._position + moveAmount * direction.GetRelativeCoordinates();

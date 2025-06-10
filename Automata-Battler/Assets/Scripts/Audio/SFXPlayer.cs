@@ -11,7 +11,19 @@ public class SFXPlayer : MonoBehaviour
     public enum SoundEffect
     {
         ButtonClick,
-        TurnChange
+        TurnChange,
+        Error,
+        PlayerConnected,
+        ChangeView,
+        DrawCard,
+        PlayCard,
+        SelectCard,
+        CardMove,
+        CardAttack,
+        CardRotate, // Can be the same as CardMove
+        Damage,
+        YouWin,
+        YouLose
         // @Kerem add more here as required
     }
 
@@ -36,7 +48,7 @@ public class SFXPlayer : MonoBehaviour
         }
         catch
         {
-            Debug.LogError("Couldn't find clip corresponding to sound effect!");
+            Debug.LogWarning(string.Format("Couldn't find clip corresponding to sound effect {0}", soundEffect));
         }
     }
 }

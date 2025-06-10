@@ -103,6 +103,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     [Rpc(SendTo.ClientsAndHost)] // Same thing but for EndTurn
     private void PlayerEndTurnRpc()
     {
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.DrawCard);
         Player.Instance.DrawCards();
     }
 
@@ -154,6 +155,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     [Rpc(SendTo.ClientsAndHost)] // Notify all players who the new active player is so they can change the turn indicator
     private void ChangeTurnTextRpc(ulong currPlayerId)
     {
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.TurnChange); // Also play a sound effect for turn change on both client and host
         UIManager.Instance.ChangeTurnIndicator(currPlayerId);
     }
 

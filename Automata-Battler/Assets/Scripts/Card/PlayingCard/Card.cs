@@ -72,6 +72,7 @@ public class Card : AbstractCard, IAction, ISelectable
     public new void OnHoverEnter()
     {
         // glow
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.SelectCard);
         var OutlineController = GetComponent<OutlineController>();
         if (OutlineController != null)
             OutlineController.SetOutline(true);
@@ -97,6 +98,12 @@ public class Card : AbstractCard, IAction, ISelectable
     {
         foreach (CardInstruction instruction in instructions)
             await instruction.Execute(this);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    public void PlayCardSoundEffectRpc(SFXPlayer.SoundEffect soundEffect) // Called from CardInstruction to play sound effects for both players
+    {
+        SFXPlayer.Instance.PlaySoundEffect(soundEffect);
     }
 
     //
@@ -195,6 +202,7 @@ public class Card : AbstractCard, IAction, ISelectable
     private void PlayCardRpc(HexCoordinates tileCoords)
     {
         _position = tileCoords;
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.PlayCard);
         CardAnimator.Card_FlyIn_Rpc(transform, HexCoordinates.ToWorldPosition(tileCoords), Quaternion.identity, 1); // Can't await; see if this causes problems
         _inPlay = true;
     }

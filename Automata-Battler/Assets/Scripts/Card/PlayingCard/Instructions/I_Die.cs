@@ -8,6 +8,7 @@ public class I_Die : MonoBehaviour
     public static async Task Execute(Card card)
     {
         Debug.Log($"Executing Instruction: I_Die ({card})");
+        card.PlayCardSoundEffectRpc(SFXPlayer.SoundEffect.Damage);
         Board board = FindFirstObjectByType<Board>();
         // Referee referee = FindFirstObjectByType<Referee>();
 

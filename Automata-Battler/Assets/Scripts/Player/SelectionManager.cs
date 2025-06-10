@@ -123,9 +123,11 @@ public class SelectionManager : MonoBehaviour
         switch (button.buttonType)
         {
             case ButtonType.ViewHand:
+                SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.ChangeView);
                 await playerStateManager.ToState(playerStateManager._currentState, PlayerCameraState.ViewingHand, PlayerRequestState.None);
                 break;
             case ButtonType.ViewBoard:
+                SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.ChangeView);
                 await playerStateManager.ToState(playerStateManager._currentState, PlayerCameraState.ViewingBoard, PlayerRequestState.None);
                 break;
             case ButtonType.EndTurn:

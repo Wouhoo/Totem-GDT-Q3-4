@@ -31,6 +31,7 @@ public class GameStarter : NetworkBehaviour // Loads the game scene from the mai
         // Load game when both players have connected
         if(NetworkManager.Singleton.ConnectedClientsList.Count == 2 || singleplayer)
         {
+            SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.PlayerConnected);
             // TODO: Replace scene name with actual game scene name (if we ever change that)
             NetworkManager.Singleton.SceneManager.LoadScene("Scenes/GridTesting", UnityEngine.SceneManagement.LoadSceneMode.Single); // LoadMode: only loads the new scene, unloads all previous ones
         }
