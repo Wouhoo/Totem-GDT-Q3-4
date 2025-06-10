@@ -18,6 +18,11 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     private bool p1Ready = false;
     private bool p2Ready = false;
 
+    // Referee now needs to keep track of health for both players to decide when to play winning/losing themes
+    private int p1CommanderHealth;
+    private int p2CommanderHealth;
+    private int winningThreshold = 2; // A player is considered "winning" if their commander's health is larger than the opponent's by at least this number.
+
     private void Awake()
     {
         if (Instance == null)
@@ -61,6 +66,8 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
             yield return null;
 
         // Start the game for the players
+        p1CommanderHealth = Player.Instance._health; // Initialize health to max health
+        p2CommanderHealth = Player.Instance._health;
         PlayerStartGameRpc();
         activePlayer = 1; // Always make server starting player
         PlayerBeginTurnRpc(RpcTarget.Single(activePlayer - 1, RpcTargetUse.Temp)); // THIS IS OK! (NOT AWAIT)
@@ -74,6 +81,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     [Rpc(SendTo.ClientsAndHost)] // Make *everyone* draw their cards at start of game
     private void PlayerStartGameRpc()
     {
+        BGMPlayer.Instance.PlayBGMTheme(BGMPlayer.BGMTheme.Battle);
         Player.Instance.DrawCards();
         // Other stuff that both players need to do at start of game goes here
     }
@@ -196,10 +204,50 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
             cardList[i].SetInitiativeRpc(i);
     }
 
+    [Rpc(SendTo.Server)]
+    public void UpdateCommanderHealthServerRpc(ulong playerId, int health) // Update server's tracking of player health values
+    {
+        //Debug.Log(string.Format("NEW PLAYER {0} HEALTH: {1}", playerId, health));
+        if(playerId == 1)
+            p1CommanderHealth = health;
+        else if(playerId == 2)
+            p2CommanderHealth = health;
+
+        // Decide whether to play winning or losing theme
+        // Alternatively, this check could be performed at the start of the next turn so we don't constantly switch themes when both commanders are being damaged
+        // W: @Lars/@Kerem let me know if I should move the check there instead
+        ulong winningPlayer = 0;
+        if (p1CommanderHealth - p2CommanderHealth >= winningThreshold)
+            winningPlayer = 1;
+        else if (p2CommanderHealth - p1CommanderHealth >= winningThreshold)
+            winningPlayer = 2;
+
+        UpdateCommanderHealthClientRpc(playerId, health, winningPlayer);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void UpdateCommanderHealthClientRpc(ulong playerId, int health, ulong winningPlayer) // Play damage sound and update health text on both client and server
+    {
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.Damage);
+        UIManager.Instance.UpdateCommanderHealthText(playerId, health);
+        PlayWinOrLoseTheme(winningPlayer);
+    }
+
+    private void PlayWinOrLoseTheme(ulong winningPlayer)
+    {
+        // @Lars/@Kerem maybe add some fade-ins and fade-outs here idk
+        if (winningPlayer == 0)                             // If players are evenly matched (again): go back to normal battle theme
+            BGMPlayer.Instance.PlayBGMTheme(BGMPlayer.BGMTheme.Battle);
+        else if (winningPlayer == Player.Instance.playerId) // If the local player id is the same as winning player
+            BGMPlayer.Instance.PlayBGMTheme(BGMPlayer.BGMTheme.Winning);
+        else                                                // If the local player is not winning, they are losing
+            BGMPlayer.Instance.PlayBGMTheme(BGMPlayer.BGMTheme.Losing);
+    }
+
     [Rpc(SendTo.ClientsAndHost)] // Let all players know the game has ended
     public void TriggerGameEndRpc(ulong winningPlayer)
     {
-        // Play cool sound effect or smth
+        BGMPlayer.Instance.StopPlaying(); // @Lars/@Kerem maybe add a fade-out here idk
         UIManager.Instance.ShowEndScreen(winningPlayer);
         Time.timeScale = 0f;
     }

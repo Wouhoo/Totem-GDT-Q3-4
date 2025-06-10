@@ -36,6 +36,7 @@ public class RelayManager : MonoBehaviour // Script for initializing a Unity Rel
 
     private void Start()
     {
+        BGMPlayer.Instance.PlayBGMTheme(BGMPlayer.BGMTheme.Menu);
         waitingForPlayersScreen.SetActive(false);
         joiningScreen.SetActive(false);
         lobbyNotFoundText.gameObject.SetActive(false);

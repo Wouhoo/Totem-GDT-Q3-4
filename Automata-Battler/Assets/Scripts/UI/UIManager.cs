@@ -32,7 +32,8 @@ public class UIManager : MonoBehaviour
     private Color p2Color;
 
     [Header("Commander Health Text")]
-    [SerializeField] TextMeshProUGUI commanderHealthText;
+    [SerializeField] TextMeshProUGUI p1CommanderHealthText; // Note: NO LONGER SET FROM INSPECTOR
+    [SerializeField] TextMeshProUGUI p2CommanderHealthText;
 
     [Header("End Turn Button")]
     [SerializeField] TextMeshProUGUI endTurnText;
@@ -100,17 +101,41 @@ public class UIManager : MonoBehaviour
 
     public void PlayNotEnoughManaEffect()
     {
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.Error);
         if (!alreadyAnimating)
             StartCoroutine("ErrorEffect", manaText);
     }
 
 
     /* COMMANDER HEALTH */
-    public void UpdateCommanderHealthText(int health)
+    public void InitializeCommanderHealthText(ulong playerId)
     {
-        commanderHealthText.text = string.Format("♡ {0}/10", health);
-        if (!alreadyAnimating)
-            StartCoroutine("ErrorEffect", commanderHealthText);
+        if(playerId == 1)
+        {
+            p1CommanderHealthText = GameObject.Find("YourCommanderHealthText").GetComponent<TextMeshProUGUI>();
+            p2CommanderHealthText = GameObject.Find("EnemyCommanderHealthText").GetComponent<TextMeshProUGUI>();
+        }
+        else if (playerId == 2)
+        {
+            p1CommanderHealthText = GameObject.Find("EnemyCommanderHealthText").GetComponent<TextMeshProUGUI>();
+            p2CommanderHealthText = GameObject.Find("YourCommanderHealthText").GetComponent<TextMeshProUGUI>();
+        }
+    }
+
+    public void UpdateCommanderHealthText(ulong playerId, int health)
+    {
+        if (playerId == 1)
+        {
+            p1CommanderHealthText.text = string.Format("♡ {0}/10", health);
+            if (!alreadyAnimating)
+                StartCoroutine("ErrorEffect", p1CommanderHealthText);
+        }
+        else
+        {
+            p2CommanderHealthText.text = string.Format("♡ {0}/10", health);
+            if (!alreadyAnimating)
+                StartCoroutine("ErrorEffect", p2CommanderHealthText);
+        }
     }
 
 
@@ -137,6 +162,7 @@ public class UIManager : MonoBehaviour
 
     public void PlayNotYourTurnEffect()
     {
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.Error);
         if (!alreadyAnimating)
             StartCoroutine("ErrorEffect", turnText);
     }
@@ -147,7 +173,6 @@ public class UIManager : MonoBehaviour
     {
         // Instantly change the color to red, then change it back to the starting color over time
         alreadyAnimating = true;
-        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.Error);
         Color currColor = textToHighlight.color;
         textToHighlight.color = errorColor;
         for (int i = 0; i <= increments; i++)

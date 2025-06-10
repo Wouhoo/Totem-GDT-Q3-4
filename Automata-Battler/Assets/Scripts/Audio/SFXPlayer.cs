@@ -13,7 +13,6 @@ public class SFXPlayer : MonoBehaviour
         ButtonClick,
         TurnChange,
         Error,
-        PlayerConnected,
         ChangeView,
         DrawCard,
         PlayCard,

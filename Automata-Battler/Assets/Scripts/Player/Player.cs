@@ -44,6 +44,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        UIManager.Instance.InitializeCommanderHealthText(playerId); // Doesn't matter much if this has not finished executing before the Referee considers both players ready
         Referee.Instance.PlayerReadyRpc(playerId); // Let the server referee know that this player is ready
         // (even safer: wait with calling this function until all of the above initializations have finished executing)
     }
@@ -120,8 +121,7 @@ public class Player : MonoBehaviour
     public void TakeDamage(int amount)
     {
         _health = math.max(0, _health - amount);
-        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.Damage);
-        UIManager.Instance.UpdateCommanderHealthText(_health);
+        Referee.Instance.UpdateCommanderHealthServerRpc(playerId, _health); // @Tim: DON'T CHANGE SHIT IF YOU DON'T KNOW WHAT YOU'RE DOING!!! >:(
         if (_health == 0)
             Referee.Instance.TriggerGameEndRpc(3 - this.playerId);
     }
