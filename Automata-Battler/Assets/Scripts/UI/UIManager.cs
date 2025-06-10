@@ -65,7 +65,10 @@ public class UIManager : MonoBehaviour
 
         p1Color = p1Material.color;
         p2Color = p2Material.color;
+    }
 
+    private void Start()
+    {
         UpdateManaText(3);
         ChangeTurnIndicator(1);
 
@@ -111,6 +114,7 @@ public class UIManager : MonoBehaviour
     /* TURN INDICATOR */
     public void ChangeTurnIndicator(ulong playerId)
     {
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.TurnChange);
         if (playerId == 1) // Orange player
         {
             turnText.text = "Current Player: Orange";
@@ -156,7 +160,7 @@ public class UIManager : MonoBehaviour
     /* PAUSE SCREEN */
     public void Pause()
     {
-        //sfxPlayer.ClickButtonSound();
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.ButtonClick);
         pauseScreen.SetActive(true);
         paused = true;
         SelectionManager.Instance.inputAllowed = false;
@@ -166,7 +170,7 @@ public class UIManager : MonoBehaviour
 
     public void Unpause()
     {
-        //sfxPlayer.ClickButtonSound();
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.ButtonClick);
         tutorialScreen.SetActive(false);
         pauseScreen.SetActive(false);
         paused = false;
@@ -176,7 +180,7 @@ public class UIManager : MonoBehaviour
 
     public void BackToMenu()
     {
-        //sfxPlayer.ClickButtonSound();
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.ButtonClick);
         Referee.Instance.BackToMenuServerRpc();
     }
 
@@ -207,6 +211,7 @@ public class UIManager : MonoBehaviour
     /* TUTORIAL SCREEN */
     public void ShowTutorialScreen()
     {
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.ButtonClick);
         pauseScreen.SetActive(false);
         tutorialScreen.SetActive(true);
         paused = true;
@@ -219,6 +224,7 @@ public class UIManager : MonoBehaviour
         if (currentSlide == tutorialSlides.Length - 1)
             return;
         // If not, go to next slide
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.ButtonClick);
         currentSlide++;
         tutorialImage.sprite = tutorialSlides[currentSlide];
         // If we were at the first slide, set the prev button active again
@@ -235,6 +241,7 @@ public class UIManager : MonoBehaviour
         if (currentSlide == 0)
             return;
         // If not, go to prev slide
+        SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.ButtonClick);
         currentSlide--;
         tutorialImage.sprite = tutorialSlides[currentSlide];
         // If we were at the last slide, set the prev button active again
