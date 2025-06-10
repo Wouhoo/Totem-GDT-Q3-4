@@ -50,4 +50,9 @@ public class SFXPlayer : MonoBehaviour
             Debug.LogWarning(string.Format("Couldn't find clip corresponding to sound effect {0}", soundEffect));
         }
     }
+
+    public void UpdateVolume(float volume)
+    {
+        audioPlayer.volume = volume;
+    }
 }

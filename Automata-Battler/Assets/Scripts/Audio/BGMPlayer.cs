@@ -50,4 +50,9 @@ public class BGMPlayer : MonoBehaviour
     {
         audioPlayer.Stop();
     }
+
+    public void UpdateVolume(float volume)
+    {
+        audioPlayer.volume = volume;
+    }
 }
