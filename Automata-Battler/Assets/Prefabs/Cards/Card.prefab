@@ -453,6 +453,8 @@ MonoBehaviour:
   instructions: {fileID: 6118524486088186870}
   rotateClockwise: {fileID: 3012198749337079234}
   rotateCounterclockwise: {fileID: 6347717313873205148}
+  P1Skin: {fileID: 11400000, guid: c5bf053e788794ddc9e6780212f552e3, type: 2}
+  P2Skin: {fileID: 11400000, guid: 7e7a3b603abd04538b90470b67769e85, type: 2}
 --- !u!33 &8180277049089740017
 MeshFilter:
   m_ObjectHideFlags: 0

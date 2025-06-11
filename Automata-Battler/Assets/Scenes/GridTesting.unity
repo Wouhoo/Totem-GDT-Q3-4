@@ -6036,6 +6036,8 @@ MonoBehaviour:
   - {fileID: 2641220852286931854, guid: 15a36d9cadaba5f4bb865393a3f6a07b, type: 3}
   p1Material: {fileID: 2100000, guid: c106ae7efcdd0a349976f80b1398a855, type: 2}
   p2Material: {fileID: 2100000, guid: 2a2bb5001ef06894898fbc5dbe93b950, type: 2}
+  p1Skin: {fileID: 11400000, guid: c5bf053e788794ddc9e6780212f552e3, type: 2}
+  p2Skin: {fileID: 11400000, guid: 7e7a3b603abd04538b90470b67769e85, type: 2}
 --- !u!4 &1852071831
 Transform:
   m_ObjectHideFlags: 0

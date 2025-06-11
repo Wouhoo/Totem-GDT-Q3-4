@@ -12,8 +12,14 @@ public class CardManager : NetworkBehaviour
     public List<GameObject> cards = new List<GameObject>();
 
     // Same story for card materials, easier to do that on CardManager now
-    public Material p1Material;
-    public Material p2Material;
+    //deprecated now ~Lars
+    // public Material p1Material;
+    // public Material p2Material;
+
+
+    //skins for the cards, i.e. cyan or orange
+    public CardSkin p1Skin;
+    public CardSkin p2Skin;
 
     void Awake()
     {

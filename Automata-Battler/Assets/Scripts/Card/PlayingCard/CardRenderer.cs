@@ -40,7 +40,15 @@ public class CardRenderer : MonoBehaviour
     {
         ulong playerId = Player.Instance.playerId;
         if (playerId == 2)
+        {
             elementsTransform.localRotation = Quaternion.Euler(0, 180, 0);
+        }
+    }
+
+    public void SetSkin(CardSkin skin)
+    {
+        health.SetSkin(skin.healthPanel);
+        //cost.SetSkin(skin.)
     }
 
     public void Render_UpdateText()

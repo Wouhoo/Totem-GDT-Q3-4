@@ -36,11 +36,13 @@ public class AbstractCard : NetworkBehaviour, ISelectable
     {
         if (playerId == 1)
         {
-            gameObject.GetComponent<MeshRenderer>().material = CardManager.Instance.p1Material;
+            //gameObject.GetComponent<MeshRenderer>().material = CardManager.Instance.p1Material;
+            gameObject.GetComponent<CardRenderer>().SetSkin(CardManager.Instance.p1Skin);
         }
         else if (playerId == 2) // Keeping the if in case playerId is somehow ever 0 (null)
         {
-            gameObject.GetComponent<MeshRenderer>().material = CardManager.Instance.p2Material;
+            //gameObject.GetComponent<MeshRenderer>().material = CardManager.Instance.p2Material;
+            gameObject.GetComponent<CardRenderer>().SetSkin(CardManager.Instance.p2Skin);
             //gameObject.GetComponent<Card>().Rotate(3);
         }
     }
