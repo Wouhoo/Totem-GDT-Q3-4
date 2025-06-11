@@ -13,7 +13,8 @@ public class BGMPlayer : MonoBehaviour
     //dictionaries are not serializable, so that is why we have to build it on the fly
     private Dictionary<BGMTheme, BGMThemeSO> themeLookup;
 
-    private AudioSource audioPlayer;
+    [SerializeField] private AudioSource introPlayer;
+    [SerializeField] private AudioSource loopPlayer;
 
     public enum BGMTheme
     {
@@ -32,7 +33,7 @@ public class BGMPlayer : MonoBehaviour
         else
             Destroy(gameObject);
 
-        audioPlayer = GetComponent<AudioSource>();
+        //audioPlayer = GetComponent<AudioSource>();
 
         //populate the dictionary
         themeLookup = themeAssets.ToDictionary(t => t.theme, t => t);
@@ -47,9 +48,19 @@ public class BGMPlayer : MonoBehaviour
             if (theme != currentTheme) // Don't replay the theme when it's already playing
             {
                 //audioPlayer.clip = themes[(int)theme];
-                audioPlayer.clip = themeLookup[theme].loopClip;
-                audioPlayer.Play();
-                currentTheme = theme;
+                var themeSO = themeLookup[theme];
+                if (themeSO.introClip != null)
+                {
+                    PlayIntroAndLoop(themeLookup[theme]);
+                }
+                else //workaround for theme without intro clip (battle)
+                {
+                    introPlayer.Stop();
+                    loopPlayer.Stop();  
+                    loopPlayer.clip = themeSO.loopClip;
+                    loopPlayer.Play();
+                }
+                    currentTheme = theme;
             }
         }
         catch
@@ -58,13 +69,34 @@ public class BGMPlayer : MonoBehaviour
         }
     }
 
+    private void PlayIntroAndLoop(BGMThemeSO theme)
+    {
+        // Stop previous
+        introPlayer.Stop();
+        loopPlayer.Stop();
+      
+        // Get timing right
+        double batonPassTime = AudioSettings.dspTime + theme.introClip.length;
+
+        // Play intro
+        introPlayer.PlayOneShot(theme.introClip);
+        introPlayer.SetScheduledEndTime(batonPassTime);
+      
+        // Schedule loop
+        loopPlayer.clip = theme.loopClip;
+        loopPlayer.loop = true;
+        loopPlayer.PlayScheduled(batonPassTime);
+    }
+
     public void StopPlaying()
     {
-        audioPlayer.Stop();
+        introPlayer.Stop();
+        loopPlayer.Stop();
     }
 
     public void UpdateVolume(float volume)
     {
-        audioPlayer.volume = volume;
+        introPlayer.volume = volume;
+        loopPlayer.volume = volume;
     }
 }
