@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3219297dfb5b34d28929cf0b02ebf253, type: 3}
   m_Name: Winning
   m_EditorClassIdentifier: 
-  theme: 2
+  theme: 3
   introClip: {fileID: 8300000, guid: 3ab45c5d314a24ba2a46003f47562708, type: 3}
   loopClip: {fileID: 8300000, guid: 147b01e56bc8b49b285219a7a89459d5, type: 3}

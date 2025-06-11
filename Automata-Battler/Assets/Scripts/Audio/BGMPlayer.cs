@@ -17,12 +17,13 @@ public class BGMPlayer : MonoBehaviour
 
     public enum BGMTheme
     {
+        None, //hack for uhh when you DON'T have a theme playing (i.e. at game start and you want the menu)
         Menu,
         Battle,
         Winning,
         Losing
     }
-    private BGMTheme currentTheme;
+    [SerializeField] private BGMTheme currentTheme;
 
     private void Awake()
     {
@@ -35,15 +36,18 @@ public class BGMPlayer : MonoBehaviour
 
         //populate the dictionary
         themeLookup = themeAssets.ToDictionary(t => t.theme, t => t);
+        Debug.Log(themeLookup.ToString());
     }
 
     public void PlayBGMTheme(BGMTheme theme)
     {
+        Debug.Log("new theme attempted: " + theme);
         try
         {
-            if(theme != currentTheme) // Don't replay the theme when it's already playing
+            if (theme != currentTheme) // Don't replay the theme when it's already playing
             {
-                audioPlayer.clip = themes[(int)theme];
+                //audioPlayer.clip = themes[(int)theme];
+                audioPlayer.clip = themeLookup[theme].loopClip;
                 audioPlayer.Play();
                 currentTheme = theme;
             }

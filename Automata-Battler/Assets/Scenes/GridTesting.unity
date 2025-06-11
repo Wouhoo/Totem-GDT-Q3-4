@@ -8220,6 +8220,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1160785080}
     m_Modifications:
+    - target: {fileID: -9170267321281981850, guid: bed0ca8ad2a3d0a4d8fd4a07e808a4eb, type: 3}
+      propertyPath: themeAssets.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -9170267321281981850, guid: bed0ca8ad2a3d0a4d8fd4a07e808a4eb, type: 3}
+      propertyPath: 'themeAssets.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 16bc444a99095452280179f99d3e5c88, type: 2}
+    - target: {fileID: -9170267321281981850, guid: bed0ca8ad2a3d0a4d8fd4a07e808a4eb, type: 3}
+      propertyPath: 'themeAssets.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 52da5278c626a41ab81371671a5547dc, type: 2}
     - target: {fileID: 657586018744329109, guid: bed0ca8ad2a3d0a4d8fd4a07e808a4eb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

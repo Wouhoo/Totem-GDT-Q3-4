@@ -2568,6 +2568,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -9170267321281981850, guid: bed0ca8ad2a3d0a4d8fd4a07e808a4eb, type: 3}
+      propertyPath: themeAssets.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -9170267321281981850, guid: bed0ca8ad2a3d0a4d8fd4a07e808a4eb, type: 3}
+      propertyPath: 'themeAssets.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: e1a94cfffcb1c41fc8be5564f478f4a5, type: 2}
     - target: {fileID: 657586018744329109, guid: bed0ca8ad2a3d0a4d8fd4a07e808a4eb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
