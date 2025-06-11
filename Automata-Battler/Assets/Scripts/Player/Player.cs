@@ -89,9 +89,10 @@ public class Player : MonoBehaviour
             _hand[handSlot] = card;
             card._inHandIndex = handSlot;
 
-            Vector3 additionalRot = new Vector3(0, 0, 0);
-            if (playerId == 2) additionalRot = new Vector3(0, 180, 0);
-            Quaternion slotRot = Quaternion.Euler(_handSlotTransforms[handSlot].rotation.eulerAngles + additionalRot);
+            Vector3 additionalRot;
+            if (playerId == 1) additionalRot = _handSlotTransforms[handSlot].rotation.eulerAngles;
+            else additionalRot = -_handSlotTransforms[handSlot].rotation.eulerAngles + new Vector3(0, 180, 0);
+            Quaternion slotRot = Quaternion.Euler(additionalRot);
             card.DrawCard_Placement_Rpc(_handSlotTransforms[handSlot].position, slotRot);
         }
     }
