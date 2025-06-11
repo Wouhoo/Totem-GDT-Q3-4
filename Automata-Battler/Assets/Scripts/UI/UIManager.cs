@@ -155,14 +155,14 @@ public class UIManager : MonoBehaviour
     /* TURN INDICATOR */
     public void ChangeTurnIndicator(ulong playerId)
     {
-        if (playerId == 1) // Orange player
-        {
-            turnText.text = "Current Player: Orange";
-            turnTextColor = p1Color;
-        }
-        else if (playerId == 2) // Blue player
+        if (playerId == 1) // Blue player
         {
             turnText.text = "Current Player: Blue";
+            turnTextColor = p1Color;
+        }
+        else if (playerId == 2) // Orange player
+        {
+            turnText.text = "Current Player: Orange";
             turnTextColor = p2Color;
         }
         else // No player active; executing cards

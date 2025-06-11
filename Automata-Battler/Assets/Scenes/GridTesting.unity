@@ -762,8 +762,8 @@ MonoBehaviour:
   increments: 20
   manaText: {fileID: 2092009670}
   turnText: {fileID: 1245636708}
-  p1Material: {fileID: 2100000, guid: c106ae7efcdd0a349976f80b1398a855, type: 2}
-  p2Material: {fileID: 2100000, guid: 2a2bb5001ef06894898fbc5dbe93b950, type: 2}
+  p1Material: {fileID: 2100000, guid: 2a2bb5001ef06894898fbc5dbe93b950, type: 2}
+  p2Material: {fileID: 2100000, guid: c106ae7efcdd0a349976f80b1398a855, type: 2}
   executionColor: {r: 0.6037736, g: 0.6037736, b: 0.6037736, a: 1}
   p1CommanderHealthText: {fileID: 0}
   p2CommanderHealthText: {fileID: 0}
