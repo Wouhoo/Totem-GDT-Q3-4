@@ -219,7 +219,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0}
-  m_LocalScale: {x: 9, y: 1, z: 9}
+  m_LocalScale: {x: 9, y: 20, z: 9}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8136927666946212780}
@@ -270,7 +270,8 @@ MonoBehaviour:
   color: {r: 0, g: 0, b: 0, a: 0}
   mesh: {fileID: 2364813757706282381}
   highlightMesh: {fileID: 4754311363261254754}
-  commander: {fileID: 0}
+  commander: 0
+  _card: {fileID: 0}
 --- !u!33 &5921470294830802904
 MeshFilter:
   m_ObjectHideFlags: 0
