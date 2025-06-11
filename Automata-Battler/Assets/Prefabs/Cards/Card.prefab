@@ -426,6 +426,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  _inHandIndex: 0
   cost: 1
   health: 1
   damage: 1
@@ -1028,7 +1029,7 @@ SpriteRenderer:
   m_SortingLayerID: -923147933
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1459383056934993550, guid: 755f590ea9656444c8ab06f5b19b84e5, type: 3}
+  m_Sprite: {fileID: 3407801956414245647, guid: 0b1c31633617e4ae5b7157d5bc0f179e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2686,7 +2687,7 @@ SpriteRenderer:
   m_SortingLayerID: -923147933
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 3407801956414245647, guid: 0b1c31633617e4ae5b7157d5bc0f179e, type: 3}
+  m_Sprite: {fileID: -1459383056934993550, guid: 755f590ea9656444c8ab06f5b19b84e5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
