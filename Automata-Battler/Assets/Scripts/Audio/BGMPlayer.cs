@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using static SFXPlayer;
 using System.Linq; //dictionary
@@ -15,6 +16,8 @@ public class BGMPlayer : MonoBehaviour
 
     [SerializeField] private AudioSource introPlayer;
     [SerializeField] private AudioSource loopPlayer;
+
+    [SerializeField] private float fadeOutDuration = 1.0f;
 
     public enum BGMTheme
     {
@@ -40,6 +43,8 @@ public class BGMPlayer : MonoBehaviour
         themeLookup = themeAssets.ToDictionary(t => t.theme, t => t);
         Debug.Log(themeLookup.ToString());
     }
+    
+
 
     public void PlayBGMTheme(BGMTheme theme)
     {
@@ -50,18 +55,8 @@ public class BGMPlayer : MonoBehaviour
             {
                 //audioPlayer.clip = themes[(int)theme];
                 var themeSO = themeLookup[theme];
-                if (themeSO.introClip != null)
-                {
-                    PlayIntroAndLoop(themeLookup[theme]);
-                }
-                else //workaround for theme without intro clip (battle)
-                {
-                    introPlayer.Stop();
-                    loopPlayer.Stop();  
-                    loopPlayer.clip = themeSO.loopClip;
-                    loopPlayer.Play();
-                }
-                    currentTheme = theme;
+                StartCoroutine(SwitchThemeWithFade(themeSO));
+                currentTheme = theme;
             }
         }
         catch
@@ -87,6 +82,52 @@ public class BGMPlayer : MonoBehaviour
         loopPlayer.clip = theme.loopClip;
         loopPlayer.loop = true;
         loopPlayer.PlayScheduled(batonPassTime);
+    }
+
+    //switch themes with fade-out
+    private IEnumerator SwitchThemeWithFade(BGMThemeSO newTheme)
+    {
+        // Debug.Log("START Fade out");
+        // Fade out both players
+        yield return StartCoroutine(FadeOut(introPlayer, fadeOutDuration));
+        yield return StartCoroutine(FadeOut(loopPlayer, fadeOutDuration));
+        // Debug.Log("Fade out DONE");
+        // Delay slightly to ensure clean stop
+        yield return new WaitForSecondsRealtime(0.05f);
+
+        // Debug.Log("STARTING NEW THEME");
+        // Play new theme
+        if (newTheme.introClip != null)
+        {
+            PlayIntroAndLoop(newTheme);
+        }
+        else
+        {
+            introPlayer.Stop();
+            loopPlayer.Stop();
+            loopPlayer.clip = newTheme.loopClip;
+            loopPlayer.Play();
+        }
+    }
+
+    //fade out coroutine for given audiosource
+    private IEnumerator FadeOut(AudioSource source, float duration)
+    {
+        if (source.isPlaying)//only if it is playing, else skip
+        {
+            float startVolume = source.volume;
+
+            float time = 0f;
+            while (time < duration)
+            {
+                time += Time.unscaledDeltaTime;
+                source.volume = Mathf.Lerp(startVolume, 0f, time / duration);
+                yield return null;
+            }
+
+            source.Stop();
+            source.volume = startVolume; //reset volume in case we reuse it
+        }
     }
 
     public void StopPlaying()
