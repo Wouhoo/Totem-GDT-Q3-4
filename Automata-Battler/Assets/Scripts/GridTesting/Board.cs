@@ -10,9 +10,9 @@ public class Board : MonoBehaviour
 	public static Board Instance { get; private set; }
 	[SerializeField] public Dictionary<HexCoordinates, HexCell> cells { get; private set; }
 
-	public Text cellLabelPrefab;
+	// public Text cellLabelPrefab;
 
-	Canvas gridCanvas;
+	// Canvas gridCanvas;
 
 	public Color defaultColor = Color.white;
 	public Color touchedColor = Color.magenta;
@@ -38,7 +38,7 @@ public class Board : MonoBehaviour
 		else
 			Destroy(gameObject);
 
-		gridCanvas = GetComponentInChildren<Canvas>(); //I still have this rather than have it be on the cells. Could make it only show up with gizmos.
+		// gridCanvas = GetComponentInChildren<Canvas>(); //I still have this rather than have it be on the cells. Could make it only show up with gizmos.
 
 		cells = new Dictionary<HexCoordinates, HexCell>();
 
@@ -74,10 +74,12 @@ public class Board : MonoBehaviour
 			//no longer required, cells have their own meshes from the start
 			//cell.mesh.GenerateMesh();
 
+			/*
 			Text label = Instantiate<Text>(cellLabelPrefab);
 			label.rectTransform.SetParent(gridCanvas.transform, false);
 			label.rectTransform.anchoredPosition = new Vector2(cell.transform.position.x, cell.transform.position.z);
 			label.text = cell.coordinates.ToStringOnSeparateLines();
+			*/
 		}
 	}
 
