@@ -90,6 +90,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     private void PlayerBeginTurnRpc(RpcParams rpcParams)
     {
         Debug.Log("STARTING TURN");
+        UIManager.Instance.FlashYourTurnScreen();
         Player.Instance.BeginTurn();
     }
 

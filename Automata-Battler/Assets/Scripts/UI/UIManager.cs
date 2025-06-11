@@ -54,6 +54,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] Sprite[] tutorialSlides;
     private int currentSlide = 0;
 
+    [Header("Your Turn Flash Screen")]
+    [SerializeField] GameObject yourTurnScreen;
+    [SerializeField] Image yourTurnScreenBG;
+    [SerializeField] TextMeshProUGUI yourTurnText;
+    [SerializeField] float flashDuration = 1.0f;
+    [SerializeField] int flashIncrements = 30;
+
     private bool startUp = true; // to prevent certain sound effects from playing on startup
 
     // If you were looking for the game end screen, that's done on the GameEndManager
@@ -74,8 +81,14 @@ public class UIManager : MonoBehaviour
     {
         UpdateManaText(3);
         ChangeTurnIndicator(1);
-
         pauseScreen.SetActive(false);
+
+        if(Player.Instance.playerId == 1) // Set "YOUR TURN!" text popup to the correct color
+            yourTurnText.color = p1Color;
+        else if (Player.Instance.playerId == 2)
+            yourTurnText.color = p2Color;
+        yourTurnScreen.SetActive(false);
+
         ShowTutorialScreen();
         SetButtonActive(prevButton, false);
         SetButtonActive(nextButton, true);
@@ -299,5 +312,45 @@ public class UIManager : MonoBehaviour
         else
             color.a = 0.7f;
         button.color = color;
+    }
+
+    /* YOUR TURN FLASH SCREEN */
+    public void FlashYourTurnScreen()
+    {
+        yourTurnScreen.SetActive(true);
+        StartCoroutine(FlashYourTurnScreenCoroutine());
+    }
+
+    IEnumerator FlashYourTurnScreenCoroutine()
+    {
+        // Increase, then decrease, opacity of your turn background and text.
+        Color bgColor = yourTurnScreenBG.color;
+        Color textColor = yourTurnText.color;
+
+        for (int i = 0; i <= flashIncrements; i++)
+        {
+            bgColor.a = Mathf.Lerp(0f, 1f, YourTurnFlashCurve((float)i / (float)flashIncrements));
+            textColor.a = Mathf.Lerp(0f, 1f, YourTurnFlashCurve((float)i / (float)flashIncrements));
+            yourTurnScreenBG.color = bgColor;
+            yourTurnText.color = textColor;
+
+            yield return new WaitForSeconds(flashDuration / flashIncrements);
+        }
+        yourTurnScreen.SetActive(false);
+        yield break;
+    }
+
+    // Custom curve for making the your turn flash screen show up at full opacity for longer
+    // The return value linearly goes from 0 to 1 between t=0 and t=t1, then stays at 1 between t=t1 and t=t2, and linearly goes back down to 0 between t=t2 and t=1.
+    private float t1 = 0.2f; 
+    private float t2 = 0.8f;
+    private float YourTurnFlashCurve(float t)
+    {
+        if (t < t1)
+            return (1 / t1) * t;
+        else if (t > t2)
+            return 1 - (1 / (1-t2)) * (t - t2);
+        else
+            return 1;
     }
 }
