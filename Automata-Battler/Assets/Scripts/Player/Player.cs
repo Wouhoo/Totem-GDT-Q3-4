@@ -45,7 +45,7 @@ public class Player : MonoBehaviour
     private void Start()
     {
         UIManager.Instance.InitializeCommanderHealthText(playerId); // Doesn't matter much if this has not finished executing before the Referee considers both players ready
-        Referee.Instance.PlayerReadyRpc(playerId); // Let the server referee know that this player is ready
+        //Referee.Instance.PlayerReadyRpc(playerId); // Let the server referee know that this player is ready
         // (even safer: wait with calling this function until all of the above initializations have finished executing)
     }
 

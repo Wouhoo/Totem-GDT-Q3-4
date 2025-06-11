@@ -48,6 +48,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Tutorial Screen")]
     [SerializeField] GameObject tutorialScreen;
+    [SerializeField] GameObject waitingForOpponentScreen;
     [SerializeField] Image tutorialImage;
     [SerializeField] Image prevButton;
     [SerializeField] Image nextButton;
@@ -62,6 +63,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] int flashIncrements = 30;
 
     private bool startUp = true; // to prevent certain sound effects from playing on startup
+    private bool playerReady = false;
 
     // If you were looking for the game end screen, that's done on the GameEndManager
     // (that has to be a NetworkObject, which is not needed for the rest of the UI, hence why we handle it separately)
@@ -82,6 +84,7 @@ public class UIManager : MonoBehaviour
         UpdateManaText(3);
         ChangeTurnIndicator(1);
         pauseScreen.SetActive(false);
+        waitingForOpponentScreen.SetActive(false);
 
         if(Player.Instance.playerId == 1) // Set "YOUR TURN!" text popup to the correct color
             yourTurnText.color = p1Color;
@@ -312,6 +315,21 @@ public class UIManager : MonoBehaviour
         else
             color.a = 0.7f;
         button.color = color;
+    }
+
+    public void TutorialDone()
+    {
+        if (!playerReady)
+        {
+            Referee.Instance.PlayerReadyRpc(Player.Instance.playerId); // Let the server referee know that this player is ready
+            waitingForOpponentScreen.SetActive(true);
+            playerReady = true;
+        }
+    }
+
+    public void HideWaitingForOpponentScreen()
+    {
+        waitingForOpponentScreen.SetActive(false);
     }
 
     /* YOUR TURN FLASH SCREEN */
