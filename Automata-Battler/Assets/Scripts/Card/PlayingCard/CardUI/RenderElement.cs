@@ -21,20 +21,20 @@ public class RenderElement : MonoBehaviour
     void Awake()
     {
         midpointMax = (shownPosition + hiddenPosition) / 2 + new Vector3(0, 0, 0); // (0,2,0)
-        meshRenderer = GetComponent<MeshRenderer>();
+        //meshRenderer = GetComponent<MeshRenderer>();
 
         directionPosition = shownPosition - hiddenPosition;
         directionScale = shownScale - hiddenScale;
         directionAlpha = shownAlpha - hiddenAlpha;
 
-        color = meshRenderer.material.color;
+        //color = meshRenderer.material.color;
     }
 
     public void RevealAmount(float t)
     {
         transform.localPosition = hiddenPosition + directionPosition * t; // + midpointMax * 4 * t * (1 - t);
         transform.localScale = hiddenScale + t * directionScale;
-        meshRenderer.material.color = new Color(color.r, color.g, color.b, hiddenAlpha + t * directionAlpha);
+        //meshRenderer.material.color = new Color(color.r, color.g, color.b, hiddenAlpha + t * directionAlpha);
     }
 
     public void RenderText(string newText)
