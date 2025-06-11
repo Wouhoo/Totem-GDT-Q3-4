@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Winning
   m_EditorClassIdentifier: 
   theme: 3
-  introClip: {fileID: 8300000, guid: 3ab45c5d314a24ba2a46003f47562708, type: 3}
-  loopClip: {fileID: 8300000, guid: 147b01e56bc8b49b285219a7a89459d5, type: 3}
+  introClip: {fileID: 8300000, guid: e60cbd3e098d74bde925946ff0eb0315, type: 3}
+  loopClip: {fileID: 8300000, guid: b8b171ff38c974738b660fb275ad1ffe, type: 3}

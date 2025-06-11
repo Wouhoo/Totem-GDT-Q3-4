@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   theme: 2
   introClip: {fileID: 0}
-  loopClip: {fileID: 8300000, guid: 80e6923a9c2b844629cf0dd63b8092f0, type: 3}
+  loopClip: {fileID: 8300000, guid: 5ae7ce40b7a9f41f4a99825337299668, type: 3}
