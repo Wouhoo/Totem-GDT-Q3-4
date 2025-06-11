@@ -134,6 +134,7 @@ public class Card : AbstractCard, IAction, ISelectable
             Debug.Log("Ehlooeoeooe");
             if (Player.Instance._canRotateCard && Player.Instance.playerId == _ownerPlayer)
             {
+                Debug.Log("Ehlooeoeooe plz frfr this time");
                 cardRenderer.RenderArrows(1);
                 Q_RotationArrowsShown = true;
                 return true;
