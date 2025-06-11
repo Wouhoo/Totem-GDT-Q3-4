@@ -26,8 +26,9 @@ public class AbstractCard : NetworkBehaviour, ISelectable
         }
     }
 
-    public ulong _ownerPlayer { get; private set; }
-    public void Set_Owner(ulong playerId)
+    public ulong _ownerPlayer; // { get; private set; }
+    [Rpc(SendTo.ClientsAndHost)] // duunnooo why but else the code le die
+    public void Set_Owner_Rpc(ulong playerId)
     {
         _ownerPlayer = playerId;
         SetMaterialRpc(playerId);
