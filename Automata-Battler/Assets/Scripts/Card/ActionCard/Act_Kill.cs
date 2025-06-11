@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using UnityEngine;
-
+/*
 public class Act_Kill : AbstractCard, IAction
 {
     public bool Q_CanBeginAction()
@@ -36,3 +36,4 @@ public class Act_Kill : AbstractCard, IAction
         return PlayerRequestState.Cards_InPlay;
     }
 }
+*/

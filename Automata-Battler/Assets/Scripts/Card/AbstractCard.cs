@@ -4,6 +4,8 @@ using UnityEngine.UIElements;
 
 public class AbstractCard : NetworkBehaviour, ISelectable
 {
+    public int _inHandIndex;
+
     public void OnHoverEnter()
     {
         // glow

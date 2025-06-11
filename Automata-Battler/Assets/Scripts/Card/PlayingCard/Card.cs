@@ -167,8 +167,8 @@ public class Card : AbstractCard, IAction, ISelectable
             if (selectable is HexCell tile && Player.Instance._hand.Contains(this) && tile.GetCard() == null) // Card in player's hand & tile free
             {
                 Player.Instance.UseMana(_cost);
-                Player.Instance.RemoveCardFromHand(this); // Player is not a networkobject, so _hand is just a *local* list of references which we can add to/remove from as normal.
-                                                          // We now play our card
+                Player.Instance.RemoveCardFromHand(_inHandIndex); // Player is not a networkobject, so _hand is just a *local* list of references which we can add to/remove from as normal.
+                                                                  // We now play our card
                 _position = tile.coordinates;
                 PlayCardRpc(_position);                   // Make server move the card to the correct position
                 Board.Instance.Set_TileOccupant(_position, this);  // Update board state for all players

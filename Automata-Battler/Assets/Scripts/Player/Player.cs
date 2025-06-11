@@ -57,13 +57,9 @@ public class Player : MonoBehaviour
 
     [SerializeField] public List<Transform> _handSlotTransforms; // Must be of length 5!
 
-    public void RemoveCardFromHand(AbstractCard card)
+    public void RemoveCardFromHand(int inHandIndex)
     {
-        for (int i = 0; i < _hand.Length; i++)
-        {
-            if (_hand[i] == this)
-                _hand[i] = null;
-        }
+        _hand[inHandIndex] = null;
     }
 
     public void DrawCards()
@@ -91,6 +87,8 @@ public class Player : MonoBehaviour
         {
             //print("FOUND CARD");
             _hand[handSlot] = card;
+            card._inHandIndex = handSlot;
+
             Vector3 additionalRot = new Vector3(0, 0, 0);
             if (playerId == 2) additionalRot = new Vector3(0, 180, 0);
             Quaternion slotRot = Quaternion.Euler(_handSlotTransforms[handSlot].rotation.eulerAngles + additionalRot);
