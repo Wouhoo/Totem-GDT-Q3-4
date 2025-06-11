@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 89fff474ba0a95e49ae5cf261d4f8fcc, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -6034,8 +6034,6 @@ MonoBehaviour:
   - {fileID: 4105027414975120701, guid: ebebeff5ebdf96a4db01e38ac28c81cf, type: 3}
   - {fileID: 8741970680909964692, guid: 654b45a52b666bd47a042e9c83b64a3b, type: 3}
   - {fileID: 2641220852286931854, guid: 15a36d9cadaba5f4bb865393a3f6a07b, type: 3}
-  p1Material: {fileID: 2100000, guid: c106ae7efcdd0a349976f80b1398a855, type: 2}
-  p2Material: {fileID: 2100000, guid: 2a2bb5001ef06894898fbc5dbe93b950, type: 2}
   p1Skin: {fileID: 11400000, guid: c5bf053e788794ddc9e6780212f552e3, type: 2}
   p2Skin: {fileID: 11400000, guid: 7e7a3b603abd04538b90470b67769e85, type: 2}
 --- !u!4 &1852071831
