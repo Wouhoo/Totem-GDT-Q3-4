@@ -22,7 +22,8 @@ public class BGMPlayer : MonoBehaviour
         Menu,
         Battle,
         Winning,
-        Losing
+        Losing,
+        Tutorial
     }
     [SerializeField] private BGMTheme currentTheme;
 

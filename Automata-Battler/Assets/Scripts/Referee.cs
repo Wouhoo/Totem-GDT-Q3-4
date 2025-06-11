@@ -33,6 +33,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
 
     public override void OnNetworkSpawn()
     {
+        BGMPlayer.Instance.PlayBGMTheme(BGMPlayer.BGMTheme.Tutorial);
         Time.timeScale = 0.0f; // Delay game start until both players are ready
         if (IsServer)
         {
