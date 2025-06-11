@@ -33,6 +33,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
 
     public override void OnNetworkSpawn()
     {
+        Time.timeScale = 0.0f; // Delay game start until both players are ready
         if (IsServer)
         {
             StartCoroutine(StartGame()); // Have to do it this way so we can wait until all necessary networkobjects have spawned
@@ -51,7 +52,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     }
 
     [Rpc(SendTo.Server)]
-    public void PlayerReadyRpc(ulong playerId) // Called by a Player once they have finished their initializations
+    public void PlayerReadyRpc(ulong playerId) // Called by the UIManager once the player has pressed "Done" on the initial tutorial pop-up
     {
         if (playerId == 1)
             p1Ready = true;
@@ -81,6 +82,8 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     [Rpc(SendTo.ClientsAndHost)] // Make *everyone* draw their cards at start of game
     private void PlayerStartGameRpc()
     {
+        Time.timeScale = 1.0f; // Actually start the game
+        UIManager.Instance.HideWaitingForOpponentScreen();
         BGMPlayer.Instance.PlayBGMTheme(BGMPlayer.BGMTheme.Battle);
         Player.Instance.DrawCards();
         // Other stuff that both players need to do at start of game goes here
