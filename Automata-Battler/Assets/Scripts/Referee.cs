@@ -142,7 +142,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
         {
             //await ExecuteCards();
             PlayerBeginWatchRpc(); // Make players watch the board
-            ChangeTurnTextRpc(0);  // Temporarily set the current active player to 0 (meaning "executing")
+            ChangeTurnIndicatorRpc(0);  // Temporarily set the current active player to 0 (meaning "executing")
             await ExecuteCards();  // Can't await anymore since RPC cannot be async; see if this causes any trouble
             round++;
         }
@@ -150,7 +150,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
         {
             //await ExecuteCards();
             PlayerBeginWatchRpc(); // Make players watch the board
-            ChangeTurnTextRpc(0);  // Temporarily set the current active player to 0 (meaning "executing")
+            ChangeTurnIndicatorRpc(0);  // Temporarily set the current active player to 0 (meaning "executing")
             await ExecuteCards();  // Can't await anymore since RPC cannot be async; see if this causes any trouble
             round++;
         }
@@ -159,13 +159,13 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
             activePlayer = 1;
         }
 
-        ChangeTurnTextRpc(activePlayer);
+        ChangeTurnIndicatorRpc(activePlayer);
         PlayerBeginTurnRpc(RpcTarget.Single(activePlayer - 1, RpcTargetUse.Temp)); // Note: cannot be awaited anymore because it is an RPC...
         PlayerBeginViewRpc(RpcTarget.Single((3 - activePlayer) - 1, RpcTargetUse.Temp));
     }
 
     [Rpc(SendTo.ClientsAndHost)] // Notify all players who the new active player is so they can change the turn indicator
-    private void ChangeTurnTextRpc(ulong currPlayerId)
+    private void ChangeTurnIndicatorRpc(ulong currPlayerId)
     {
         SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.TurnChange); // Also play a sound effect for turn change on both client and host
         UIManager.Instance.ChangeTurnIndicator(currPlayerId);

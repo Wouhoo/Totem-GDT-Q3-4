@@ -23,10 +23,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI manaText;
 
     [Header("Turn indicator")]
-    [SerializeField] TextMeshProUGUI turnText;
+    [SerializeField] GameObject turnIndicatorArrow;
+    private Renderer turnIndicatorMesh;
     [SerializeField] Material p1Material;
     [SerializeField] Material p2Material;
     [SerializeField] Color executionColor;
+    [SerializeField] float rotationDuration = 1.5f;
+    [SerializeField] int rotationIncrements = 60;
     private Color turnTextColor;
     private Color p1Color;
     private Color p2Color;
@@ -77,6 +80,7 @@ public class UIManager : MonoBehaviour
 
         p1Color = p1Material.color;
         p2Color = p2Material.color;
+        turnIndicatorMesh = turnIndicatorArrow.GetComponent<Renderer>();
     }
 
     private void Start()
@@ -156,31 +160,60 @@ public class UIManager : MonoBehaviour
 
 
     /* TURN INDICATOR */
-    public void ChangeTurnIndicator(ulong playerId)
+    private float playerRotationTarget = 0f;     // y-angle corresponding to the arrow being rotated towards the player (x- and z-rotation remain 0)
+    private float opponentRotationTarget = 180f; // same but for rotation towards opponent
+    private float boardRotationTarget = 90f;     // same but for rotation towards board
+    private float targetRotation;
+    Color targetColor = Color.gray;
+
+    public void ChangeTurnIndicator(ulong currPlayerId)
     {
-        if (playerId == 1) // Blue player
+        // Determine position to rotate the target to
+        if (currPlayerId == 0)                             // Execution phase; point towards board
+            targetRotation = boardRotationTarget;
+        else if (currPlayerId == Player.Instance.playerId) // This player's turn; point towards player
+            targetRotation = playerRotationTarget;
+        else                                               // Opponent's turn: point to other side of board
+            targetRotation = opponentRotationTarget;
+
+        // Determine color to give the arrow
+        if (currPlayerId == 1)      // Player 1 (blue)
+            targetColor = p1Color;
+        else if (currPlayerId == 2) // Player 2 (orange)
+            targetColor = p2Color;
+        else                        // No player active; executing cards
+            targetColor = executionColor;
+
+        StartCoroutine("RotateIndicatorArrow");
+    }
+
+    IEnumerator RotateIndicatorArrow()
+    {
+        // Change turn indicator arrow's rotation and color over time towards the correct target
+        float startRotation = turnIndicatorArrow.transform.localRotation.eulerAngles.y;
+        float currRotation = startRotation;
+        //Debug.Log(string.Format("ROTATION START {0}, TARGET {1}", startRotation, targetRotation));
+        Color startColor = turnIndicatorMesh.material.color;
+        Color currColor = startColor;
+
+        for (int i = 0; i <= rotationIncrements; i++)
         {
-            turnText.text = "Current Player: Blue";
-            turnTextColor = p1Color;
+            currRotation = Mathf.Lerp(startRotation, targetRotation, (float)i / (float)rotationIncrements);
+            currColor = Color.Lerp(startColor, targetColor, (float)i / (float)rotationIncrements);
+
+            turnIndicatorArrow.transform.localRotation = Quaternion.Euler(0, currRotation, 0);
+            turnIndicatorMesh.material.color = currColor;
+
+            yield return new WaitForSeconds(rotationDuration / rotationIncrements);
         }
-        else if (playerId == 2) // Orange player
-        {
-            turnText.text = "Current Player: Orange";
-            turnTextColor = p2Color;
-        }
-        else // No player active; executing cards
-        {
-            turnText.text = "Executing cards...";
-            turnTextColor = executionColor;
-        }
-        turnText.color = turnTextColor;
+        yield break;
     }
 
     public void PlayNotYourTurnEffect()
     {
         SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.Error);
-        if (!alreadyAnimating)
-            StartCoroutine("ErrorEffect", turnText);
+        //if (!alreadyAnimating)
+        //    StartCoroutine("ErrorEffect", turnText);
     }
 
 
