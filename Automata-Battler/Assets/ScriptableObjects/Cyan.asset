@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f76892ca903d7486f9caf3e71569428c, type: 3}
   m_Name: Cyan
   m_EditorClassIdentifier: 
-  fontColor: {r: 0, g: 0.8980392, b: 1, a: 0}
+  fontColor: {r: 0, g: 0.8980392, b: 1, a: 1}
   basePanel: {fileID: 5597402243164782025, guid: 1e6180c1f1df64b5fb1a63aab88a168c, type: 3}
   healthPanel: {fileID: 6791198830516376576, guid: ac8b3c1e0829743b7a9afd32755d6cb6, type: 3}
   attackPanel: {fileID: 3055250714147816106, guid: 8d0e437c4b49a4d45ab9331d16d1dff7, type: 3}

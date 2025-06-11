@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f76892ca903d7486f9caf3e71569428c, type: 3}
   m_Name: Orange
   m_EditorClassIdentifier: 
-  fontColor: {r: 1, g: 0.74509805, b: 0.101960786, a: 0}
+  fontColor: {r: 1, g: 0.74509805, b: 0.101960786, a: 1}
   basePanel: {fileID: -5193202635623335071, guid: 1a6e1c791425b4f6d95bdbcd8d147bbe, type: 3}
   healthPanel: {fileID: -2149348937269349019, guid: d46b9fa7602634a85aa538f961c72297, type: 3}
   attackPanel: {fileID: 1228182870553037190, guid: e09dd62846a874e79a284bbb4cb76399, type: 3}

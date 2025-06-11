@@ -5,6 +5,7 @@ using System.Linq;
 public class RenderElement : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
+    private TextMeshProUGUI textMeshPro;
     [SerializeField] private TextMeshProUGUI TMPgui;
     [SerializeField] private Vector3 shownPosition;
     [SerializeField] private Vector3 shownScale;
@@ -28,11 +29,16 @@ public class RenderElement : MonoBehaviour
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         }
 
+        textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
+
         directionPosition = shownPosition - hiddenPosition;
         directionScale = shownScale - hiddenScale;
         directionAlpha = shownAlpha - hiddenAlpha;
 
-        color = spriteRenderer.material.color;
+        if (spriteRenderer != null) //ugh, the cost panel has no spriterenderer of course
+        {
+            color = spriteRenderer.material.color;
+        }
     }
 
     public void RevealAmount(float t)
@@ -42,9 +48,13 @@ public class RenderElement : MonoBehaviour
         spriteRenderer.material.color = new Color(color.r, color.g, color.b, hiddenAlpha + t * directionAlpha);
     }
 
-    public void SetSkin(Sprite panel)
+    public void SetSkin(Sprite panel, Color fontColor)
     {
-        spriteRenderer.sprite = panel;
+        if (spriteRenderer != null) //ugh, the cost panel has no spriterenderer of course
+        {
+            spriteRenderer.sprite = panel;
+        }
+        textMeshPro.color = fontColor;
     }
 
     public void RenderText(string newText)
