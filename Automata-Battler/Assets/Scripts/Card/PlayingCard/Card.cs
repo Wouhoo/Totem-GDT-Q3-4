@@ -187,8 +187,8 @@ public class Card : AbstractCard, IAction, ISelectable
             if (selectable is RotationArrow arrow)
             {
                 Player.Instance.UseRotation();
-                if (arrow.clockwise) RotateInstructionsRpc(5);
-                else if (!arrow.clockwise) RotateInstructionsRpc(1);
+                if (arrow.clockwise) RotateInstructionsRpc(1);
+                else if (!arrow.clockwise) RotateInstructionsRpc(5);
                 cardRenderer.RenderArrows(0);
                 Q_RotationArrowsShown = false;
                 return PlayerCameraState.ViewingBoard; // Sucsess!
