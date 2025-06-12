@@ -20,3 +20,4 @@ MonoBehaviour:
   initiativePanel: {fileID: 3273943305781929743, guid: 7674bac1aa0f64ee4b3e01369077560b, type: 3}
   rotateRPanel: {fileID: -1522397797603635807, guid: 81ea80edae3d646de8145dfadc7a6911, type: 3}
   rotateLPanel: {fileID: 8851819265437613721, guid: ea1d1e609995344ae92d590832539192, type: 3}
+  artVariant: 1
