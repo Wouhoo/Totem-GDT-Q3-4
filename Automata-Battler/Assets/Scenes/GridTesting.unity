@@ -8651,6 +8651,46 @@ PrefabInstance:
       propertyPath: m_audioClip
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7327043140352865958, guid: d2d6e097e5852b341b4e5474aa7680a0, type: 3}
+      propertyPath: soundEffects.Array.size
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7327043140352865958, guid: d2d6e097e5852b341b4e5474aa7680a0, type: 3}
+      propertyPath: 'soundEffects.Array.data[2]'
+      value: 
+      objectReference: {fileID: 8300000, guid: f81b00d26324bd1418b319cef18d2622, type: 3}
+    - target: {fileID: 7327043140352865958, guid: d2d6e097e5852b341b4e5474aa7680a0, type: 3}
+      propertyPath: 'soundEffects.Array.data[3]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 46f313d1a93c93945989b0d4aaae1d7f, type: 3}
+    - target: {fileID: 7327043140352865958, guid: d2d6e097e5852b341b4e5474aa7680a0, type: 3}
+      propertyPath: 'soundEffects.Array.data[4]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 69def720cd184df45a9562b1ceba96f1, type: 3}
+    - target: {fileID: 7327043140352865958, guid: d2d6e097e5852b341b4e5474aa7680a0, type: 3}
+      propertyPath: 'soundEffects.Array.data[5]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 2d4c9ad1871680d439dc0987f053758d, type: 3}
+    - target: {fileID: 7327043140352865958, guid: d2d6e097e5852b341b4e5474aa7680a0, type: 3}
+      propertyPath: 'soundEffects.Array.data[6]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 0d6c1258fffb8664f806f5223cbd0953, type: 3}
+    - target: {fileID: 7327043140352865958, guid: d2d6e097e5852b341b4e5474aa7680a0, type: 3}
+      propertyPath: 'soundEffects.Array.data[7]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 87bb48a70025a554b9758dbb2ae1736c, type: 3}
+    - target: {fileID: 7327043140352865958, guid: d2d6e097e5852b341b4e5474aa7680a0, type: 3}
+      propertyPath: 'soundEffects.Array.data[8]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 64cb2530af6a38d4991fb3f88cef88ac, type: 3}
+    - target: {fileID: 7327043140352865958, guid: d2d6e097e5852b341b4e5474aa7680a0, type: 3}
+      propertyPath: 'soundEffects.Array.data[9]'
+      value: 
+      objectReference: {fileID: 8300000, guid: b8575e713ce252f4caa2defac1b93135, type: 3}
+    - target: {fileID: 7327043140352865958, guid: d2d6e097e5852b341b4e5474aa7680a0, type: 3}
+      propertyPath: 'soundEffects.Array.data[10]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 792d1798c2e1577428dbd6c80649efbf, type: 3}
     - target: {fileID: 8360962583094331293, guid: d2d6e097e5852b341b4e5474aa7680a0, type: 3}
       propertyPath: m_Name
       value: SFXPlayer
