@@ -9668,7 +9668,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -9170267321281981850, guid: bed0ca8ad2a3d0a4d8fd4a07e808a4eb, type: 3}
       propertyPath: themeAssets.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: -9170267321281981850, guid: bed0ca8ad2a3d0a4d8fd4a07e808a4eb, type: 3}
       propertyPath: 'themeAssets.Array.data[0]'
@@ -9682,6 +9682,10 @@ PrefabInstance:
       propertyPath: 'themeAssets.Array.data[2]'
       value: 
       objectReference: {fileID: 11400000, guid: 02a76433e78484ad3943c0a1e03aeceb, type: 2}
+    - target: {fileID: -9170267321281981850, guid: bed0ca8ad2a3d0a4d8fd4a07e808a4eb, type: 3}
+      propertyPath: 'themeAssets.Array.data[3]'
+      value: 
+      objectReference: {fileID: 11400000, guid: d6bd174823f6542b3b9eef880a64882b, type: 2}
     - target: {fileID: 657586018744329109, guid: bed0ca8ad2a3d0a4d8fd4a07e808a4eb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
