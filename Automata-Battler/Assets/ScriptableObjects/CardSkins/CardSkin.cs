@@ -12,4 +12,6 @@ public class CardSkin : ScriptableObject
     public Sprite initiativePanel;
     public Sprite rotateRPanel;
     public Sprite rotateLPanel;
+
+    public CardArt.CardArtVariant artVariant;
 }

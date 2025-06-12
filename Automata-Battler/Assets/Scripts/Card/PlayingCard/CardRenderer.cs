@@ -15,6 +15,7 @@ public class CardRenderer : MonoBehaviour
     [SerializeField] private Transform elementsTransform;
 
     [SerializeField] private SpriteRenderer basePanel; //nasty, stinky way to just get the base panel, which isnt a renderelement
+    [SerializeField] private CardArt artPanel;
     [SerializeField] private TextMeshProUGUI cardNameText;
     [SerializeField] private RenderElement cost;
     [SerializeField] private RenderElement health;
@@ -58,6 +59,7 @@ public class CardRenderer : MonoBehaviour
         rotateCounterclockwise.SetSkin(skin.rotateLPanel, skin.fontColor);
         cost.SetSkin(skin.basePanel, skin.fontColor); //first part should get ignored anyway!
         cardNameText.color = skin.fontColor;
+        artPanel.SetSkin(skin.artVariant);
     }
 
     public void Render_UpdateText()
