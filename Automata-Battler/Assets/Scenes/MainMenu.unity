@@ -693,11 +693,11 @@ PrefabInstance:
     - target: {fileID: 7327043140352865958, guid: d2d6e097e5852b341b4e5474aa7680a0, type: 3}
       propertyPath: 'soundEffects.Array.data[7]'
       value: 
-      objectReference: {fileID: 8300000, guid: 87bb48a70025a554b9758dbb2ae1736c, type: 3}
+      objectReference: {fileID: 8300000, guid: d9b3f69b1254fb444b847e96dfa33f67, type: 3}
     - target: {fileID: 7327043140352865958, guid: d2d6e097e5852b341b4e5474aa7680a0, type: 3}
       propertyPath: 'soundEffects.Array.data[8]'
       value: 
-      objectReference: {fileID: 8300000, guid: 64cb2530af6a38d4991fb3f88cef88ac, type: 3}
+      objectReference: {fileID: 8300000, guid: db248461d91589b4196e5fe6db8b416a, type: 3}
     - target: {fileID: 7327043140352865958, guid: d2d6e097e5852b341b4e5474aa7680a0, type: 3}
       propertyPath: 'soundEffects.Array.data[9]'
       value: 
@@ -705,7 +705,7 @@ PrefabInstance:
     - target: {fileID: 7327043140352865958, guid: d2d6e097e5852b341b4e5474aa7680a0, type: 3}
       propertyPath: 'soundEffects.Array.data[10]'
       value: 
-      objectReference: {fileID: 8300000, guid: 792d1798c2e1577428dbd6c80649efbf, type: 3}
+      objectReference: {fileID: 8300000, guid: 293053cb46abae84099fc02418e2283a, type: 3}
     - target: {fileID: 8360962583094331293, guid: d2d6e097e5852b341b4e5474aa7680a0, type: 3}
       propertyPath: m_Name
       value: SFXPlayer
