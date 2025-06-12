@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Battle
   m_EditorClassIdentifier: 
   theme: 2
-  introClip: {fileID: 0}
-  loopClip: {fileID: 8300000, guid: 5ae7ce40b7a9f41f4a99825337299668, type: 3}
+  introClip: {fileID: 8300000, guid: 78ba4aeeb30284974a8e12a054933b41, type: 3}
+  loopClip: {fileID: 8300000, guid: 8d798ec1a8d3f400aad725c8373e3dba, type: 3}
