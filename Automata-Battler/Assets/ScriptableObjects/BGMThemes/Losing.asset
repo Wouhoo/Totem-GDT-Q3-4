@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3219297dfb5b34d28929cf0b02ebf253, type: 3}
+  m_Name: Losing
+  m_EditorClassIdentifier: 
+  theme: 4
+  introClip: {fileID: 8300000, guid: 5bae36c7d916e415789b58c0cbe12bd9, type: 3}
+  loopClip: {fileID: 8300000, guid: 60b6d60bf58854aff88422f21b2b7ee6, type: 3}
