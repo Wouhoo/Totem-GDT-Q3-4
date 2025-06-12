@@ -2002,7 +2002,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 633, y: 0}
+  m_AnchoredPosition: {x: 55, y: 0}
   m_SizeDelta: {x: 502, y: 119}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1211797122
@@ -2308,8 +2308,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "CREDITS\nWouter Leenen - Team lead, \n     Programming, Design\nLars Haenen
     - Design, Programming, \n     2D Art, Music\nLauren Duong - Art lead, 3D Art\nTim
-    de Koning - Programming\nKerem Gokce - Music, Sound effects\nYulin Shang - 2D
-    Art\n\n"
+    de Koning - Programming lead\nKerem Gokce - Music, Sound effects\nYulin Shang
+    - 2D Art\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: fd0b44765ed48bb40b684289dda71599, type: 2}
   m_sharedMaterial: {fileID: -3458917632389168192, guid: fd0b44765ed48bb40b684289dda71599, type: 2}
@@ -3425,11 +3425,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 553778989}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 215, y: -146}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 55, y: -146}
   m_SizeDelta: {x: 1000, y: 50}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &2106098592
 MonoBehaviour:
   m_ObjectHideFlags: 0
