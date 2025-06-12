@@ -427,6 +427,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   _inHandIndex: 0
+  _ownerPlayer: 0
   cost: 1
   health: 1
   damage: 1
@@ -1105,10 +1106,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Name
+  m_text: Footsoldier
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e190d5ab3fbf2bd4a8186c0dd5a94913, type: 2}
-  m_sharedMaterial: {fileID: 8479616224764583134, guid: e190d5ab3fbf2bd4a8186c0dd5a94913, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3e1087a513bb1a9408d3c151da0e0592, type: 2}
+  m_sharedMaterial: {fileID: -2831994076974206988, guid: 3e1087a513bb1a9408d3c151da0e0592, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1132,8 +1133,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.2
-  m_fontSizeBase: 0.2
+  m_fontSize: 0.18
+  m_fontSizeBase: 0.18
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

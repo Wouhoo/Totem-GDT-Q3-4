@@ -90,10 +90,16 @@ public class UIManager : MonoBehaviour
         pauseScreen.SetActive(false);
         waitingForOpponentScreen.SetActive(false);
 
-        if(Player.Instance.playerId == 1) // Set "YOUR TURN!" text popup to the correct color
+        if(Player.Instance.playerId == 1) // Set UI texts to the correct color
+        {
             yourTurnText.color = p1Color;
+            manaText.color = p1Color;
+        }
         else if (Player.Instance.playerId == 2)
+        {
             yourTurnText.color = p2Color;
+            manaText.color = p2Color;
+        }
         yourTurnScreen.SetActive(false);
 
         ShowTutorialScreen();
