@@ -8,18 +8,19 @@ public class I_Attack_asJump : MonoBehaviour
     public static async Task Execute(Card card, HexDirection direction, int moveAmount, int damageAmount)
     {
         Debug.Log($"Executing Instruction: I_Attack_asJump ({card}, {direction}, {moveAmount}, {damageAmount})");
-        card.PlayCardSoundEffectRpc(SFXPlayer.SoundEffect.CardAttack);
         Board board = FindFirstObjectByType<Board>();
 
         HexCoordinates target = card._position + moveAmount * direction.GetRelativeCoordinates();
 
         if (board.CanAttack(card._ownerPlayer, target)) // ask if attack is possible
         {
+            card.PlayCardSoundEffectRpc(SFXPlayer.SoundEffect.CardAttack);
             await Animate_Success(card, target);
             await board.Attack(card._ownerPlayer, target, damageAmount);
             return;
         }
         else // Failed to attack
+            card.PlayCardSoundEffectRpc(SFXPlayer.SoundEffect.ChangeView);
             await Animate_Failure(card);
     }
 
