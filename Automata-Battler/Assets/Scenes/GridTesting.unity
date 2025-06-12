@@ -915,9 +915,10 @@ MonoBehaviour:
   prevButton: {fileID: 332830712}
   nextButton: {fileID: 454763626}
   tutorialSlides:
-  - {fileID: -7734556714755349339, guid: 400b72d55b7317940965337cae48024d, type: 3}
-  - {fileID: 2341420594102745015, guid: 29444c7c1ec39f042af373dd17b97e86, type: 3}
-  - {fileID: 6706853017157974612, guid: 6e6c89479ab056a4a87b166edf989f2f, type: 3}
+  - {fileID: 21300000, guid: d763b05d0cf3e4d44a3d69f9bd78df2c, type: 3}
+  - {fileID: 21300000, guid: 7382756931741be4bbd28f5bb9dab2fa, type: 3}
+  - {fileID: 21300000, guid: 69cc3dbf07ad44942a9e4f11f5e28404, type: 3}
+  - {fileID: 21300000, guid: 6c28ce4ad5a6a374a839368ff9a80f8c, type: 3}
   yourTurnScreen: {fileID: 1809451337}
   yourTurnScreenBG: {fileID: 243538223}
   yourTurnText: {fileID: 844226602}
@@ -4826,7 +4827,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -7734556714755349339, guid: 400b72d55b7317940965337cae48024d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d763b05d0cf3e4d44a3d69f9bd78df2c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
