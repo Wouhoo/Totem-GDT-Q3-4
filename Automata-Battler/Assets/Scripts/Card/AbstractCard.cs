@@ -4,6 +4,8 @@ using UnityEngine.UIElements;
 
 public class AbstractCard : NetworkBehaviour, ISelectable
 {
+    public int _inHandIndex;
+
     public void OnHoverEnter()
     {
         // glow
@@ -24,8 +26,9 @@ public class AbstractCard : NetworkBehaviour, ISelectable
         }
     }
 
-    public ulong _ownerPlayer { get; private set; }
-    public void Set_Owner(ulong playerId)
+    public ulong _ownerPlayer; // { get; private set; }
+    [Rpc(SendTo.ClientsAndHost)] // duunnooo why but else the code le die
+    public void Set_Owner_Rpc(ulong playerId)
     {
         _ownerPlayer = playerId;
         SetMaterialRpc(playerId);
@@ -56,7 +59,7 @@ public class AbstractCard : NetworkBehaviour, ISelectable
     [Rpc(SendTo.ClientsAndHost)] // Why does this work like this??!?!?!?!?!?
     public void DrawCard_Placement_Rpc(Vector3 newPos, Quaternion newRot)
     {
-        CardAnimator.Card_FlyIn_Rpc(transform, newPos, newRot, 0.2f);
+        CardAnimator.Card_FlyIn_Rpc(transform, newPos, newRot, 0.12f);
     }
 
     [SerializeField] private int cost = 1;

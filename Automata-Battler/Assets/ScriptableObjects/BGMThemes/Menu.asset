@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3219297dfb5b34d28929cf0b02ebf253, type: 3}
+  m_Name: Menu
+  m_EditorClassIdentifier: 
+  theme: 1
+  introClip: {fileID: 8300000, guid: ef7638d2f93fc422a8d590a30594d392, type: 3}
+  loopClip: {fileID: 8300000, guid: 2fa699d1cf82d404c8b3925564d827f9, type: 3}

@@ -23,10 +23,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI manaText;
 
     [Header("Turn indicator")]
-    [SerializeField] TextMeshProUGUI turnText;
+    [SerializeField] GameObject turnIndicatorArrow;
+    private Renderer turnIndicatorMesh;
     [SerializeField] Material p1Material;
     [SerializeField] Material p2Material;
     [SerializeField] Color executionColor;
+    [SerializeField] float rotationDuration = 1.5f;
+    [SerializeField] int rotationIncrements = 60;
     private Color turnTextColor;
     private Color p1Color;
     private Color p2Color;
@@ -48,13 +51,22 @@ public class UIManager : MonoBehaviour
 
     [Header("Tutorial Screen")]
     [SerializeField] GameObject tutorialScreen;
+    [SerializeField] GameObject waitingForOpponentScreen;
     [SerializeField] Image tutorialImage;
     [SerializeField] Image prevButton;
     [SerializeField] Image nextButton;
     [SerializeField] Sprite[] tutorialSlides;
     private int currentSlide = 0;
 
+    [Header("Your Turn Flash Screen")]
+    [SerializeField] GameObject yourTurnScreen;
+    [SerializeField] Image yourTurnScreenBG;
+    [SerializeField] TextMeshProUGUI yourTurnText;
+    [SerializeField] float flashDuration = 1.0f;
+    [SerializeField] int flashIncrements = 30;
+
     private bool startUp = true; // to prevent certain sound effects from playing on startup
+    private bool playerReady = false;
 
     // If you were looking for the game end screen, that's done on the GameEndManager
     // (that has to be a NetworkObject, which is not needed for the rest of the UI, hence why we handle it separately)
@@ -68,14 +80,22 @@ public class UIManager : MonoBehaviour
 
         p1Color = p1Material.color;
         p2Color = p2Material.color;
+        turnIndicatorMesh = turnIndicatorArrow.GetComponent<Renderer>();
     }
 
     private void Start()
     {
         UpdateManaText(3);
         ChangeTurnIndicator(1);
-
         pauseScreen.SetActive(false);
+        waitingForOpponentScreen.SetActive(false);
+
+        if(Player.Instance.playerId == 1) // Set "YOUR TURN!" text popup to the correct color
+            yourTurnText.color = p1Color;
+        else if (Player.Instance.playerId == 2)
+            yourTurnText.color = p2Color;
+        yourTurnScreen.SetActive(false);
+
         ShowTutorialScreen();
         SetButtonActive(prevButton, false);
         SetButtonActive(nextButton, true);
@@ -140,31 +160,60 @@ public class UIManager : MonoBehaviour
 
 
     /* TURN INDICATOR */
-    public void ChangeTurnIndicator(ulong playerId)
+    private float playerRotationTarget = 0f;     // y-angle corresponding to the arrow being rotated towards the player (x- and z-rotation remain 0)
+    private float opponentRotationTarget = 180f; // same but for rotation towards opponent
+    private float boardRotationTarget = 90f;     // same but for rotation towards board
+    private float targetRotation;
+    Color targetColor = Color.gray;
+
+    public void ChangeTurnIndicator(ulong currPlayerId)
     {
-        if (playerId == 1) // Orange player
+        // Determine position to rotate the target to
+        if (currPlayerId == 0)                             // Execution phase; point towards board
+            targetRotation = boardRotationTarget;
+        else if (currPlayerId == Player.Instance.playerId) // This player's turn; point towards player
+            targetRotation = playerRotationTarget;
+        else                                               // Opponent's turn: point to other side of board
+            targetRotation = opponentRotationTarget;
+
+        // Determine color to give the arrow
+        if (currPlayerId == 1)      // Player 1 (blue)
+            targetColor = p1Color;
+        else if (currPlayerId == 2) // Player 2 (orange)
+            targetColor = p2Color;
+        else                        // No player active; executing cards
+            targetColor = executionColor;
+
+        StartCoroutine("RotateIndicatorArrow");
+    }
+
+    IEnumerator RotateIndicatorArrow()
+    {
+        // Change turn indicator arrow's rotation and color over time towards the correct target
+        float startRotation = turnIndicatorArrow.transform.localRotation.eulerAngles.y;
+        float currRotation = startRotation;
+        //Debug.Log(string.Format("ROTATION START {0}, TARGET {1}", startRotation, targetRotation));
+        Color startColor = turnIndicatorMesh.material.color;
+        Color currColor = startColor;
+
+        for (int i = 0; i <= rotationIncrements; i++)
         {
-            turnText.text = "Current Player: Orange";
-            turnTextColor = p1Color;
+            currRotation = Mathf.Lerp(startRotation, targetRotation, (float)i / (float)rotationIncrements);
+            currColor = Color.Lerp(startColor, targetColor, (float)i / (float)rotationIncrements);
+
+            turnIndicatorArrow.transform.localRotation = Quaternion.Euler(0, currRotation, 0);
+            turnIndicatorMesh.material.color = currColor;
+
+            yield return new WaitForSeconds(rotationDuration / rotationIncrements);
         }
-        else if (playerId == 2) // Blue player
-        {
-            turnText.text = "Current Player: Blue";
-            turnTextColor = p2Color;
-        }
-        else // No player active; executing cards
-        {
-            turnText.text = "Executing cards...";
-            turnTextColor = executionColor;
-        }
-        turnText.color = turnTextColor;
+        yield break;
     }
 
     public void PlayNotYourTurnEffect()
     {
         SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.Error);
-        if (!alreadyAnimating)
-            StartCoroutine("ErrorEffect", turnText);
+        //if (!alreadyAnimating)
+        //    StartCoroutine("ErrorEffect", turnText);
     }
 
 
@@ -299,5 +348,60 @@ public class UIManager : MonoBehaviour
         else
             color.a = 0.7f;
         button.color = color;
+    }
+
+    public void TutorialDone()
+    {
+        if (!playerReady)
+        {
+            Referee.Instance.PlayerReadyRpc(Player.Instance.playerId); // Let the server referee know that this player is ready
+            waitingForOpponentScreen.SetActive(true);
+            playerReady = true;
+        }
+    }
+
+    public void HideWaitingForOpponentScreen()
+    {
+        waitingForOpponentScreen.SetActive(false);
+    }
+
+    /* YOUR TURN FLASH SCREEN */
+    public void FlashYourTurnScreen()
+    {
+        yourTurnScreen.SetActive(true);
+        StartCoroutine(FlashYourTurnScreenCoroutine());
+    }
+
+    IEnumerator FlashYourTurnScreenCoroutine()
+    {
+        // Increase, then decrease, opacity of your turn background and text.
+        Color bgColor = yourTurnScreenBG.color;
+        Color textColor = yourTurnText.color;
+
+        for (int i = 0; i <= flashIncrements; i++)
+        {
+            bgColor.a = Mathf.Lerp(0f, 1f, YourTurnFlashCurve((float)i / (float)flashIncrements));
+            textColor.a = Mathf.Lerp(0f, 1f, YourTurnFlashCurve((float)i / (float)flashIncrements));
+            yourTurnScreenBG.color = bgColor;
+            yourTurnText.color = textColor;
+
+            yield return new WaitForSeconds(flashDuration / flashIncrements);
+        }
+        yourTurnScreen.SetActive(false);
+        yield break;
+    }
+
+    // Custom curve for making the your turn flash screen show up at full opacity for longer
+    // The return value linearly goes from 0 to 1 between t=0 and t=t1, then stays at 1 between t=t1 and t=t2, and linearly goes back down to 0 between t=t2 and t=1.
+    private float t1 = 0.2f; 
+    private float t2 = 0.8f;
+    private float YourTurnFlashCurve(float t)
+    {
+        if (t < t1)
+            return (1 / t1) * t;
+        else if (t > t2)
+            return 1 - (1 / (1-t2)) * (t - t2);
+        else
+            return 1;
     }
 }

@@ -14,6 +14,8 @@ public class CardRenderer : MonoBehaviour
     private Card card;
     [SerializeField] private Transform elementsTransform;
 
+    [SerializeField] private SpriteRenderer basePanel; //nasty, stinky way to just get the base panel, which isnt a renderelement
+    [SerializeField] private TextMeshProUGUI cardNameText;
     [SerializeField] private RenderElement cost;
     [SerializeField] private RenderElement health;
     [SerializeField] private RenderElement damage;
@@ -47,8 +49,15 @@ public class CardRenderer : MonoBehaviour
 
     public void SetSkin(CardSkin skin)
     {
-        health.SetSkin(skin.healthPanel);
-        //cost.SetSkin(skin.)
+        basePanel.sprite = skin.basePanel; //shhh
+        health.SetSkin(skin.healthPanel, skin.fontColor);
+        damage.SetSkin(skin.attackPanel, skin.fontColor);
+        instructions.SetSkin(skin.instructionsPanel, skin.fontColor);
+        initiative.SetSkin(skin.initiativePanel, skin.fontColor);
+        rotateClockwise.SetSkin(skin.rotateRPanel, skin.fontColor);
+        rotateCounterclockwise.SetSkin(skin.rotateLPanel, skin.fontColor);
+        cost.SetSkin(skin.basePanel, skin.fontColor); //first part should get ignored anyway!
+        cardNameText.color = skin.fontColor;
     }
 
     public void Render_UpdateText()

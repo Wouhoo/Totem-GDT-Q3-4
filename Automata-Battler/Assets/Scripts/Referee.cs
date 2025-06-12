@@ -33,6 +33,8 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
 
     public override void OnNetworkSpawn()
     {
+        BGMPlayer.Instance.PlayBGMTheme(BGMPlayer.BGMTheme.Tutorial);
+        Time.timeScale = 0.0f; // Delay game start until both players are ready
         if (IsServer)
         {
             StartCoroutine(StartGame()); // Have to do it this way so we can wait until all necessary networkobjects have spawned
@@ -51,7 +53,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     }
 
     [Rpc(SendTo.Server)]
-    public void PlayerReadyRpc(ulong playerId) // Called by a Player once they have finished their initializations
+    public void PlayerReadyRpc(ulong playerId) // Called by the UIManager once the player has pressed "Done" on the initial tutorial pop-up
     {
         if (playerId == 1)
             p1Ready = true;
@@ -81,6 +83,8 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     [Rpc(SendTo.ClientsAndHost)] // Make *everyone* draw their cards at start of game
     private void PlayerStartGameRpc()
     {
+        Time.timeScale = 1.0f; // Actually start the game
+        UIManager.Instance.HideWaitingForOpponentScreen();
         BGMPlayer.Instance.PlayBGMTheme(BGMPlayer.BGMTheme.Battle);
         Player.Instance.DrawCards();
         // Other stuff that both players need to do at start of game goes here
@@ -90,6 +94,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     private void PlayerBeginTurnRpc(RpcParams rpcParams)
     {
         Debug.Log("STARTING TURN");
+        UIManager.Instance.FlashYourTurnScreen();
         Player.Instance.BeginTurn();
     }
 
@@ -138,7 +143,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
         {
             //await ExecuteCards();
             PlayerBeginWatchRpc(); // Make players watch the board
-            ChangeTurnTextRpc(0);  // Temporarily set the current active player to 0 (meaning "executing")
+            ChangeTurnIndicatorRpc(0);  // Temporarily set the current active player to 0 (meaning "executing")
             await ExecuteCards();  // Can't await anymore since RPC cannot be async; see if this causes any trouble
             round++;
         }
@@ -146,7 +151,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
         {
             //await ExecuteCards();
             PlayerBeginWatchRpc(); // Make players watch the board
-            ChangeTurnTextRpc(0);  // Temporarily set the current active player to 0 (meaning "executing")
+            ChangeTurnIndicatorRpc(0);  // Temporarily set the current active player to 0 (meaning "executing")
             await ExecuteCards();  // Can't await anymore since RPC cannot be async; see if this causes any trouble
             round++;
         }
@@ -155,13 +160,13 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
             activePlayer = 1;
         }
 
-        ChangeTurnTextRpc(activePlayer);
+        ChangeTurnIndicatorRpc(activePlayer);
         PlayerBeginTurnRpc(RpcTarget.Single(activePlayer - 1, RpcTargetUse.Temp)); // Note: cannot be awaited anymore because it is an RPC...
         PlayerBeginViewRpc(RpcTarget.Single((3 - activePlayer) - 1, RpcTargetUse.Temp));
     }
 
     [Rpc(SendTo.ClientsAndHost)] // Notify all players who the new active player is so they can change the turn indicator
-    private void ChangeTurnTextRpc(ulong currPlayerId)
+    private void ChangeTurnIndicatorRpc(ulong currPlayerId)
     {
         SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.TurnChange); // Also play a sound effect for turn change on both client and host
         UIManager.Instance.ChangeTurnIndicator(currPlayerId);

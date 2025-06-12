@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3219297dfb5b34d28929cf0b02ebf253, type: 3}
+  m_Name: Winning
+  m_EditorClassIdentifier: 
+  theme: 3
+  introClip: {fileID: 8300000, guid: e60cbd3e098d74bde925946ff0eb0315, type: 3}
+  loopClip: {fileID: 8300000, guid: b8b171ff38c974738b660fb275ad1ffe, type: 3}

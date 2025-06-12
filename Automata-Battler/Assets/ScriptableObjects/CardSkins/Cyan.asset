@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f76892ca903d7486f9caf3e71569428c, type: 3}
+  m_Name: Cyan
+  m_EditorClassIdentifier: 
+  fontColor: {r: 0, g: 0.8980392, b: 1, a: 1}
+  basePanel: {fileID: 5597402243164782025, guid: 1e6180c1f1df64b5fb1a63aab88a168c, type: 3}
+  healthPanel: {fileID: 6791198830516376576, guid: ac8b3c1e0829743b7a9afd32755d6cb6, type: 3}
+  attackPanel: {fileID: 3055250714147816106, guid: 8d0e437c4b49a4d45ab9331d16d1dff7, type: 3}
+  instructionsPanel: {fileID: 2792279845659236124, guid: c93c2a7ce95bc4703ad3436069b7e96b, type: 3}
+  initiativePanel: {fileID: 8082115269653629747, guid: 2a5d523a5621e4090b4742b02ad22559, type: 3}
+  rotateRPanel: {fileID: -1459383056934993550, guid: 755f590ea9656444c8ab06f5b19b84e5, type: 3}
+  rotateLPanel: {fileID: 3407801956414245647, guid: 0b1c31633617e4ae5b7157d5bc0f179e, type: 3}
