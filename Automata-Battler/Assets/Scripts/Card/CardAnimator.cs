@@ -58,7 +58,8 @@ public static class CardAnimator
     [Rpc(SendTo.Server)]
     public static async Task Card_FlyIn_Rpc(Transform transform, Vector3 targetPos, Quaternion targetRot, float cardScale)
     {
-        await Lerp_SlideTo(transform, transform.position + new Vector3(0, 100, 0), 0.2f);
+        // await Lerp_SlideTo(transform, transform.position + new Vector3(0, 100, 0), 0.2f);
+        transform.position += new Vector3(0, 100, 0);
         transform.rotation = targetRot;
         transform.position = targetPos + new Vector3(0, 100, 0);
         transform.localScale = new Vector3(8 * cardScale, 1 * cardScale, 8 * cardScale);

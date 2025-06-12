@@ -11,12 +11,6 @@ public class CardManager : NetworkBehaviour
 
     public List<GameObject> cards = new List<GameObject>();
 
-    // Same story for card materials, easier to do that on CardManager now
-    //deprecated now ~Lars
-    // public Material p1Material;
-    // public Material p2Material;
-
-
     //skins for the cards, i.e. cyan or orange
     public CardSkin p1Skin;
     public CardSkin p2Skin;
@@ -44,7 +38,7 @@ public class CardManager : NetworkBehaviour
         // Draw & spawn random card
         int index = UnityEngine.Random.Range(0, cards.Count);
         Debug.Log(string.Format("CARD INDEX: {0}", index));
-        GameObject cardObject = Instantiate(cards[index], transform);
+        GameObject cardObject = Instantiate(cards[index], new Vector3(0, 100, 0), Quaternion.identity, transform);
         cardObject.GetComponent<NetworkObject>().Spawn(true);         // Also spawn the card across the network
         Debug.Log(cardObject);
 
