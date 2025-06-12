@@ -538,8 +538,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "CREDITS\nWouter Leenen - Team lead, \n     Programming, Design\nLars Haenen
     - Design, Music, \n     Programming, 2D Art\nLauren Duong - Art lead, 3D Art\nTim
-    de Koning - Programming\nKerem Gokce - Music, Sound effects\nYulin Shang - 2D
-    Art"
+    de Koning - Programming\nKerem Gokce - Sound effects, \n     Music\nYulin Shang
+    - 2D Art"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: fd0b44765ed48bb40b684289dda71599, type: 2}
   m_sharedMaterial: {fileID: -3458917632389168192, guid: fd0b44765ed48bb40b684289dda71599, type: 2}

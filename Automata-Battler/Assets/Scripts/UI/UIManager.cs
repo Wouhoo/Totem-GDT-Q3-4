@@ -21,10 +21,13 @@ public class UIManager : MonoBehaviour
 
     [Header("Mana text")]
     [SerializeField] TextMeshProUGUI manaText;
+    [SerializeField] Sprite p1EnergyIcon;
+    [SerializeField] Sprite p2EnergyIcon;
 
     [Header("Turn indicator")]
     [SerializeField] GameObject turnIndicatorArrow;
     private Renderer turnIndicatorMesh;
+    [SerializeField] TextMeshProUGUI terminalCurrentPText;
     [SerializeField] Material p1Material;
     [SerializeField] Material p2Material;
     [SerializeField] Color executionColor;
@@ -35,8 +38,12 @@ public class UIManager : MonoBehaviour
     private Color p2Color;
 
     [Header("Commander Health Text")]
-    [SerializeField] TextMeshProUGUI p1CommanderHealthText; // Note: NO LONGER SET FROM INSPECTOR
-    [SerializeField] TextMeshProUGUI p2CommanderHealthText;
+    [SerializeField] TextMeshProUGUI terminalP1CommanderHealthText;
+    [SerializeField] TextMeshProUGUI terminalP2CommanderHealthText;
+    [SerializeField] Sprite p1CommanderHealthIcon;
+    [SerializeField] Sprite p2CommanderHealthIcon;
+    private TextMeshProUGUI boardP1CommanderHealthText; 
+    private TextMeshProUGUI boardP2CommanderHealthText;
 
     [Header("End Turn Button")]
     [SerializeField] TextMeshProUGUI endTurnText;
@@ -122,7 +129,7 @@ public class UIManager : MonoBehaviour
     /* MANA TEXT */
     public void UpdateManaText(int mana)
     {
-        manaText.text = string.Format("$ {0}/3", mana);
+        manaText.text = string.Format("{0}/3", mana);
     }
 
     public void PlayNotEnoughManaEffect()
@@ -138,13 +145,19 @@ public class UIManager : MonoBehaviour
     {
         if(playerId == 1)
         {
-            p1CommanderHealthText = GameObject.Find("YourCommanderHealthText").GetComponent<TextMeshProUGUI>();
-            p2CommanderHealthText = GameObject.Find("EnemyCommanderHealthText").GetComponent<TextMeshProUGUI>();
+            boardP1CommanderHealthText = GameObject.Find("YourCommanderHealthText").GetComponent<TextMeshProUGUI>();
+            boardP2CommanderHealthText = GameObject.Find("EnemyCommanderHealthText").GetComponent<TextMeshProUGUI>();
+            GameObject.Find("YourCommanderHealthIcon").GetComponent<Image>().sprite = p1CommanderHealthIcon;
+            GameObject.Find("EnemyCommanderHealthIcon").GetComponent<Image>().sprite = p2CommanderHealthIcon;
+            GameObject.Find("EnergyIcon").GetComponent<Image>().sprite = p1EnergyIcon;
         }
         else if (playerId == 2)
         {
-            p1CommanderHealthText = GameObject.Find("EnemyCommanderHealthText").GetComponent<TextMeshProUGUI>();
-            p2CommanderHealthText = GameObject.Find("YourCommanderHealthText").GetComponent<TextMeshProUGUI>();
+            boardP1CommanderHealthText = GameObject.Find("EnemyCommanderHealthText").GetComponent<TextMeshProUGUI>();
+            boardP2CommanderHealthText = GameObject.Find("YourCommanderHealthText").GetComponent<TextMeshProUGUI>();
+            GameObject.Find("EnemyCommanderHealthIcon").GetComponent<Image>().sprite = p1CommanderHealthIcon;
+            GameObject.Find("YourCommanderHealthIcon").GetComponent<Image>().sprite = p2CommanderHealthIcon;
+            GameObject.Find("EnergyIcon").GetComponent<Image>().sprite = p2EnergyIcon;
         }
     }
 
@@ -152,15 +165,17 @@ public class UIManager : MonoBehaviour
     {
         if (playerId == 1)
         {
-            p1CommanderHealthText.text = string.Format("♡ {0}/10", health);
+            boardP1CommanderHealthText.text = string.Format("{0}", health);
+            terminalP1CommanderHealthText.text = string.Format("{0}", health);
             if (!alreadyAnimating)
-                StartCoroutine("ErrorEffect", p1CommanderHealthText);
+                StartCoroutine("ErrorEffect", boardP1CommanderHealthText); // Terminal text doesn't need to animate since you can't watch the terminal during execution anyway
         }
         else
         {
-            p2CommanderHealthText.text = string.Format("♡ {0}/10", health);
+            boardP2CommanderHealthText.text = string.Format("{0}", health);
+            terminalP1CommanderHealthText.text = string.Format("{0}", health);
             if (!alreadyAnimating)
-                StartCoroutine("ErrorEffect", p2CommanderHealthText);
+                StartCoroutine("ErrorEffect", boardP2CommanderHealthText);
         }
     }
 
@@ -182,14 +197,25 @@ public class UIManager : MonoBehaviour
         else                                               // Opponent's turn: point to other side of board
             targetRotation = opponentRotationTarget;
 
-        // Determine color to give the arrow
+        // Determine color to give the arrow. Also change turn indicator on player's terminal
         if (currPlayerId == 1)      // Player 1 (blue)
+        {
             targetColor = p1Color;
+            terminalCurrentPText.text = "> Blue";
+            terminalCurrentPText.color = p1Color;
+        }  
         else if (currPlayerId == 2) // Player 2 (orange)
+        {
             targetColor = p2Color;
+            terminalCurrentPText.text = "> Orange";
+            terminalCurrentPText.color = p2Color;
+        }
         else                        // No player active; executing cards
+        {
             targetColor = executionColor;
-
+            terminalCurrentPText.text = "> Executing";
+            terminalCurrentPText.color = executionColor;
+        }
         StartCoroutine("RotateIndicatorArrow");
     }
 
@@ -218,8 +244,8 @@ public class UIManager : MonoBehaviour
     public void PlayNotYourTurnEffect()
     {
         SFXPlayer.Instance.PlaySoundEffect(SFXPlayer.SoundEffect.Error);
-        //if (!alreadyAnimating)
-        //    StartCoroutine("ErrorEffect", turnText);
+        if (!alreadyAnimating)
+            StartCoroutine("ErrorEffect", terminalCurrentPText);
     }
 
 
