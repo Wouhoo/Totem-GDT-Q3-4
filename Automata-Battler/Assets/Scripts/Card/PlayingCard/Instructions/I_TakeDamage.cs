@@ -18,7 +18,10 @@ public class I_TakeDamage : MonoBehaviour
         await Animate(card);
 
         if (card._health == 0)
+        {
+            card.IS_DEAD = true; //set this flag RIGHT NOW ASAP AND JUST HOPE WE ARENT TOO LATE
             await I_Die.Execute(card);
+        }
     }
 
     public static string GetVisual()

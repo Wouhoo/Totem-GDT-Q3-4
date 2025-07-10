@@ -9,8 +9,6 @@ public class I_Die : MonoBehaviour
     {
         Debug.Log($"Executing Instruction: I_Die ({card})");
 
-        card.IS_DEAD = true; //set this flag RIGHT NOW ASAP
-
         card.PlayCardSoundEffectRpc(SFXPlayer.SoundEffect.Damage);
         Board board = FindFirstObjectByType<Board>();
         // Referee referee = FindFirstObjectByType<Referee>();
