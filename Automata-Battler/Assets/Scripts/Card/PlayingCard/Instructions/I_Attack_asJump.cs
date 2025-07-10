@@ -15,13 +15,25 @@ public class I_Attack_asJump : MonoBehaviour
         if (board.CanAttack(card._ownerPlayer, target)) // ask if attack is possible
         {
             card.PlayCardSoundEffectRpc(SFXPlayer.SoundEffect.CardAttack);
+            if (card == null || card.IS_DEAD)
+            {
+                Debug.Log("I CAUGHT THE SOFTLOCK @ animation");
+                return; //nasty hack alert ~Lars
+            }
             await Animate_Success(card, target);
             await board.Attack(card._ownerPlayer, target, damageAmount);
             return;
         }
         else // Failed to attack
+        {
             card.PlayCardSoundEffectRpc(SFXPlayer.SoundEffect.ChangeView);
+            if (card == null || card.IS_DEAD)
+            {
+                Debug.Log("I CAUGHT THE SOFTLOCK @ animation");
+                return; //nasty hack alert ~Lars
+            }
             await Animate_Failure(card);
+        }
     }
 
     private static readonly Dictionary<HexDirection, string> instructionVisual = new()

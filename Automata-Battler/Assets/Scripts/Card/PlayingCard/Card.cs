@@ -32,6 +32,9 @@ public class Card : AbstractCard, IAction, ISelectable
     public int _damage => damage;
     public List<CardInstruction> _instructions => instructions;
 
+    [Header("DEBUG")]
+    public bool IS_DEAD = false; //set by the dying animation to mitigate (NOT PREVENT) race condition ~Lars
+
     void Awake()
     {
         cardRenderer = GetComponent<CardRenderer>();

@@ -123,10 +123,10 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     [Rpc(SendTo.Server)] // Turn end stuff is only done on server
     public void EndTurnRpc() // Was async Task, but RPCs can only be void; check if this causes any problems.
     {
-        EndTurn();
+        EndTurn().Forget();
     }
 
-    private async void EndTurn()
+    private async Task EndTurn() //Must be a managed task, otherwise the await calls don't actually do anything!!! ~Lars
     {
         Debug.Log(string.Format("ROUND: {0}", round));
 

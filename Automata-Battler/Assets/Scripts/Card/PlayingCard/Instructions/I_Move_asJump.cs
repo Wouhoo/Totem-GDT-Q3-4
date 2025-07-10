@@ -17,10 +17,22 @@ public class I_Move_asJump : MonoBehaviour
             board.Set_TileOccupant(card._position, null);
             card.Set_Position(target);
             board.Set_TileOccupant(card._position, card);
+            if (card == null || card.IS_DEAD)
+            {
+                Debug.Log("I CAUGHT THE SOFTLOCK @ animation");
+                return; //nasty hack alert ~Lars
+            }
             await Animate_Success(card);
         }
         else // Failed to move
+        {
+            if (card == null || card.IS_DEAD)
+            {
+                Debug.Log("I CAUGHT THE SOFTLOCK @ animation");
+                return; //nasty hack alert ~Lars
+            }
             await Animate_Failure(card);
+        }
     }
 
     public void Rotate(int byAmount)
