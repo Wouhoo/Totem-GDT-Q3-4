@@ -177,7 +177,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
         // Execute cards from most recent to oldest
         for (int i = cardList.Count - 1; i >= 0; i--)
         {
-            if (cardList[i] != null) // check if card still exists
+            if (cardList[i] != null && !cardList[i].IS_DEAD) // check if card still exists and isn't dead yet
                 await cardList[i].ExecuteInstructions();
         }
 
