@@ -15,8 +15,8 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
                                 // CAREFUL: when sending an RPC to a specific player, don't forget to subtract 1 in order to convert to actual clientId! (0 for server, 1 for client)
     private int round = 0;
     public List<Card> cardList { get; private set; } = new List<Card>(); // in order of play (newest last)
-    private bool p1Ready = false;
-    private bool p2Ready = false;
+    [SerializeField] private bool p1Ready = false;
+    [SerializeField] private bool p2Ready = false;
 
     // Referee now needs to keep track of health for both players to decide when to play winning/losing themes
     private int p1CommanderHealth;
@@ -38,17 +38,6 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
         if (IsServer)
         {
             StartCoroutine(StartGame()); // Have to do it this way so we can wait until all necessary networkobjects have spawned
-            NetworkManager.Singleton.SceneManager.OnLoadComplete += SceneManager_OnLoadComplete;
-        }
-    }
-
-    // Triggered on server when a scene is (re)loaded
-    private void SceneManager_OnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
-    {
-        if (sceneName == "MainMenu") // If the main menu got loaded: someone left the lobby, so shut down network
-        {
-            Debug.Log("Connection shut down!");
-            NetworkManager.Singleton.Shutdown();
         }
     }
 
@@ -269,7 +258,25 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     public void BackToMenuServerRpc()
     {
         // Go back to the main menu and shut down the relay connection.
-        NetworkManager.Singleton.SceneManager.LoadScene("Scenes/MainMenu", UnityEngine.SceneManagement.LoadSceneMode.Single);
-        // Because of the SceneManager_OnLoadComplete event, the connection is shut down only once the scene has been loaded for everyone
+        Time.timeScale = 1f;
+        ClientShutdownRpc();
+        StartCoroutine(ServerShutdown());
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void ClientShutdownRpc()
+    {
+        if (IsServer) return; // Server is handled separately in ServerShutdown
+        NetworkManager.Singleton.Shutdown(); // Shut down connection and load scene locally
+        Debug.Log("Connection shut down!");
+        SceneManager.LoadScene("Scenes/MainMenu");
+    }
+
+    private IEnumerator ServerShutdown()
+    {
+        yield return null; // Add a one frame delay before shutting down the server to make sure all client RPCs are sent out first
+        NetworkManager.Singleton.Shutdown();// Shut down connection and load scene locally
+        Debug.Log("Connection shut down!");
+        SceneManager.LoadScene("Scenes/MainMenu");
     }
 }

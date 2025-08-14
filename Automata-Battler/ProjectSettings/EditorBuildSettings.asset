@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/TestWouter/WouterTestScene.unity
     guid: b3dd973ab3258554398d1580497e4abb
   - enabled: 1
+    path: Assets/Scenes/LaunchScene.unity
+    guid: 51989453750d7544f8b095e632bbe0a2
+  - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: d1a551be9d525484081cd3bc61feb5ac
   - enabled: 1

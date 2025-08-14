@@ -73,7 +73,7 @@ public class CardRenderer : MonoBehaviour
         if (playerId == 1)
             instructions.RenderText(string.Join(" ", card._instructions.Select(instruction =>
                     { return instruction.GetVisual(); })));
-        else if (playerId == 2)
+        else if (playerId > 1)
             instructions.RenderText(string.Join(" ", card._instructions.Select(instruction =>
                     { return instruction.GetVisual_Client(); })));
     }

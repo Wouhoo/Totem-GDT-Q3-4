@@ -173,7 +173,7 @@ public class UIManager : MonoBehaviour
         else
         {
             boardP2CommanderHealthText.text = string.Format("{0}", health);
-            terminalP1CommanderHealthText.text = string.Format("{0}", health);
+            terminalP2CommanderHealthText.text = string.Format("{0}", health);
             if (!alreadyAnimating)
                 StartCoroutine("ErrorEffect", boardP2CommanderHealthText);
         }

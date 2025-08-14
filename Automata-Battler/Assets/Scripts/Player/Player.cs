@@ -35,10 +35,15 @@ public class Player : MonoBehaviour
 
         // Assign intergers here (not start, since the ref needs them at start!)
         playerId = NetworkManager.Singleton.LocalClientId + 1; // The +1 is important so we can use 0 as a "null value"
+        // For some reason, on starting a new game after goin back to the main menu, the host still has playerId 1,
+        // but the client gets playerId 3 (on the 2nd game, or 4 on the 3rd game, etc). To get around this, we do this:
+        if (playerId > 2) 
+            playerId = 2;
+
         Debug.Log(string.Format("PLAYER ID: {0}", playerId));
 
         // Rotate Scene
-        if (2 == playerId) // Rotate around the world center
+        if (playerId == 2) // Rotate around the world center
             transform.RotateAround(new Vector3(0, 0, 0), new Vector3(0, 1, 0), 180);
     }
 
@@ -115,7 +120,7 @@ public class Player : MonoBehaviour
     // Player Damage & Health System
     //
 
-    public int _health { get; private set; } = 10; // To test game end screen, set to 1
+    public int _health { get; private set; } = 1; // To test game end screen, set to 1
 
     public void TakeDamage(int amount)
     {
