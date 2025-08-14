@@ -46,7 +46,7 @@ public class CardManager : NetworkBehaviour
         AbstractCard card = cardObject.GetComponent<AbstractCard>();  // AbstractCard extends NetworkBehaviour, so it can actually be used as an argument/return of an RPC
                                                                       // as a NetworkBehaviourReference; no changes required!
         card.Set_Owner_Rpc(playerId);
-        if (playerId == 2 && card is Card card1) // Flip instructions for player 2
+        if (playerId > 1 && card is Card card1) // Flip instructions for player 2
             card1.RotateInstructionsRpc(3);
 
         // Return card to correct caller

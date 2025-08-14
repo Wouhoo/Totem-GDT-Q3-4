@@ -15,8 +15,8 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
                                 // CAREFUL: when sending an RPC to a specific player, don't forget to subtract 1 in order to convert to actual clientId! (0 for server, 1 for client)
     private int round = 0;
     public List<Card> cardList { get; private set; } = new List<Card>(); // in order of play (newest last)
-    [SerializeField] private bool p1Ready = false;
-    [SerializeField] private bool p2Ready = false;
+    private bool p1Ready = false;
+    private bool p2Ready = false;
 
     // Referee now needs to keep track of health for both players to decide when to play winning/losing themes
     private int p1CommanderHealth;
@@ -46,7 +46,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
     {
         if (playerId == 1)
             p1Ready = true;
-        else if (playerId == 2)
+        else if (playerId > 1)
             p2Ready = true;
     }
 
@@ -204,7 +204,7 @@ public class Referee : NetworkBehaviour // The referee is a networkobject; most 
         //Debug.Log(string.Format("NEW PLAYER {0} HEALTH: {1}", playerId, health));
         if(playerId == 1)
             p1CommanderHealth = health;
-        else if(playerId == 2)
+        else if(playerId > 1)
             p2CommanderHealth = health;
 
         // Decide whether to play winning or losing theme

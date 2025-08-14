@@ -102,7 +102,7 @@ public class UIManager : MonoBehaviour
             yourTurnText.color = p1Color;
             manaText.color = p1Color;
         }
-        else if (Player.Instance.playerId == 2)
+        else if (Player.Instance.playerId > 1)
         {
             yourTurnText.color = p2Color;
             manaText.color = p2Color;
@@ -151,7 +151,7 @@ public class UIManager : MonoBehaviour
             GameObject.Find("EnemyCommanderHealthIcon").GetComponent<Image>().sprite = p2CommanderHealthIcon;
             GameObject.Find("EnergyIcon").GetComponent<Image>().sprite = p1EnergyIcon;
         }
-        else if (playerId == 2)
+        else if (playerId > 1)
         {
             boardP1CommanderHealthText = GameObject.Find("EnemyCommanderHealthText").GetComponent<TextMeshProUGUI>();
             boardP2CommanderHealthText = GameObject.Find("YourCommanderHealthText").GetComponent<TextMeshProUGUI>();
@@ -204,7 +204,7 @@ public class UIManager : MonoBehaviour
             terminalCurrentPText.text = "> Blue";
             terminalCurrentPText.color = p1Color;
         }  
-        else if (currPlayerId == 2) // Player 2 (orange)
+        else if (currPlayerId > 1) // Player 2 (orange)
         {
             targetColor = p2Color;
             terminalCurrentPText.text = "> Orange";

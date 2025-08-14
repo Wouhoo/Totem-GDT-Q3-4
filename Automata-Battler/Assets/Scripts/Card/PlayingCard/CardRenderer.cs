@@ -42,7 +42,7 @@ public class CardRenderer : MonoBehaviour
     void Start()
     {
         ulong playerId = Player.Instance.playerId;
-        if (playerId == 2)
+        if (playerId > 1)
         {
             elementsTransform.localRotation = Quaternion.Euler(0, 180, 0);
         }
